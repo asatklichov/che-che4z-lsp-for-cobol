@@ -47,6 +47,8 @@ public class CobolSemanticParserListenerImpl extends CobolPreprocessorBaseListen
   private static final String RECURSION_DETECTED = "Recursive copybook declaration for: %s";
   private static final String COPYBOOK_OVER_8_CHARACTERS =
       "Copybook declaration has more than 8 characters for: %s";
+  private static final String COPYBOOK_NAME_DOES_NOT_CONFORM =
+      "Copybook declaration has invalid characters: %s";
 
   @Getter private final List<SyntaxError> errors = new ArrayList<>();
 
@@ -136,16 +138,24 @@ public class CobolSemanticParserListenerImpl extends CobolPreprocessorBaseListen
     String copybookName = retrieveCopybookName(copySource);
     Position position = retrievePosition(copySource);
     defineCopybook(copybookName, position);
-    checkCopybookNameLength(copybookName, position);
+    checkCopybookNameLengthAndForm(copybookName, position);
     this.preprocessorCleanerService.excludeStatementFromText(ctx, COMMENT_TAG, tokens);
   }
 
-  private void checkCopybookNameLength(String copybookName, Position position) {
+  private void checkCopybookNameLengthAndForm(String copybookName, Position position) {
     if (copybookName != null && copybookName.length() > 8) {
       errors.add(
           SyntaxError.syntaxError()
               .severity(3)
               .suggestion(String.format(COPYBOOK_OVER_8_CHARACTERS, copybookName))
+              .position(position)
+              .build());
+    }
+    if (!copybookName.matches("^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,28}[a-zA-Z0-9])$")){
+      errors.add(
+          SyntaxError.syntaxError()
+              .severity(1)
+              .suggestion(String.format(COPYBOOK_NAME_DOES_NOT_CONFORM, copybookName))
               .position(position)
               .build());
     }
