@@ -151,7 +151,12 @@ public class CobolSemanticParserListenerImpl extends CobolPreprocessorBaseListen
               .position(position)
               .build());
     }
-    if (!copybookName.matches("^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,28}[a-zA-Z0-9])$")){
+    /**
+     * Conforming to COBOL 6.2 requirements to allow String literals with alphanumeric characters,
+     * '@', '#', '$', and a '-' that should not be on the start or end
+     */
+    if (!copybookName.matches(
+        "^([a-zA-Z0-9#@$]|[a-zA-Z0-9#@$][a-zA-Z0-9-#@$]{0,28}[a-zA-Z0-9#@$])$")) {
       errors.add(
           SyntaxError.syntaxError()
               .severity(1)
