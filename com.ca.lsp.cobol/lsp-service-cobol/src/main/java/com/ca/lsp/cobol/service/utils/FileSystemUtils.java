@@ -18,7 +18,6 @@ import com.ca.lsp.cobol.service.delegates.dependency.CopybookDependencyServiceIm
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.lsp4j.WorkspaceFolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +45,13 @@ import static java.nio.file.Files.readAllLines;
 @UtilityClass
 public class FileSystemUtils {
   private final List<String> ALLOWED_EXTENSIONS = Arrays.asList("cpy", "cbl", "cobol", "cob");
+  private final String COPYBOOKS_FOLDER = ".copybooks";
+
+  /** @return the representation os based of the FS separator */
+  public static String filesystemSeparator() {
+    return FileSystems.getDefault().getSeparator();
+  }
+
   /**
    * @param pathFile NIO path of the file to check
    * @return true if the path represent a valid file, false otherwise
@@ -114,6 +120,25 @@ public class FileSystemUtils {
   }
 
   /**
+   * This method is used to transform from a List<Object> to a list of strings which contains the
+   * exact path needed to be attached to a required URI.
+   *
+   * @param settings result of the requested configuration settings
+   * @return list of refactored strings
+   */
+  public static List<String> interpretPaths(List<Object> settings) {
+    return settings.stream()
+        .map(
+            f -> {
+              String path = f.toString();
+              return path.substring(path.indexOf(COPYBOOKS_FOLDER) + COPYBOOKS_FOLDER.length())
+                  .replace("/", filesystemSeparator())
+                  .replace("\"", "");
+            })
+        .collect(Collectors.toList());
+  }
+
+  /**
    * This method return a {@link Path} representation of a bunch of {@link String} given as input or
    * null if is not possible get the path. After each pah a FS separator is added automatically
    *
@@ -130,13 +155,12 @@ public class FileSystemUtils {
    * part iterated to obtains path in this form: {[base,middle,v1],[base,middle,v2], ...}
    *
    * @param outer first level of folder
-   * @param inner second level of folder (represent the name of an inner folder)
    * @param variablePart list of names of folders that are contained inside the inner
    * @return a lis of paths represented in the way: {[outer,inner,v1],[outer,inner,v2], ...}
    */
-  public List<Path> getPathList(@Nonnull String outer, String inner, List<String> variablePart) {
+  public List<Path> getPathList(@Nonnull String outer, List<String> variablePart) {
     return variablePart.stream()
-        .map(it -> Paths.get(outer, inner, it))
+        .map(it -> Paths.get(outer, it))
         .filter(Files::exists)
         .collect(Collectors.toList());
   }
@@ -261,19 +285,6 @@ public class FileSystemUtils {
       log.error(e.getMessage());
       return null;
     }
-  }
-
-  /**
-   * @param it workspace folder
-   * @return the normalized path version of the given folder
-   */
-  private Path resolveUriPath(WorkspaceFolder it) {
-    try {
-      return Paths.get(new URI(it.getUri()).normalize());
-    } catch (URISyntaxException e) {
-      log.error(e.getMessage());
-    }
-    return null;
   }
 
   /**
