@@ -35,7 +35,7 @@ dbs_alter_database: DATABASE dbs_database_name (BUFFERPOOL dbs_bp_name | INDEXBP
 /*ALTER FUNCTION */
 dbs_alter_function: (dbs_alter_function_external | dbs_alter_function_compiled | dbs_alter_function_inline);
 dbs_alter_function_external: (SPECIFIC FUNCTION dbs_specific_name | FUNCTION dbs_function_name (LPARENCHAR ((common_built_in_type_core5 | dbs_distinct_type_name) (AS LOCATOR)? (COMMACHAR (common_built_in_type_core5 | dbs_distinct_type_name) (AS LOCATOR)?)*)? RPARENCHAR)?) dbs_alter_function_extopts;
-dbs_alter_function_extopts: (EXTERNAL NAME (dbs_external_program_name | dbs_identifier) | LANGUAGE (ASSEMBLE|C|COBOL|JAVA|PLI) | PARAMETER STYLE (SQL|JAVA) | NOT? DETERMINISTIC | (RETURNS NULL|CALLED) ON NULL INPUT | ((MODIFIES|READS) SQL DATA | (CONTAINS|NO) SQL) | NO? EXTERNAL ACTION | (PACKAGE PATH dbs_package_path | NO PACKAGE PATH) | (NO SCRATCHPAD | SCRATCHPAD dbs_length) | NO? FINAL CALL | (ALLOW|DISALLOW) PARALLEL | NO? DBINFO | CARDINALITY dbs_integer | (NO COLLID | COLLID dbs_collection_id) | WLM ENVIRONMENT | (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR) | ASUTIME (NO LIMIT | LIMIT dbs_integer) | STAY RESIDENT (YES|NO) | PROGRAM TYPE (SUB|MAIN) | SECURITY (DB2|USER|DEFINER) | (STOP AFTER (SYSTEM DEFAULT|dbs_integer) FAILURES | CONTINUE AFTER FAILURE) | RUN OPTIONS  dbs_run_time_options | (INHERIT|DEFAULT) SPECIAL REGISTERS | STATIC DISPATCH | NOT? SECURED)+; /*java fix required to add "one each" rule */
+dbs_alter_function_extopts: (EXTERNAL NAME (dbs_external_program_name | dbs_identifier) | LANGUAGE (ASSEMBLE| C_LANG |COBOL|JAVA|PLI) | PARAMETER STYLE (SQL|JAVA) | NOT? DETERMINISTIC | (RETURNS NULL|CALLED) ON NULL INPUT | ((MODIFIES|READS) SQL DATA | (CONTAINS|NO) SQL) | NO? EXTERNAL ACTION | (PACKAGE PATH dbs_package_path | NO PACKAGE PATH) | (NO SCRATCHPAD | SCRATCHPAD dbs_length) | NO? FINAL CALL | (ALLOW|DISALLOW) PARALLEL | NO? DBINFO | CARDINALITY dbs_integer | (NO COLLID | COLLID dbs_collection_id) | WLM ENVIRONMENT | (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR) | ASUTIME (NO LIMIT | LIMIT dbs_integer) | STAY RESIDENT (YES|NO) | PROGRAM TYPE (SUB|MAIN) | SECURITY (DB2|USER|DEFINER) | (STOP AFTER (SYSTEM DEFAULT|dbs_integer) FAILURES | CONTINUE AFTER FAILURE) | RUN OPTIONS  dbs_run_time_options | (INHERIT|DEFAULT) SPECIAL REGISTERS | STATIC DISPATCH | NOT? SECURED)+; /*java fix required to add "one each" rule */
 dbs_alter_function_compiled: (SPECIFIC FUNCTION dbs_specific_name | FUNCTION dbs_function_name (LPARENCHAR ((common_built_in_type_core5 | XML | data_type_arr_or_distinct) (COMMACHAR (common_built_in_type_core5 | XML | data_type_arr_or_distinct))*)? RPARENCHAR)?) (dbs_alter_function_alter | dbs_alter_function_replace | dbs_alter_function_add | dbs_alter_function_activate | dbs_alter_function_regen | dbs_alter_function_drop);
 dbs_alter_function_alter: ALTER? (ACTIVE VERSION | ALL VERSIONS | VERSION dbs_routine_version_id) dbs_alter_function_compopts;
 dbs_alter_function_replace: REPLACE (ACTIVE VERSION | VERSION dbs_routine_version_id) dbs_alter_function_routine;
@@ -48,13 +48,13 @@ dbs_alter_function_compopts: (NOT? DETERMINISTIC | NO? EXTERNAL ACTION | ((READS
 dbs_alter_function_inline: (SPECIFIC FUNCTION dbs_specific_name | FUNCTION dbs_function_name (LPARENCHAR ((common_built_in_type_core5 | XML | dbs_distinct_type_name) (COMMACHAR (common_built_in_type_core5 | XML | dbs_distinct_type_name))*)? RPARENCHAR)?) dbs_alter_function_inlineopts; /*this is for both "inlined SQL scalar" and "SQL table" as they are basically identical - only two extra options in "table" */
 dbs_alter_function_inlineopts: (NOT? DETERMINISTIC | NO? EXTERNAL ACTION | (CONTAINS SQL|READS SQL DATA) | STATIC DISPATCH | CALLED ON NULL INPUT | NOT? SECURED | INHERIT SPECIAL REGISTERS | CARDINALITY dbs_integer)+; /*java fix required to add "one each" rule */
 /*ALTER INDEX */
-dbs_alter_index: INDEX dbs_index_name (REGENERATE (USING APPLICATION COMPATIBILITY dbs_applcompat_value)? /*included as a separate piped option due to nb 2 in IBM doc*/ | (BUFFERPOOL dbs_bp_name | CLOSE (YES|NO) | COPY (YES|NO) | DSSIZE dbs_integer G | PIECESIZE dbs_integer (K|M|G) | dbs_alter_index_using | dbs_alter_index_free | dbs_alter_index_gbpcache | NOT? CLUSTER | NOT? PADDED | COMPRESS (YES|NO) | dbs_alter_index_add)+ dbs_alter_index_alter?);
+dbs_alter_index: INDEX dbs_index_name (REGENERATE (USING APPLICATION COMPATIBILITY dbs_applcompat_value)? /*included as a separate piped option due to nb 2 in IBM doc*/ | (BUFFERPOOL dbs_bp_name | CLOSE (YES|NO) | COPY (YES|NO) | DSSIZE dbs_integer G_CHAR | PIECESIZE dbs_integer (K_CHAR | M_CHAR | G_CHAR) | dbs_alter_index_using | dbs_alter_index_free | dbs_alter_index_gbpcache | NOT? CLUSTER | NOT? PADDED | COMPRESS (YES|NO) | dbs_alter_index_add)+ dbs_alter_index_alter?);
 dbs_alter_index_using: (USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name) | (PRIQTY | SECQTY) dbs_integer | ERASE (YES|NO))+;
 dbs_alter_index_free: (FREEPAGE dbs_integer (PCTFREE dbs_integer)? | PCTFREE dbs_integer (FREEPAGE dbs_integer)?);
 dbs_alter_index_gbpcache: GBPCACHE (CHANGED | ALL | NONE);
 dbs_alter_index_add: ADD (COLUMN LPARENCHAR dbs_column_name (ASC | DESC | RANDOM)? RPARENCHAR | INCLUDE COLUMN LPARENCHAR dbs_column_name RPARENCHAR);
 dbs_alter_index_alter: dbs_alter_index_loop (COMMACHAR dbs_alter_index_loop)*;
-dbs_alter_index_loop: ALTER PARTITION dbs_integer dbs_alter_index_ending? (dbs_alter_index_using | dbs_alter_index_free | dbs_alter_index_gbpcache | DSSIZE dbs_integer G)*;
+dbs_alter_index_loop: ALTER PARTITION dbs_integer dbs_alter_index_ending? (dbs_alter_index_using | dbs_alter_index_free | dbs_alter_index_gbpcache | DSSIZE dbs_integer G_CHAR)*;
 dbs_alter_index_ending:  ENDING AT? LPARENCHAR (dbs_constant | MAXVALUE | MINVALUE) (COMMACHAR (dbs_constant | MAXVALUE | MINVALUE))* RPARENCHAR INCLUSIVE?;
 /*ALTER MASK */
 dbs_alter_mask: MASK dbs_mask_name (ENABLE | DISABLE | REGENERATE (USING APPLICATION COMPATIBILITY dbs_applcompat_value)?);
@@ -62,7 +62,7 @@ dbs_alter_mask: MASK dbs_mask_name (ENABLE | DISABLE | REGENERATE (USING APPLICA
 dbs_alter_permission: PERMISSION dbs_permission_name (ENABLE | DISABLE | REGENERATE (USING APPLICATION COMPATIBILITY dbs_applcompat_value)?);
 /*ALTER PROCEDURE */
 dbs_alter_procedure: PROCEDURE dbs_procedure_name (dbs_alter_procedure_external | dbs_alter_procedure_alter | dbs_alter_procedure_replace | dbs_alter_procedure_add | dbs_alter_procedure_activate | dbs_alter_procedure_regen | dbs_alter_procedure_drop);
-dbs_alter_procedure_external: (DYNAMIC RESULT SETS dbs_integer | EXTERNAL NAME (dbs_external_program_name | dbs_identifier) | LANGUAGE (ASSEMBLE | C | COBOL | JAVA | PLI | REXX) | PARAMETER STYLE (SQL | GENERAL (WITH NULLS)? | JAVA) | NOT? DETERMINISTIC | (PACKAGE PATH dbs_package_path | NO PACKAGE PATH) | ((MODIFIES|READS) SQL DATA | (CONTAINS|NO) SQL) | NO? DBINFO | (NO COLLID | COLLID dbs_collection_id) | WLM ENVIRONMENT (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR) | ASUTIME (NO LIMIT | LIMIT dbs_integer) | STAY RESIDENT (YES|NO) | PROGRAM TYPE (SUB|MAIN) | SECURITY (DB2|USER|DEFINER) | RUN OPTIONS dbs_run_time_options | COMMIT ON RETURN (YES|NO) | (INHERIT|DEFAULT) SPECIAL REGISTERS | CALLED ON NULL INPUT | (STOP AFTER (SYSTEM DEFAULT|dbs_integer) FAILURES | CONTINUE AFTER FAILURE) | (DISALLOW|ALLOW|DISABLE) DEBUG MODE)+; /*java fix needed to add "once each" rule */
+dbs_alter_procedure_external: (DYNAMIC RESULT SETS dbs_integer | EXTERNAL NAME (dbs_external_program_name | dbs_identifier) | LANGUAGE (ASSEMBLE | C_LANG | COBOL | JAVA | PLI | REXX_LANGUAGE) | PARAMETER STYLE (SQL | GENERAL (WITH NULLS)? | JAVA) | NOT? DETERMINISTIC | (PACKAGE PATH dbs_package_path | NO PACKAGE PATH) | ((MODIFIES|READS) SQL DATA | (CONTAINS|NO) SQL) | NO? DBINFO | (NO COLLID | COLLID dbs_collection_id) | WLM ENVIRONMENT (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR) | ASUTIME (NO LIMIT | LIMIT dbs_integer) | STAY RESIDENT (YES|NO) | PROGRAM TYPE (SUB|MAIN) | SECURITY (DB2|USER|DEFINER) | RUN OPTIONS dbs_run_time_options | COMMIT ON RETURN (YES|NO) | (INHERIT|DEFAULT) SPECIAL REGISTERS | CALLED ON NULL INPUT | (STOP AFTER (SYSTEM DEFAULT|dbs_integer) FAILURES | CONTINUE AFTER FAILURE) | (DISALLOW|ALLOW|DISABLE) DEBUG MODE)+; /*java fix needed to add "once each" rule */
 dbs_alter_procedure_alter: ALTER? (ACTIVE VERSION | ALL VERSIONS | VERSION dbs_routine_version_id)? dbs_alter_procedure_options;
 dbs_alter_procedure_options: (NOT? DETERMINISTIC | ((MODIFIES|READS) SQL DATA | CONTAINS SQL) | CALLED ON NULL INPUT | DYNAMIC RESULT SETS dbs_integer | (DISALLOW|ALLOW|DISABLE) DEBUG MODE | PARAMETER CCSID (ASCII|EBCDIC|UNICODE) | QUALIFIER dbs_schema_name | PACKAGE OWNER dbs_authorization_name | ASUTIME (NO LIMIT | LIMIT dbs_integer) | ((COMMIT ON RETURN (YES|NO)) | AUTONOMOUS) | (INHERIT|DEFAULT) SPECIAL REGISTERS | WLM ENVIRONMENT FOR DEBUG MODE dbs_name | (DEFER|NODEFER) PREPARE | CURRENT DATA (YES|NO) | DEGREE (NUMBER_1|ANY) | CONCURRENT ACCESS RESOLUTION (USE CURRENTLY COMMITTED | WAIT FOR OUTCOME) | DYNAMICRULES (RUN|BIND|DEFINERUN|DEFINEBIND|INVOKERUN|INVOKEBIND) | APPLICATION ENCODING SCHEME (ASCII|EBCDIC|UNICODE) | (WITH|WITHOUT) EXPLAIN | (WITH|WITHOUT) IMMEDIATE WRITE | ISOLATION LEVEL (CS|RS|RR|UR) | (WITH|WITHOUT) KEEP DYNAMIC | OPTHINT (DOUBLEQUOTE|dbs_string_constant) | SQL PATH (dbs_schema_name | SYSTEM PATH | SESSION? USER) (COMMACHAR (dbs_schema_name | SYSTEM PATH | SESSION? USER))* | RELEASE AT (COMMIT | DEALLOCATE) | QUERY ACCELERATION (NONE|ELIGIBLE|ALL|ENABLE (WITH FAILBACK)?) | GET_ACCEL_ARCHIVE (YES|NO) | ACCELERATION WAITFORDATA dbs_nnnn_m | ACCELERATOR dbs_accelerator_name | REOPT (NONE|ALWAYS|ONCE) | VALIDATE (RUN|BIND) | ROUNDING (DEC_ROUND_CEILING|DEC_ROUND_DOWN|DEC_ROUND_FLOOR|DEC_ROUND_HALF_DOWN|DEC_ROUND_HALF_EVEN|DEC_ROUND_HALF_UP|DEC_ROUND_UP) | DATE FORMAT (ISO|EUR|USA|JIS|LOCAL) | DECIMAL LPARENCHAR (NUMBER_15|NUMBER_31) (COMMACHAR dbs_s)? | FOR UPDATE CLAUSE (REQUIRED|OPTIONAL) | TIME FORMAT (ISO|EUR|USA|JIS|LOCAL) | BUSINESS_TIME SENSITIVE (YES|NO) | SYSTEM_TIME SENSITIVE (YES|NO) | ARCHIVE SENSITIVE (YES|NO) | APPLCOMPAT dbs_applcompat_value | CONCENTRATE STATEMENTS (OFF|WITH LITERALS))*; /*java fix needed to add "one each" rule */
 dbs_alter_procedure_replace: REPLACE (ACTIVE VERSION | VERSION dbs_routine_version_id)? (LPARENCHAR dbs_alter_procedure_paramdec (COMMACHAR dbs_alter_procedure_paramdec)* RPARENCHAR)? dbs_alter_procedure_options dbs_sql_routine_body; /*SQL-routine-body to be defined once all other statements are done */
@@ -89,11 +89,11 @@ dbs_alter_procedure_drop: DROP VERSION dbs_routine_version_id;
 dbs_alter_sequence: SEQUENCE dbs_sequence_name dbs_alter_sequence_loop (COMMACHAR? dbs_alter_sequence_loop)*;
 dbs_alter_sequence_loop: (RESTART (WITH dbs_numeric_constant)? | (INCREMENT BY|MINVALUE|MAXVALUE) dbs_numeric_constant | NO (MINVALUE|MAXVALUE) | NO? (CYCLE|ORDER) | NO CACHE | CACHE dbs_integer_constant);
 /*ALTER STOGROUP */
-dbs_alter_stogroup: STOGROUP dbs_stogroup_name (NO KEY LABEL | KEY LABEL dbs_key_label_name | (ADD|REMOVE) VOLUMES LPARENCHAR (dbs_volume_id (COMMACHAR dbs_volume_id)* | QUOTE ASTERISKCHAR QUOTE (COMMACHAR QUOTE ASTERISKCHAR QUOTE)*) RPARENCHAR)+ (DATACLAS dbs_dc_name)? (MGMTCLAS dbs_mc_name)? (STORCLAS dbs_sc_name)?;
+dbs_alter_stogroup: STOGROUP dbs_stogroup_name (NO KEY LABEL | KEY LABEL dbs_key_label_name | (ADD|REMOVE) VOLUMES LPARENCHAR (dbs_volume_id (COMMACHAR dbs_volume_id)* | QUOTEDASTREIX (COMMACHAR QUOTEDASTREIX)*) RPARENCHAR)+ (DATACLAS dbs_dc_name)? (MGMTCLAS dbs_mc_name)? (STORCLAS dbs_sc_name)?;
 /*ALTER TABLE */
 dbs_alter_table: TABLE dbs_table_name (dbs_alter_table_add | dbs_alter_table_alter | dbs_alter_table_rename | dbs_alter_table_drop | dbs_alter_table_rotate | DATA CAPTURE (NONE|CHANGES) | NOT? VOLATILE CARDINALITY? | (ACTIVATE|DEACTIVATE) (ROW|COLUMN) ACCESS CONTROL | APPEND (NO|YES) | AUDIT (NONE|CHANGES|ALL) | VALIDPROC (dbs_program_name | NULL) | ENABLE ARCHIVE USE dbs_table_name | DISABLE ARCHIVE | NO KEY LABEL | KEY LABEL dbs_key_label_name)+;
 dbs_alter_table_add: ADD (COLUMN? dbs_alter_table_coldef | dbs_alter_table_unique | dbs_alter_table_referential | dbs_alter_table_check | PARTITION (BY dbs_alter_table_partitioning | dbs_alter_table_partition)? | SYSTEM? VERSIONING USE HISTORY TABLE dbs_history_table_name (ON DELETE ADD EXTRA ROW)? (MATERIALIZED? QUERY)? dbs_alter_table_mq | CLONE dbs_clone_table_name | RESTRICT ON DROP);
-dbs_alter_table_coldef: dbs_column_name (dbs_distinct_type_name | dbs_alter_table_bit)? (dbs_alter_table_defclause | NOT NULL | dbs_alter_table_check | common_reference_clause | dbs_alter_table_generated | IMPLICITLY HIDDEN | AS SECURITY LABEL | FIELDPROC dbs_program_name (LPARENCHAR dbs_constant (COMMACHAR dbs_constant)* RPARENCHAR)? | INLINE LENGTH dbs_integer)*;
+dbs_alter_table_coldef: dbs_column_name (dbs_distinct_type_name | dbs_alter_table_bit)? (dbs_alter_table_defclause | NOT NULL | dbs_alter_table_check | common_reference_clause | dbs_alter_table_generated | IMPLICITLY HIDDENCHAR | AS SECURITY LABEL | FIELDPROC dbs_program_name (LPARENCHAR dbs_constant (COMMACHAR dbs_constant)* RPARENCHAR)? | INLINE LENGTH dbs_integer)*;
 dbs_alter_table_bit: (dbs_alter_table_bit_int | dbs_alter_table_bit_decimal | dbs_alter_table_bit_float | dbs_alter_table_bit_decfloat | dbs_alter_table_bit_char | dbs_alter_table_bit_clob | dbs_alter_table_bit_varchar | dbs_alter_table_bit_graphic | dbs_alter_table_bit_binary | DATE | TIME | dbs_alter_table_bit_timestamp | ROWID | dbs_alter_table_bit_xml);
 dbs_alter_table_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
 dbs_alter_table_bit_decimal: (DECIMAL | DEC | NUMERIC) (LPARENCHAR dbs_integer (COMMACHAR dbs_integer)? RPARENCHAR)?;
@@ -128,13 +128,13 @@ dbs_alter_table_rename: RENAME COLUMN dbs_column_name TO dbs_column_name;
 dbs_alter_table_drop: DROP (COLUMN? dbs_column_name RESTRICT | PRIMARY KEY | (UNIQUE|FOREIGN KEY|CHECK|CONSTRAINT) dbs_constraint_name | SYSTEM? VERSIONING | MATERIALIZED? QUERY | CLONE | RESTRICT ON DROP);
 dbs_alter_table_rotate: ROTATE PARTITION (FIRST | dbs_integer) TO LAST ENDING AT? LPARENCHAR (dbs_constant | MAXVALUE | MINVALUE) (COMMACHAR (dbs_constant | MAXVALUE | MINVALUE))* RPARENCHAR INCLUSIVE? RESET;
 /*ALTER TABLESPACE */
-dbs_alter_tablespace: TABLESPACE dbs_database_name? dbs_table_space_name (DROP PENDING CHANGES | DSSIZE dbs_integer G | SEGSIZE dbs_integer | PAGENUM RELATIVE | dbs_alter_tablespace_move /*these first five are piped separately from the big loop due to note 1 in IBM doc*/ | (BUFFERPOOL dbs_bp_name | CCSID dbs_ccsid_value | CLOSE (YES|NO) | COMPRESS (YES|NO) | INSERT ALGORITHM dbs_level | LOCKMAX (SYSTEM | dbs_integer) | LOCKSIZE (ANY | TABLESPACE | TABLE | PAGE | ROW | LOB) | NOT? LOGGED | MAXROWS dbs_integer | MAXPARTITIONS dbs_integer | MEMBER CLUSTER (YES|NO) | TRACKMOD (YES|NO) | dbs_alter_tablespace_using | dbs_alter_tablespace_free | dbs_alter_tablespace_gbpcache)+) dbs_alter_tablespace_alter?;
+dbs_alter_tablespace: TABLESPACE dbs_database_name? dbs_table_space_name (DROP PENDING CHANGES | DSSIZE dbs_integer G_CHAR | SEGSIZE dbs_integer | PAGENUM RELATIVE | dbs_alter_tablespace_move /*these first five are piped separately from the big loop due to note 1 in IBM doc*/ | (BUFFERPOOL dbs_bp_name | CCSID dbs_ccsid_value | CLOSE (YES|NO) | COMPRESS (YES|NO) | INSERT ALGORITHM dbs_level | LOCKMAX (SYSTEM | dbs_integer) | LOCKSIZE (ANY | TABLESPACE | TABLE | PAGE | ROW | LOB) | NOT? LOGGED | MAXROWS dbs_integer | MAXPARTITIONS dbs_integer | MEMBER CLUSTER (YES|NO) | TRACKMOD (YES|NO) | dbs_alter_tablespace_using | dbs_alter_tablespace_free | dbs_alter_tablespace_gbpcache)+) dbs_alter_tablespace_alter?;
 dbs_alter_tablespace_move: MOVE TABLE dbs_table_name TO TABLESPACE (dbs_database_name DOT)? dbs_table_space_name;
 dbs_alter_tablespace_using: (USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name) | (PRIQTY | SECQTY) dbs_integer | ERASE (YES|NO))+;
 dbs_alter_tablespace_free: (FREEPAGE dbs_integer | PCTFREE dbs_smallint? (FOR UPDATE dbs_smallint)?)+;
 dbs_alter_tablespace_gbpcache: GBPCACHE (CHANGED | ALL | SYSTEM | NONE);
 dbs_alter_tablespace_alter: (ALTER PARTITION dbs_integer dbs_alter_tablespace_loop)+;
-dbs_alter_tablespace_loop: (dbs_alter_tablespace_using | dbs_alter_tablespace_free | dbs_alter_tablespace_gbpcache | COMPRESS (YES|NO) | DSSIZE dbs_integer G | TRACKMOD (YES|NO))+;
+dbs_alter_tablespace_loop: (dbs_alter_tablespace_using | dbs_alter_tablespace_free | dbs_alter_tablespace_gbpcache | COMPRESS (YES|NO) | DSSIZE dbs_integer G_CHAR | TRACKMOD (YES|NO))+;
 /*ALTER TRIGGER */
 dbs_alter_trigger: TRIGGER dbs_trigger_name (dbs_alter_trigger_alter | dbs_alter_trigger_replace | dbs_alter_trigger_add | dbs_alter_trigger_activate | dbs_alter_trigger_regen | dbs_alter_trigger_drop)?;
 dbs_alter_trigger_alter: ALTER? (ACTIVE VERSION | VERSION dbs_trigger_version_id)? dbs_alter_trigger_options;
@@ -278,8 +278,8 @@ prolog: (DECLARE NAMESPACE NCNAME  EQUALCHAR dbs_namespace_name SEMICOLONCHAR | 
 pattern_expression: ( (SLASHCHAR | DOUBLESLASHCHAR)  )*; //TBD ?
 other_opt_part1: ((NOT)? CLUSTER | PARTITIONED | (NOT)? PADDED using_specification free_specification gbpcache_specification (DEFINE yes_or_no  COMPRESS yes_or_no (INCLUDE | EXCLUDE) NULL KEYS))*;
 other_opt_part2: (PARTITION BY (RANGE)? LPARENCHAR (partition_using_specification (COMMACHAR  partition_using_specification))* RPARENCHAR)?;
-other_opt_part3: (BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | DEFER no_or_yes | DSSIZE INTEGER G | PIECESIZE INTEGER k_m_g | COPY no_or_yes)*;
-partition_using_specification: partition_element (using_specification | free_specification | gbpcache_specification | DSSIZE INTEGER G)?;
+other_opt_part3: (BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | DEFER no_or_yes | DSSIZE INTEGER G_CHAR | PIECESIZE INTEGER k_m_g | COPY no_or_yes)*;
+partition_using_specification: partition_element (using_specification | free_specification | gbpcache_specification | DSSIZE INTEGER G_CHAR)?;
 using_specification: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY (NUMBER_12 | INTEGER)? | SECQTY INTEGER | ERASE yes_or_no?)*);
 free_specification: ( (FREEPAGE (NUMBER_0 | INTEGER) | PCTFREE  (NUMBER_10 | INTEGER)))*;
 gbpcache_specification: GBPCACHE (CHANGED | ALL) | NONE;
@@ -288,7 +288,7 @@ partition_element_loop:  LPARENCHAR const_options (COMMACHAR const_options)*  RP
 const_options: dbs_string_constant | MAXVALUE | MINVALUE;
 //CREATE LOB TABLESPACE
 dbs_create_lob_tablespace: LOB TABLESPACE dbs_table_space_name dbs_create_lob_tablespace_def*;
-dbs_create_lob_tablespace_def: IN (DSNDB04 | dbs_database_name) (BUFFERPOOL dbs_bp_name)? CLOSE yes_or_no COMPRESS yes_or_no | DEFINE yes_or_no DSSIZE (NUMBER_4 G | INTEGER G) gbpcache_block?
+dbs_create_lob_tablespace_def: IN (DSNDB04 | dbs_database_name) (BUFFERPOOL dbs_bp_name)? CLOSE yes_or_no COMPRESS yes_or_no | DEFINE yes_or_no DSSIZE (NUMBER_4 G_CHAR | INTEGER G_CHAR) gbpcache_block?
                             LOCKMAX (SYSTEM | INTEGER) locksize_block?  NOT? LOGGED using_block?;
 gbpcache_block: GBPCACHE (CHANGED | ALL | SYSTEM | NONE);
 locksize_block: (LOCKSIZE (ANY | LOB))?;
@@ -322,10 +322,10 @@ dbs_create_table: TABLE dbs_table_name (dbs_create_table_elements_def (COMMACHAR
     as_result_table copy_options? | materialized_query_def) dbs_create_table_data_def*;
 dbs_create_table_elements_def: columnn_def | period_def | unique_constraint | referential_constraint | check_constraint;
 columnn_def: dbs_column_name (common_built_in_type_core3 | dbs_distinct_type_name ) columnn_def_body;//built-in-type change
-columnn_def_body: (NOT NULL | generated_clause | column_constraint | column_def_clause | FIELDPROC  dbs_program_name field_prog_loop? |  AS SECURITY LABEL | IMPLICITLY HIDDEN | INLINE LENGTH dbs_integer)*;
+columnn_def_body: (NOT NULL | generated_clause | column_constraint | column_def_clause | FIELDPROC  dbs_program_name field_prog_loop? |  AS SECURITY LABEL | IMPLICITLY HIDDENCHAR | INLINE LENGTH dbs_integer)*;
 column_def_clause : WITH? DEFAULT default_options?;
 xml_type_modifier: XMLSCHEMA  xml_type_modifier_body (COMMACHAR xml_type_modifier_body)*;
-xml_type_modifier_body: xml_schema_spec (ELEMENET dbs_element_name)?;
+xml_type_modifier_body: xml_schema_spec (ELEMENT dbs_element_name)?;
 xml_schema_spec: ID dbs_registered_xml_schema_name | (URL dbs_target_namespace | NO NAMESPACE) (LOCATION dbs_schema_location)?;
 generated_clause: (GENERATED (ALWAYS | BY DEFAULT)  (common_as_identity_clause | as_row_change_timestamp_clause)? ) | ( GENERATED  ALWAYS? as_row_transaction_start_id_clause |  as_row_transaction_timestamp_clause |  as_generated_expression_clause);
 as_row_change_timestamp_clause: FOR EACH ROW ON UPDATE AS ROW CHANGE TIMESTAMP;
@@ -338,7 +338,7 @@ session_variable: SYSIBM DOT PACKAGE_NAME | SYSIBM DOT PACKAGE_SCHEMA | SYSIBM D
 default_options: default_options_vals | dbs_cast_function_name LPARENCHAR default_options_vals RPARENCHAR;
 default_options_vals: dbs_constant | (SESSION_USER | USER) | CURRENT | CURRENT SQLID | NULL;
 field_prog_loop: LPARENCHAR dbs_constant (COMMACHAR dbs_constant)* RPARENCHAR;
-column_constraint: (CONSTRAINT dbs_constraint_name)? (PRIMARY KEY | UNIQUE | common_reference_clause | CHECH LPARENCHAR  dbs_search_condition RPARENCHAR);
+column_constraint: (CONSTRAINT dbs_constraint_name)? (PRIMARY KEY | UNIQUE | common_reference_clause | CHECK LPARENCHAR  dbs_search_condition RPARENCHAR);
 period_def: PERIOD FOR? ( SYSTEM_TIME LPARENCHAR dbs_begin_column_name COMMACHAR dbs_end_column_name   RPARENCHAR | BUSINESS_TIME LPARENCHAR dbs_begin_column_name COMMACHAR dbs_end_column_name (EXCLUSIVE | INCLUSIVE)?  RPARENCHAR  );
 unique_constraint: (CONSTRAINT dbs_constraint_name)? (PRIMARY KEY | UNIQUE) LPARENCHAR dbs_column_name COMMACHAR dbs_column_name* (COMMACHAR BUSINESS_TIME WITHOUT OVERLAPS )? RPARENCHAR;
 referential_constraint: (CONSTRAINT dbs_constraint_name)?  FOREIGN KEY LPARENCHAR referential_constraint_body  RPARENCHAR common_reference_clause;
@@ -351,27 +351,27 @@ column_loop: LPARENCHAR dbs_column_name COMMACHAR dbs_column_name* RPARENCHAR;
 materialized_query_def: common_loop_and_fullselect refreshable_table_options;
 refreshable_table_options: DATA INITIALLY DEFERRED REFRESH DEFERRED ( MAINTAINED (BY SYSTEM | BY USER) | (ENABLE | DISABLE) QUERY OPTIMIZATION)*;
 dbs_create_table_data_def: in_clause_def | partitioning_clause | organization_clause | EDITPROC dbs_program_name  (WITH | WITHOUT)? ROW ATTRIBUTES  | VALIDPROC  dbs_program_name | AUDIT (NONE | CHANGES | ALL)
-                    | OBID dbs_integer | DATA CAPTURE (NONE | CHANGES)? | WITH RESTRICT ON DROP | CCSID oneof_encoding |  NOT VOLATILE CARDINALITY? | VOLATILE CARDINALITY? | NOT? LOGGED | COMPRESS no_or_yes? | APPEND no_or_yes | DSSIZE dbs_integer G | BUFFERPOOL dbs_bp_name |  MEMBER CLUSTER
+                    | OBID dbs_integer | DATA CAPTURE (NONE | CHANGES)? | WITH RESTRICT ON DROP | CCSID oneof_encoding |  NOT VOLATILE CARDINALITY? | VOLATILE CARDINALITY? | NOT? LOGGED | COMPRESS no_or_yes? | APPEND no_or_yes | DSSIZE dbs_integer G_CHAR | BUFFERPOOL dbs_bp_name |  MEMBER CLUSTER
                      | TRACKMOD (yes_or_no | dbs_imptkmod_param)  | PAGENUM (dbs_pageset_pagenum_param | RELATIVE | ABSOLUTE)? | NO? KEY LABEL  ;
 in_clause_def: (IN dbs_table_name? dbs_table_space_name | IN DATABASE dbs_database_name | IN ACCELERATOR dbs_accelerator_name);
-partitioning_clause:  PARTITION BY (RANGE? LPARENCHAR partition_expression (COMMACHAR partition_expression)*  RPARENCHAR  LPARENCHAR partitioning_element (COMMACHAR partitioning_element)*  RPARENCHAR  |  SIZE (EVERY dbs_integer G)?);
+partitioning_clause:  PARTITION BY (RANGE? LPARENCHAR partition_expression (COMMACHAR partition_expression)*  RPARENCHAR  LPARENCHAR partitioning_element (COMMACHAR partitioning_element)*  RPARENCHAR  |  SIZE (EVERY dbs_integer G_CHAR)?);
 partition_expression: dbs_column_name (NULLS LAST)? (ASC | DESC)?;
 partitioning_element: PARTITION dbs_integer ENDING AT? partition_element_loop partition_hash_space? INCLUSIVE?;
 partition_hash_space: HASH SPACE dbs_integer k_m_g;
-organization_clause: ORGANIZE BY HASH UNIQUE column_loop (HASH SPACE ( NUMBER_64 M | k_m_g))?;
+organization_clause: ORGANIZE BY HASH UNIQUE column_loop (HASH SPACE ( NUMBER_64 M_CHAR | k_m_g))?;
 no_or_yes: (NO | YES);
 yes_or_no: (YES | NO);
-k_m_g: (K | M | G);
+k_m_g: (K_CHAR | M_CHAR | G_CHAR);
 oneof_encoding: (ASCII | EBCDIC | UNICODE);
 //CREATE TABLESPACE
 dbs_create_tablespace: TABLESPACE QUESTIONMARK dbs_table_space_name dbs_create_tablespace_opts*;
 dbs_create_tablespace_opts : IN (DSNDB04  | dbs_database_name) | BUFFERPOOL dbs_bp_name | partition_by_growth_spec  | partition_by_range_spec | dbs_dpsegsz_param |
-               SEGSIZE dbs_integer | DSSIZE (NUMBER_4  | dbs_integer) G  | CCSID oneof_encoding | CLOSE yes_or_no | COMPRESS no_or_yes | DEFINE no_or_yes | free_block  |  gbpcache_block
+               SEGSIZE dbs_integer | DSSIZE (NUMBER_4  | dbs_integer) G_CHAR  | CCSID oneof_encoding | CLOSE yes_or_no | COMPRESS no_or_yes | DEFINE no_or_yes | free_block  |  gbpcache_block
                | INSERT ALGORITHM (NUMBER_0 | NUMBER_1 | NUMBER_2) | LOCKMAX (SYSTEM | dbs_integer) | locksize_block_tbl  | TRACKMOD (yes_or_no | dbs_imptkmod_param) | using_block;
 partition_by_growth_spec: MAXPARTITIONS (NUMBER_256 | dbs_integer (NUMPARTS (NUMBER_1 | dbs_integer))?);
 partition_by_range_spec: NUMPARTS dbs_integer partition_by_range_spec_body*;
 partition_by_range_spec_body: LPARENCHAR partitions_opts (COMMACHAR partitions_opts)*  RPARENCHAR | PAGENUM (dbs_pageset_pagenum_param | ABSOLUTE | RELATIVE);
-partitions_opts: PARTITION dbs_integer (using_block | free_block  gbpcache_block | COMPRESS  yes_or_no  | dbs_imptkmod_param | TRACKMOD yes_or_no | DSSIZE (NUMBER_4 | dbs_integer) G)+;
+partitions_opts: PARTITION dbs_integer (using_block | free_block  gbpcache_block | COMPRESS  yes_or_no  | dbs_imptkmod_param | TRACKMOD yes_or_no | DSSIZE (NUMBER_4 | dbs_integer) G_CHAR)+;
 free_block: (FREEPAGE  (NUMBER_0 | dbs_integer) | PCTFREE NUMBER_5 | PCTFREE (dbs_smallint (FOR UPDATE dbs_smallint)?)?)+;
 locksize_block_tbl: LOCKSIZE (ANY | TABLESPACE | PAGE | ROW);
 //CREATE TRIGGER ADVANCED
@@ -457,7 +457,7 @@ dbs_declare_variable: dbs_host_variable (COMMACHAR dbs_host_variable)* VARIABLE 
 /*DELETE */
 dbs_delete: DELETE FROM (dbs_table_name | dbs_view_name) (dbs_delete_period | dbs_delete_noperiod | dbs_delete_positioned);
 dbs_delete_period: dbs_delete_period_clause dbs_correlation_name? dbs_delete_include_column? (SET dbs_delete_assignment_clause)?
-                    (WHERE dbs_search_condition)? (dbs_delete_isolation_clause | SKIP LOCKED DATA)* (QUERYNO dbs_integer)?;
+                    (WHERE dbs_search_condition)? (dbs_delete_isolation_clause | SKIPCHAR LOCKED DATA)* (QUERYNO dbs_integer)?;
 dbs_delete_period_clause: FOR PORTION OF BUSINESS_TIME (FROM dbs_value TO dbs_value | BETWEEN dbs_value AND dbs_value)?;
 dbs_delete_include_column: INCLUDE LPARENCHAR dbs_column_name dbs_delete_data_type (COMMACHAR dbs_column_name dbs_delete_data_type)* RPARENCHAR;
 dbs_delete_data_type: (common_short_built_in_type | dbs_distinct_type);
@@ -467,7 +467,7 @@ dbs_delete_assignment_clause_part: LPARENCHAR dbs_column_name (COMMACHAR dbs_col
                                    NULL) (COMMACHAR (dbs_expression | NULL)*)) RPARENCHAR;
 dbs_delete_isolation_clause: WITH (RR | RS | CS);
 dbs_delete_noperiod: dbs_correlation_name? dbs_delete_include_column? (SET dbs_delete_assignment_clause)? (WHERE dbs_search_condition)?
-                        dbs_fetch_clause? (dbs_delete_isolation_clause | SKIP LOCKED DATA)* (QUERYNO dbs_integer)?;
+                        dbs_fetch_clause? (dbs_delete_isolation_clause | SKIPCHAR LOCKED DATA)* (QUERYNO dbs_integer)?;
 dbs_delete_positioned: dbs_correlation_name? WHERE CURRENT OF dbs_cursor_name (FOR ROW (dbs_host_variable | dbs_integer_constant) OF ROWSET)?;
 
 
@@ -561,7 +561,7 @@ dbs_get_statement: dbs_variable EQUALCHAR (dbs_get_statement_loop (COMMACHAR dbs
 dbs_get_statement_loop: dbs_get_statement_item (COMMACHAR dbs_get_statement_item)*;
 dbs_get_statement_item: (DB2_LAST_ROW | DB2_NUMBER_PARAMETER_MARKERS | DB2_NUMBER_RESULT_SETS | DB2_NUMBER_ROWS |
                         DB2_RETURN_STATUS | DB2_SQL_ATTR_CURSOR_HOLD | DB2_SQL_ATTR_CURSOR_ROWSET | DB2_SQL_ATTR_CURSOR_SCROLLABLE |
-                        DB2_SQL_ATTR_CURSOR_SENSITIVITY | DB2_SQL_ATTR_CURSOR_TYPE | MORE | NUMBER | ROW_COUNT);
+                        DB2_SQL_ATTR_CURSOR_SENSITIVITY | DB2_SQL_ATTR_CURSOR_TYPE | MORECHAR | NUMBER | ROW_COUNT);
 dbs_get_condition: CONDITION (dbs_variable | dbs_integer) dbs_variable EQUALCHAR (dbs_get_condition_item | dbs_get_connection_item) (COMMACHAR
                    dbs_variable EQUALCHAR (dbs_get_condition_item | dbs_get_connection_item)*);
 dbs_get_condition_item: (CATALOG_NAME | CONDITION_NUMBER | CURSOR_NAME | DB2_ERROR_CODE1 | DB2_ERROR_CODE2 | DB2_ERROR_CODE3 |
@@ -641,7 +641,7 @@ dbs_merge_values_sing: (dbs_expression | NULL | LPARENCHAR (dbs_expression | NUL
 dbs_merge_values_multi: (dbs_expression | dbs_host_variable_array | NULL | LPARENCHAR (dbs_expression | dbs_host_variable_array |
         NULL) (COMMACHAR (dbs_expression | dbs_host_variable_array | NULL))* RPARENCHAR) FOR (dbs_host_variable | dbs_integer_constant) ROWS;
 dbs_merge_update: UPDATE SET dbs_merge_assignment (COMMACHAR dbs_merge_assignment)*;
-dbs_merge_assignment: (dbs_column_name EQUALCHAR (dbs_expression | DEFAULT | NULL) | LPARENCHAR dbs_column_name (COMMA dbs_column_name)*
+dbs_merge_assignment: (dbs_column_name EQUALCHAR (dbs_expression | DEFAULT | NULL) | LPARENCHAR dbs_column_name (COMMACHAR dbs_column_name)*
         RPARENCHAR EQUALCHAR LPARENCHAR (dbs_select_row_fullselect | (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))*) RPARENCHAR);
 dbs_merge_insert: INSERT (LPARENCHAR dbs_column_name (COMMACHAR dbs_column_name)* RPARENCHAR)? VALUES (dbs_expression | DEFAULT | NULL |
         LPARENCHAR (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))* RPARENCHAR);
@@ -742,7 +742,7 @@ dbs_select: dbs_select_unpack_function_invocation | dbs_select_row_fullselect;
 dbs_select_unpack_function_invocation: UNPACK LPARENCHAR dbs_expression RPARENCHAR DOT ASTERISKCHAR AS LPARENCHAR dbs_field_name db2sql_data_types (COMMACHAR dbs_field_name db2sql_data_types)* RPARENCHAR;
 dbs_select_row_fullselect: literal+; //TBD
 dbs_subselect: dbs_select_clause dbs_from_clause dbs_where_clause? dbs_groupby_clause? dbs_having_clause?
-dbs_orderby_clause? dbs_offset_clause? dbs_fetch_clause;
+dbs_orderby_clause? dbs_offset_clause? dbs_fetch_clause?;
 dbs_select_clause: SELECT (ALL | DISTNCT)? ( ASTERISKCHAR | dbs_select_item (COMMACHAR dbs_select_item)*);
 dbs_select_item: (dbs_expression AS? SQL_IDENTIFIER? | dbs_unpacked_row | dbs_generic_name SELECT_ALL);
 dbs_unpacked_row: dbs_select_unpack_function_invocation SELECT_ALL AS LPARENCHAR (dbs_generic_name db2sql_data_types)
@@ -861,12 +861,12 @@ dbs_truncate: TRUNCATE TABLE? dbs_table_name ((DROP | REUSE) STORAGE)? ((IGNORE 
 /*UPDATE */
 dbs_update: UPDATE (dbs_table_name | dbs_view_name) (dbs_update_searched | dbs_update_positioned);
 dbs_update_searched: dbs_update_period? dbs_correlation_name? dbs_update_include? SET dbs_update_assignment (COMMACHAR
-                    dbs_update_assignment)* (WHERE dbs_search_condition)? (WITH (RR|RS|CS) | SKIP LOCKED DATA)* (QUERYNO dbs_integer);
+                    dbs_update_assignment)* (WHERE dbs_search_condition)? (WITH (RR|RS|CS) | SKIPCHAR LOCKED DATA)* (QUERYNO dbs_integer);
 dbs_update_period: FOR PORTION OF BUSINESS_TIME (FROM dbs_value TO dbs_value | BETWEEN dbs_value AND dbs_value);
 dbs_update_include: INCLUDE LPARENCHAR dbs_column_name (common_short_built_in_type | dbs_distinct_type) (COMMACHAR
                     dbs_column_name (common_short_built_in_type | dbs_distinct_type))* RPARENCHAR;
 dbs_update_assignment: (dbs_column_name EQUALCHAR (dbs_expression | DEFAULT | NULL) | LPARENCHAR dbs_column_name
-                    (COMMA dbs_column_name)* RPARENCHAR EQUALCHAR LPARENCHAR (dbs_select_row_fullselect | dbs_select_unpack_function_invocation |
+                    (COMMACHAR dbs_column_name)* RPARENCHAR EQUALCHAR LPARENCHAR (dbs_select_row_fullselect | dbs_select_unpack_function_invocation |
                     (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))*) RPARENCHAR);
 dbs_update_positioned: dbs_correlation_name? SET dbs_update_assignment (COMMACHAR dbs_update_assignment)* WHERE CURRENT OF
                     dbs_cursor_name (FOR ROW (dbs_host_variable | dbs_integer_constant) OF ROWSET)?;
@@ -942,7 +942,7 @@ dbs_option_list: (LANGUAGE SQL)? (SPECIFIC dbs_specific_name)? (NOT? DETERMINIST
                 SENSITIVE yes_or_no)? (ARCHIVE SENSITIVE yes_or_no)? (APPLCOMPAT dbs_level)? (CONCENTRATE STATEMENTS (OFF | WITH LITERALS))?;
 
 dbs_option_list_ext: (SPECIFIC dbs_specific_name)? (PARAMETER ( CCSID oneof_encoding | VARCHAR (NULTERM | STRUCTURE) )*)? |
-                EXTERNAL ( NAME( dbs_ext_program_name | SQL_IDENTIFIER))? LANGUAGE (ASSEMBLE | C | COBOL | JAVA | PLI) PARAMETER STYLE (SQL | JAVA)
+                EXTERNAL ( NAME( dbs_ext_program_name | SQL_IDENTIFIER))? LANGUAGE (ASSEMBLE | C_LANG | COBOL | JAVA | PLI) PARAMETER STYLE (SQL | JAVA)
                 (NOT)? DETERMINISTIC FENCED? (RETURNS NULL | CALLED) ON NULL INPUT ((READS | MODIFIES ) SQL DATA | (CONTAINS | NO) SQL)? ( (NO)? EXTERNAL ACTION)?
                 (NO PACKAGE PATH | PACKAGE PATH dbs_package_path )? (NO SCRATCHPAD | SCRATCHPAD (NUMBER_100 | INTEGER)?)? ((NO)? FINAL CALL)?
                 ((ALLOW | DISALLOW) PARALLEL)? ((NO)? DBINFO)? (NO COLLID | COLLID dbs_collection_id_package_name)? (WLM ENVIRONMENT (dbs_wlm_env_name | LPARENCHAR dbs_wlm_env_name RPARENCHAR ))?
@@ -1023,7 +1023,7 @@ dbs_expression: ('+'|'-')? (dbs_function_invocation |
  LPARENCHAR dbs_expression RPARENCHAR  |
  dbs_constant |
  dbs_column_name |
- dbs_variable | //? fix this immediately: all_word+ ruin
+ dbs_variable |
  dbs_special_register |
  dbs_scalar_fullselect |
  dbs_time_zone_specific_expression |
@@ -1044,7 +1044,7 @@ dbs_expressions: dbs_expression (dbs_expression_operator dbs_expression)*;
 dbs_predicate_condition: (EQUALCHAR|NOTEQUALCHAR|LESSTHANCHAR |MORETHANCHAR |MORETHANOREQUAL|LESSTHANOREQUAL);
 dbs_basic_predicate: dbs_expression dbs_predicate_condition dbs_expression;
 dbs_quantified_predicate: dbs_expression dbs_predicate_condition (SOME|ANY|ALL)  LPARENCHAR dbs_select RPARENCHAR;
-dbs_array_exists_predicate: ARRAY_EXISTS LPARENCHAR SQL_IDENTIFIER COMMACHAR DIGIT+ RPARENCHAR;
+dbs_array_exists_predicate: ARRAY_EXISTS LPARENCHAR SQL_IDENTIFIER COMMACHAR UNSIGNED_INTEGER RPARENCHAR;
 dbs_between_predicate: dbs_expression NOT? BETWEEN dbs_expression AND dbs_expression;
 dbs_distinct_predicate: dbs_expression IS NOT? DISTINCT FROM dbs_expression;
 dbs_exist_predicate: EXISTS LPARENCHAR dbs_select RPARENCHAR;
@@ -1076,7 +1076,7 @@ dbs_lag_lead_expression: LPARENCHAR dbs_expression (COMMACHAR dbs_integer (COMMA
 dbs_lag_function: LAG dbs_lag_lead_expression;
 
 dbs_lead_function: LEAD dbs_lag_lead_expression;
-dbs_partitioning_expression: DOLLARCHAR INTEGERLITERAL? '\'' N '\'' (PLUSCHAR INTEGERLITERAL (PERCENT INTEGERLITERAL)? | PERCENT INTEGERLITERAL (PLUSCHAR INTEGERLITERAL)?)?;
+dbs_partitioning_expression: DOLLARCHAR INTEGERLITERAL? '\'' CHAR_N '\'' (PLUSCHAR INTEGERLITERAL (PERCENT INTEGERLITERAL)? | PERCENT INTEGERLITERAL (PLUSCHAR INTEGERLITERAL)?)?;
 dbs_window_partition_clause: PARTITION BY dbs_partitioning_expression (COMMACHAR dbs_partitioning_expression)*
 ;
 dbs_sort_key_expression: dbs_column_name (dbs_expression_operator dbs_column_name)* | dbs_integer;
@@ -1160,7 +1160,7 @@ db2sql_only_words: ABSOLUTE | ACCELERATION | ACCELERATOR | ACTIVATE | ACTIVE | A
                             CHECKED | CLAUSE | CLUSTER | COLLATE | COLLATION | COLLECT | COLLECTION | COLLID | COLUMN | COMMENT |
                             COMMIT | COMMITTED | COMPARISONS | CONCAT | CONCENTRATE | CONCURRENT | CONDITION_NUMBER | CONNECTION |
                             CONNECTION_NAME | CONSERVATIVE | CONSTRAINT | CONSTRAINTS | CONTEXT | CONVERT | CORRELATION | COUNT_BIG |
-                            CPU | CREATEIN | C R E A T E I N | CREATETAB | CROSS | CS | CUBE | CURRENT_DATE | CURRENT_PATH |
+                            CPU | CREATEIN | CREATEIN | CREATETAB | CROSS | CS | CUBE | CURRENT_DATE | CURRENT_PATH |
                             CURRENT_SCHEMA | CURRENT_SERVER | CURRENT_SQLID | CURRENT_TIME | CURRENT_TIMESTAMP | CURRENT_TIMEZONE |
                             CURRENT_USER | CURRENTLY | CURSOR_NAME | CURSORS | CYCLE | DATABASE | DATALINK | DB2_AUTHENTICATION_TYPE |
                             DB2_AUTHORIZATION_ID | DB2_CONNECTION_STATE | DB2_CONNECTION_STATUS | DB2_ENCRYPTION_TYPE | DB2_ERROR_CODE1 |
@@ -1239,18 +1239,18 @@ dbs_authorization_name: SQL_IDENTIFIER;
 dbs_authorization_specification: ALPHANUMERIC_TEXT; // E.G. DBCTRL1
 dbs_aux_table_name: SQL_IDENTIFIER;
 dbs_begin_column_name: dbs_generic_name;//must be defined as DATE or TIMESTAMP(6) WITHOUT TIME ZONE
-dbs_binary_string_constant: BXNUMBER;
+dbs_binary_string_constant: BINARY_STRING_CONSTANT;
 dbs_bp_name: SQL_IDENTIFIER;
 dbs_case_expression : CASE (dbs_simple_when_clause | dbs_searched_when_clause) (ELSE NULL | ELSE dbs_result_expression1)? END ;
 dbs_cast_function_name: SQL_IDENTIFIER;//
 dbs_catalog_name: SQL_IDENTIFIER;
-dbs_ccsid_value: DIGIT+; //
-dbs_character_string_constant: HEXNUMBER | STRINGLITERAL;
+dbs_ccsid_value: UNSIGNED_INTEGER; //
+dbs_character_string_constant: CHAR_STRING_CONSTANT;
 dbs_clone_table_name: SQL_IDENTIFIER;//? ALPHANUMERIC_TEXT | STRINGLITERAL
 dbs_collection_id: ALPHANUMERIC_TEXT; //?
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: SQL_IDENTIFIER; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: STRINGLITERAL | ALPHANUMERIC_TEXT;
+dbs_generic_name: STRING_LITERAL | ALPHANUMERIC_TEXT;
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_common_table_expression: SQL_IDENTIFIER LPARENCHAR SQL_IDENTIFIER (COMMACHAR SQL_IDENTIFIER)* RPARENCHAR AS dbs_select; // https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_commontableexpression.html#db2z_sql_commontableexpression
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
@@ -1264,10 +1264,10 @@ dbs_decimal_const: all_words+; //? nnnn.m
 dbs_database_name: SQL_IDENTIFIER; //?
 dbs_dc_name: SQL_IDENTIFIER;// lenght must be < 9
 dbs_descriptor_name: SQLD | SQLDABC | SQLN | SQLVAR; //SQLDA
-dbs_diagnostic_string_expression: STRINGLITERAL; //?
+dbs_diagnostic_string_expression: STRING_LITERAL; //?
 dbs_distinct_type: db2sql_data_types+;
 dbs_distinct_type_name: SQL_IDENTIFIER;
-dbs_dpsegsz_param: DIGIT? (NUMBER_0 | NUMBER_2 | NUMBER_4 | NUMBER_6 | NUMBER_8 );// DPSEGSZ value, divisible by 4. Range [0,64], must be checked in code.
+dbs_dpsegsz_param: SINGLE_DIGIT? (NUMBER_0 | NUMBER_2 | NUMBER_4 | NUMBER_6 | NUMBER_8 );// DPSEGSZ value, divisible by 4. Range [0,64], must be checked in code.
 dbs_end_column_name: dbs_generic_name;//?defined as AS ROW END
 dbs_element_name: ALPHANUMERIC_TEXT;//
 dbs_encryption_value: NONE | LOW | HIGH;//
@@ -1283,7 +1283,7 @@ dbs_fetch_clause: FETCH (FIRST | NEXT) POSITIVEINTEGERLITERAL? (ROW | ROWS) ONLY
 dbs_field_name: SQL_IDENTIFIER;
 dbs_function_name: SQL_IDENTIFIER; //must not be any of the  system-reserved keywords
 dbs_global_variable_name: dbs_generic_name; //?
-dbs_graphic_string_constant: GRAPHICUNICODE | GRAHICCHAR;
+dbs_graphic_string_constant: GRAPHIC_CONSTANT;
 dbs_history_table_name: dbs_table_name;//?
 dbs_host_label: ALPHANUMERIC_TEXT; //?
 dbs_host_variable: COLONCHAR (FILENAME | ALPHANUMERIC_TEXT) (INDICATOR? COLONCHAR (FILENAME | ALPHANUMERIC_TEXT))? ; //https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_hoststructsinplicandcobol.html
@@ -1300,7 +1300,7 @@ dbs_integer_constant: INTEGERLITERAL; //range 1 - 32767
 dbs_jar_name: HOSTNAME_IDENTIFIER; //
 dbs_jobname_value: ALPHANUMERIC_TEXT;//?
 dbs_key_label_name: ALPHANUMERIC_TEXT;//?
-dbs_length: DIGIT+; //length must be between 1 and 32767. The default value is 100 bytes.
+dbs_length: UNSIGNED_INTEGER; //length must be between 1 and 32767. The default value is 100 bytes.
 dbs_level: NUMBER_0 | NUMBER_1 | NUMBER_2; //Level 0, supported only for CREATE
 dbs_location_name: VARCHAR | CHAR; //not greater than 16
 dbs_mask_name: SQL_IDENTIFIER;
@@ -1309,31 +1309,31 @@ dbs_member_name: SQL_IDENTIFIER;
 dbs_name: SQL_IDENTIFIER; // name of the WLM environment is an SQL identifier
 dbs_namespace_name: VARCHAR;
 dbs_namespace_url: VARCHAR;
-dbs_nnnn_m: DIGIT DIGIT? DIGIT? DIGIT? DOT DIGIT; //?
+dbs_nnnn_m: SINGLE_DIGIT SINGLE_DIGIT? SINGLE_DIGIT? SINGLE_DIGIT? DOT SINGLE_DIGIT; //?
 dbs_non_deterministic_expression: DATA CHANGE OPERATION | dbs_special_register | dbs_session_variable;
 dbs_session_variable : SYSIBM DOT PACKAGE_NAME | SYSIBM DOT PACKAGE_SCHEMA | SYSIBM DOT PACKAGE_VERSION;
 dbs_numeric_constant: NUMERICLITERAL;// numeric literal without non-zero digits to the right of the decimal point.
 dbs_obfuscated_statement_text: all_words+ ; // CONFUSING encoded statement, can have all words but meaning would change.
-dbs_package_name: HOSTNAME_IDENTIFIER | STRINGLITERAL; //
+dbs_package_name: HOSTNAME_IDENTIFIER | STRING_LITERAL; //
 dbs_password_variable: all_words+; //?
 dbs_password_string_constant: all_words+; //?
 dbs_package_path: FILENAME+; //If package-path contains SESSION_USER (or USER), PATH, or PACKAGE PATH
-dbs_pageset_pagenum_param: ABSOLUTE | '\'' A '\'' | RELATIVE | '\'' R '\''; //  PAGESET_PAGENUM subsystem parameter specifies the default value.
+dbs_pageset_pagenum_param: ABSOLUTE | '\'' CHAR_A '\'' | RELATIVE | '\'' CHAR_R '\''; //  PAGESET_PAGENUM subsystem parameter specifies the default value.
 dbs_parameter_marker: ( QUESTIONMARK | COLONCHAR dbs_variable);
 dbs_parameter_name: SQL_IDENTIFIER;
 dbs_permission_name: SQL_IDENTIFIER;
 dbs_plan_name: SQL_IDENTIFIER;
 dbs_procedure_name: SQL_IDENTIFIER;
-dbs_profile_name: STRINGLITERAL;//
-dbs_program_name: STRINGLITERAL | NUMERICLITERAL;// Can't find much n the docs.
+dbs_profile_name: STRING_LITERAL;//
+dbs_program_name: STRING_LITERAL | NUMERICLITERAL;// Can't find much n the docs.
 dbs_registered_xml_schema_name: SQL_IDENTIFIER;// relational-identifier - https://www.ibm.com/support/knowledgecenter/en/SSEPEK_12.0.0/comref/src/tpc/db2z_clpregisterxmlschemasyntax.html
 dbs_result_expression1: NONNUMERICLITERAL | NUMERICLITERAL;//TODO
 dbs_role_name: SQL_IDENTIFIER+;
 dbs_routine_version_id: ALPHANUMERIC_TEXT;
 dbs_rs_locator_variable: SQL_IDENTIFIER;
-dbs_run_time_options: STRINGLITERAL; // a character string that is no longer than 254 bytes
+dbs_run_time_options: STRING_LITERAL; // a character string that is no longer than 254 bytes
 dbs_runtime_options: VARCHAR; //no longer than 254 bytes
-dbs_s: DIGIT_GREATER_THAN_ZERO ; // a number between 1 and 9
+dbs_s: ZERO_TO_NINE ; // a number between 1 and 9
 dbs_sc_name: ALPHANUMERIC_TEXT;// must be from 1-8 characters in length
 dbs_scalar_fullselect : LPARENCHAR dbs_fullselect RPARENCHAR;
 dbs_schema_location: HOSTNAME_IDENTIFIER;//
@@ -1342,16 +1342,16 @@ dbs_search_condition: NOT? dbs_predicate (SELECTIVITY dbs_integer_constant)? ((A
                       (dbs_predicate | dbs_search_condition))*; //? change this to predicate after the predicate is defined.
 dbs_seclabel_name: ALPHANUMERIC_TEXT;// couldn't find much. Seems like an identifier defined in RACF. Keeping alphanumberic.
 dbs_sequence_name: SQL_IDENTIFIER;
-dbs_servauth_value: STRINGLITERAL;// servauth-value is an EBCDIC 64 byte RACF SERVAUTH CLASS resource name. servauth-value must be left justified in the string constant.
+dbs_servauth_value: STRING_LITERAL;// servauth-value is an EBCDIC 64 byte RACF SERVAUTH CLASS resource name. servauth-value must be left justified in the string constant.
 dbs_simple_when_clause: (WHEN dbs_expression THEN (dbs_result_expression1 | NULL))+;
-dbs_smallint: MINUSCHAR? DIGIT DIGIT?;// -1 to 99
+dbs_smallint: MINUSCHAR? SINGLE_DIGIT SINGLE_DIGIT?;// -1 to 99
 dbs_specific_name: SQL_IDENTIFIER;
 dbs_sql_condition_name: dbs_generic_name; // No particular spec found in doc. Specifies the name of the condition.
 dbs_sql_control_statement: dbs_control_statement; //
 dbs_sql_parameter_name: dbs_generic_name; //
 dbs_sql_routine_body: all_words+;// TODO: SQL-routine-body to be defined once all other statements are done
 dbs_sql_variable_name: dbs_generic_name; //
-dbs_sqlstate_string_constant: STRINGLITERAL; //
+dbs_sqlstate_string_constant: STRING_LITERAL; //
 dbs_statement_name: dbs_generic_name; // Can't find much but seems a generic name should satify the need.
 dbs_stogroup_name: SQL_IDENTIFIER;
 dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant;
@@ -1380,19 +1380,19 @@ dbs_xmltable_function : XMLTABLE LPARENCHAR (dbs_xml_namespace_declaration COMMA
                         dbs_row_xquery_argument (COMMACHAR dbs_row_xquery_argument)*)? (COLUMNS (dbs_xml_table_regular_column_defn |
                         dbs_xml_table_ordinality_column_defn) (COMMACHAR (dbs_xml_table_regular_column_defn | dbs_xml_table_ordinality_column_defn))* RPARENCHAR)?; // Ref: https://www.ibm.com/support/knowledgecenter/en/SSEPEK_12.0.0/sqlref/src/tpc/db2z_bif_xmltable.html
 dbs_xml_namespace_args : dbs_namespace_uri AS dbs_namespace_prefix | DEFAULT  dbs_namespace_uri | NO DEFAULT;
-dbs_namespace_uri : STRINGLITERAL;
-dbs_namespace_prefix : STRINGLITERAL;
-dbs_xquery_context_item_expression : STRINGLITERAL; // must not be a character string that is bit data
+dbs_namespace_uri : STRING_LITERAL;
+dbs_namespace_prefix : STRING_LITERAL;
+dbs_xquery_context_item_expression : STRING_LITERAL; // must not be a character string that is bit data
 dbs_xquery_variable_expression : dbs_expression;
 dbs_xml_namespace_declaration : XMLNAMESPACES LPARENCHAR  dbs_xml_namespace_args (COMMACHAR dbs_xml_namespace_args)* RPARENCHAR;
-dbs_row_query_expression_constant: STRINGLITERAL; //  must not contain an empty string or a string of all blanks.
-dbs_column_xquery_expression_constant: STRINGLITERAL; // must not be an empty string or a string of all blanks
-dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS STRINGLITERAL (BY REF)?;
+dbs_row_query_expression_constant: STRING_LITERAL; //  must not contain an empty string or a string of all blanks.
+dbs_column_xquery_expression_constant: STRING_LITERAL; // must not be an empty string or a string of all blanks
+dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS STRING_LITERAL (BY REF)?;
 dbs_xml_table_regular_column_defn : dbs_column_name dbs_insert_data_type (column_def_clause | PATH dbs_column_xquery_expression_constant)?;
 dbs_xml_table_ordinality_column_defn: dbs_column_name FOR ORDINALITY;
 dbs_collection_derived_table :  UNNEST LPARENCHAR (dbs_ordinary_array_expression (COMMACHAR dbs_ordinary_array_expression)* | dbs_assosiative_array_expression) RPARENCHAR (WITH ORDINALITY)? dbs_correlation_clause?;
 dbs_ordinary_array_expression : ALPHANUMERIC_TEXT; // Not much info on https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
-dbs_assosiative_array_expression : STRINGLITERAL; // Mot mush info , ref: https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
+dbs_assosiative_array_expression : STRING_LITERAL; // Mot mush info , ref: https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
 dbs_joined_table : (dbs_table_reference (INNER | (LEFT | RIGHT | FULL) OUTER?)? JOIN dbs_table_reference ON dbs_join_condition | dbs_table_reference CROSS JOIN dbs_table_reference | LPARENCHAR dbs_joined_table RPARENCHAR);
 dbs_join_condition: dbs_inner_left_outer_join | dbs_full_join_expression;
 dbs_inner_left_outer_join : dbs_search_condition;
@@ -1404,16 +1404,19 @@ dbs_transition_table_name: SQL_IDENTIFIER;
 dbs_transition_variable_name: dbs_generic_name; //
 dbs_trigger_name: SQL_IDENTIFIER;
 dbs_trigger_version_id: SQL_IDENTIFIER;// up to 64 EBCDIC bytes. Ref- https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_namingconventions.html
-dbs_triggered_sql_statement: all_words+;// TODO : A lot to read. https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlplnativeintro.html /https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_altertriggeradvanced.html
-dbs_triggered_sql_statement_adv: all_words+;//? TODO;
-dbs_triggered_sql_statement_basic: all_words+;//?; TODO https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_createtrigger.html
+dbs_triggered_sql_statement : dbs_call | dbs_delete | dbs_common_table_expression | dbs_fullselect | dbs_insert | dbs_merge | dbs_refresh |
+                               dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_statement; // ref https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_createtrigger.html
+dbs_values_statement : VALUES  (LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR | dbs_expression) ;
+dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | dbs_merge | dbs_refresh |
+                                 dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_into;//
+dbs_triggered_sql_statement_basic: dbs_triggered_sql_statement;//
 dbs_type_name: ALPHANUMERIC_TEXT;
 dbs_value: db2sql_data_value;
-dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ); //TODO https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_refs2variables.html
+dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ); //REF https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_refs2variables.html
 dbs_variable_name: SQL_IDENTIFIER;
 dbs_version_id: VERSION_ID;
 dbs_version_name: ALPHANUMERIC_TEXT | FILENAME;
 dbs_view_name: HOSTNAME_IDENTIFIER? SQL_IDENTIFIER;
-dbs_volume_id: STRINGLITERAL;// volume-id is the volume serial number of a storage volume.It can have a maximum of six characters and is specified as an identifier or a string constant.
+dbs_volume_id: STRING_LITERAL;// volume-id is the volume serial number of a storage volume.It can have a maximum of six characters and is specified as an identifier or a string constant.
 dbs_wlm_env_name: SQL_IDENTIFIER;
 /////// End Variables /////////////
