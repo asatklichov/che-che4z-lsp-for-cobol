@@ -742,7 +742,7 @@ dbs_select: dbs_select_unpack_function_invocation | dbs_select_row_fullselect;
 dbs_select_unpack_function_invocation: UNPACK LPARENCHAR dbs_expression RPARENCHAR DOT ASTERISKCHAR AS LPARENCHAR dbs_field_name db2sql_data_types (COMMACHAR dbs_field_name db2sql_data_types)* RPARENCHAR;
 dbs_select_row_fullselect: literal+; //TBD
 dbs_subselect: dbs_select_clause dbs_from_clause dbs_where_clause? dbs_groupby_clause? dbs_having_clause?
-dbs_orderby_clause? dbs_offset_clause? dbs_fetch_clause;
+dbs_orderby_clause? dbs_offset_clause? dbs_fetch_clause?;
 dbs_select_clause: SELECT (ALL | DISTNCT)? ( ASTERISKCHAR | dbs_select_item (COMMACHAR dbs_select_item)*);
 dbs_select_item: (dbs_expression AS? SQL_IDENTIFIER? | dbs_unpacked_row | dbs_generic_name SELECT_ALL);
 dbs_unpacked_row: dbs_select_unpack_function_invocation SELECT_ALL AS LPARENCHAR (dbs_generic_name db2sql_data_types)
@@ -1023,7 +1023,7 @@ dbs_expression: ('+'|'-')? (dbs_function_invocation |
  LPARENCHAR dbs_expression RPARENCHAR  |
  dbs_constant |
  dbs_column_name |
- dbs_variable | //? fix this immediately: all_word+ ruin
+ dbs_variable |
  dbs_special_register |
  dbs_scalar_fullselect |
  dbs_time_zone_specific_expression |
@@ -1404,12 +1404,15 @@ dbs_transition_table_name: SQL_IDENTIFIER;
 dbs_transition_variable_name: dbs_generic_name; //
 dbs_trigger_name: SQL_IDENTIFIER;
 dbs_trigger_version_id: SQL_IDENTIFIER;// up to 64 EBCDIC bytes. Ref- https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_namingconventions.html
-dbs_triggered_sql_statement: all_words+;// TODO : A lot to read. https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlplnativeintro.html /https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_altertriggeradvanced.html
-dbs_triggered_sql_statement_adv: all_words+;//? TODO;
-dbs_triggered_sql_statement_basic: all_words+;//?; TODO https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_createtrigger.html
+dbs_triggered_sql_statement : dbs_call | dbs_delete | dbs_common_table_expression | dbs_fullselect | dbs_insert | dbs_merge | dbs_refresh |
+                               dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_statement; // ref https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_createtrigger.html
+dbs_values_statement : VALUES  (LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR | dbs_expression) ;
+dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | dbs_merge | dbs_refresh |
+                                 dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_into;//
+dbs_triggered_sql_statement_basic: dbs_triggered_sql_statement;//
 dbs_type_name: ALPHANUMERIC_TEXT;
 dbs_value: db2sql_data_value;
-dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ); //TODO https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_refs2variables.html
+dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ); //REF https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_refs2variables.html
 dbs_variable_name: SQL_IDENTIFIER;
 dbs_version_id: VERSION_ID;
 dbs_version_name: ALPHANUMERIC_TEXT | FILENAME;
