@@ -279,17 +279,17 @@ pattern_expression: ( (SLASHCHAR | DOUBLESLASHCHAR)  )*; //TBD ?
 other_opt_part1: (NOT? CLUSTER | PARTITIONED | NOT? PADDED | using_specification | free_specification | gbpcache_specification | DEFINE yes_or_no |  COMPRESS yes_or_no | (INCLUDE | EXCLUDE) NULL KEYS)*;
 other_opt_part2: (PARTITION BY (RANGE)? LPARENCHAR (partition_using_specification (COMMACHAR  partition_using_specification))* RPARENCHAR)?;
 other_opt_part3: (BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | DEFER no_or_yes | DSSIZE dbs_integer G_CHAR | PIECESIZE dbs_integer k_m_g | COPY no_or_yes)*;
-partition_using_specification: partition_element (using_specification | free_specification | gbpcache_specification | DSSIZE dbs_integer G_CHAR)?;
+partition_using_specification: partition_element (using_specification | free_specification | gbpcache_specification | DSSIZE dbs_integer G_CHAR)*;
 using_specification: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY dbs_integer? | SECQTY dbs_integer | ERASE yes_or_no?)*);
-free_specification: (FREEPAGE dbs_integer | PCTFREE  dbs_integer)*;
+free_specification: (FREEPAGE dbs_integer (PCTFREE dbs_integer)? | PCTFREE  dbs_integer (FREEPAGE dbs_integer)?);
 gbpcache_specification: GBPCACHE (CHANGED | ALL) | NONE;
-partition_element: PARTITION dbs_integer (ENDING AT? partition_element_loop (INCLUSIVE)? )?;
+partition_element: PARTITION dbs_integer (ENDING AT? partition_element_loop INCLUSIVE?)?;
 partition_element_loop:  LPARENCHAR const_options (COMMACHAR const_options)*  RPARENCHAR;
 const_options: dbs_string_constant | MAXVALUE | MINVALUE;
 //CREATE LOB TABLESPACE
 dbs_create_lob_tablespace: LOB TABLESPACE dbs_table_space_name dbs_create_lob_tablespace_def*;
 dbs_create_lob_tablespace_def: (IN dbs_database_name | BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | COMPRESS yes_or_no | DEFINE yes_or_no | DSSIZE dbs_integer G_CHAR | gbpcache_block |
-                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block? | NOT? LOGGED | using_block)*; /*java fix */
+                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block? | NOT? LOGGED | using_block); /*java fix */
 gbpcache_block: GBPCACHE (CHANGED | ALL | SYSTEM | NONE);
 locksize_block: LOCKSIZE (ANY | LOB);
 using_block: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY dbs_integer | SECQTY dbs_integer | ERASE yes_or_no?)*);
