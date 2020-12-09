@@ -289,7 +289,7 @@ const_options: dbs_string_constant | MAXVALUE | MINVALUE;
 //CREATE LOB TABLESPACE
 dbs_create_lob_tablespace: LOB TABLESPACE dbs_table_space_name dbs_create_lob_tablespace_def;
 dbs_create_lob_tablespace_def: (IN dbs_database_name | BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | COMPRESS yes_or_no | DEFINE yes_or_no | DSSIZE dbs_integer G_CHAR | gbpcache_block |
-                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block? | NOT? LOGGED | using_block)*; /*java fix */
+                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block | NOT? LOGGED | using_block)*; /*java fix */
 gbpcache_block: GBPCACHE (CHANGED | ALL | SYSTEM | NONE);
 locksize_block: LOCKSIZE (ANY | LOB);
 using_block: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY dbs_integer | SECQTY dbs_integer | ERASE yes_or_no?)*);

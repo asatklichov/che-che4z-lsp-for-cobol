@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * This PARAMETERIZED test checks if all below DECLARE statements works correctly.
+ * This PARAMETERIZED test checks if all below sql DECLARE statements works correctly.
  *
  * <pre>
  * - DECLARE CURSOR
