@@ -287,9 +287,9 @@ partition_element: PARTITION dbs_integer (ENDING AT? partition_element_loop INCL
 partition_element_loop:  LPARENCHAR const_options (COMMACHAR const_options)*  RPARENCHAR;
 const_options: dbs_string_constant | MAXVALUE | MINVALUE;
 //CREATE LOB TABLESPACE
-dbs_create_lob_tablespace: LOB TABLESPACE dbs_table_space_name dbs_create_lob_tablespace_def*;
+dbs_create_lob_tablespace: LOB TABLESPACE dbs_table_space_name dbs_create_lob_tablespace_def;
 dbs_create_lob_tablespace_def: (IN dbs_database_name | BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | COMPRESS yes_or_no | DEFINE yes_or_no | DSSIZE dbs_integer G_CHAR | gbpcache_block |
-                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block? | NOT? LOGGED | using_block); /*java fix */
+                            LOCKMAX (SYSTEM | dbs_integer) | locksize_block? | NOT? LOGGED | using_block)*; /*java fix */
 gbpcache_block: GBPCACHE (CHANGED | ALL | SYSTEM | NONE);
 locksize_block: LOCKSIZE (ANY | LOB);
 using_block: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY dbs_integer | SECQTY dbs_integer | ERASE yes_or_no?)*);
@@ -314,15 +314,14 @@ dbs_create_sequence_body: AS (INTEGER | dbs_distinct_type_name | common_bit_int 
                 (NO MINVALUE | MINVALUE dbs_numeric_constant) | (NO MAXVALUE | MAXVALUE dbs_numeric_constant) | NO? CYCLE | (CACHE dbs_integer_constant | NO CACHE) | NO? ORDER;
 //CREATE STOGROUP
 dbs_create_stogroup: STOGROUP dbs_stogroup_name (VOLUMES LPARENCHAR dbs_volume_loop RPARENCHAR)? VCAT dbs_volume_cat;
-dbs_volume_loop:  dbs_volume_loop (COMMACHAR dbs_volume_loop)* | ASTERISKCHAR (COMMACHAR ASTERISKCHAR)*;
+dbs_volume_loop:  dbs_volume_id (COMMACHAR dbs_volume_id)* | ASTERISKCHAR (COMMACHAR ASTERISKCHAR)*;
 dbs_volume_cat: dbs_catalog_name (DATACLAS dbs_dc_name)? (MGMTCLAS dbs_mc_name)? (STORCLAS dbs_sc_name)? (NO KEY LABEL | KEY LABEL dbs_key_label_name)?;
 //CREATE SYNONYM deprecated, use CREATE ALIAS
 //CREATE TABLE
 dbs_create_table: TABLE dbs_table_name (dbs_create_table_elements_def (COMMACHAR dbs_create_table_elements_def)* RPARENCHAR | LIKE (dbs_table_name | dbs_view_name) copy_options? |
     as_result_table copy_options? | materialized_query_def) dbs_create_table_data_def*;
 dbs_create_table_elements_def: columnn_def | period_def | unique_constraint | referential_constraint | check_constraint;
-columnn_def: dbs_column_name (common_built_in_type_core3 | dbs_distinct_type_name ) columnn_def_body;//built-in-type change
-columnn_def_body: (NOT NULL | generated_clause | column_constraint | column_def_clause | FIELDPROC  dbs_program_name field_prog_loop? |  AS SECURITY LABEL | IMPLICITLY HIDDENCHAR | INLINE LENGTH dbs_integer)*;
+columnn_def: dbs_column_name (common_built_in_type_core3 | dbs_distinct_type_name ) (NOT NULL | generated_clause | column_constraint | column_def_clause | FIELDPROC  dbs_program_name (LPARENCHAR dbs_constant (COMMACHAR dbs_constant)* RPARENCHAR)? |  AS SECURITY LABEL | IMPLICITLY HIDDENCHAR | INLINE LENGTH dbs_integer)*;//built-in-type change
 column_def_clause : WITH? DEFAULT default_options?;
 xml_type_modifier: XMLSCHEMA  xml_type_modifier_body (COMMACHAR xml_type_modifier_body)*;
 xml_type_modifier_body: xml_schema_spec (ELEMENT dbs_element_name)?;
@@ -337,7 +336,6 @@ special_register: CURRENT CLIENT_ACCTNG | CURRENT CLIENT_APPLNAME | CURRENT CLIE
 session_variable: SYSIBM DOT (PACKAGE_NAME | PACKAGE_SCHEMA | PACKAGE_VERSION);
 default_options: default_options_vals | dbs_cast_function_name LPARENCHAR default_options_vals RPARENCHAR;
 default_options_vals: dbs_constant | (SESSION_USER | USER) | CURRENT | CURRENT SQLID | NULL;
-field_prog_loop: LPARENCHAR dbs_constant (COMMACHAR dbs_constant)* RPARENCHAR;
 column_constraint: (CONSTRAINT dbs_constraint_name)? (PRIMARY KEY | UNIQUE | common_reference_clause | CHECK LPARENCHAR  dbs_search_condition RPARENCHAR)?;
 period_def: PERIOD FOR? ( SYSTEM_TIME LPARENCHAR dbs_begin_column_name COMMACHAR dbs_end_column_name   RPARENCHAR | BUSINESS_TIME LPARENCHAR dbs_begin_column_name COMMACHAR dbs_end_column_name (EXCLUSIVE | INCLUSIVE)?  RPARENCHAR  );
 unique_constraint: (CONSTRAINT dbs_constraint_name)? (PRIMARY KEY | UNIQUE) LPARENCHAR dbs_column_name COMMACHAR dbs_column_name* (COMMACHAR BUSINESS_TIME WITHOUT OVERLAPS )? RPARENCHAR;
