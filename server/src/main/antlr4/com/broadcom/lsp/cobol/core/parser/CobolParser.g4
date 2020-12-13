@@ -8,7 +8,7 @@
 
 parser grammar CobolParser;
 options {tokenVocab = CobolLexer;}
-import Db2SqlParser;
+import CICSParser;
    
 startRule : compilationUnit EOF;
 
