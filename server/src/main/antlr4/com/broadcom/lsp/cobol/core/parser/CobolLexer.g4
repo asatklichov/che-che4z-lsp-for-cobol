@@ -13,7 +13,7 @@
  */
     
 lexer grammar CobolLexer;
-import Db2SqlLexer;
+import CICSLexer;
 channels{TECHNICAL}
 
 TITLESTATEMENT : (T I T L E ' '+ .*? NEWLINE) -> skip;
