@@ -1248,7 +1248,7 @@ dbs_clone_table_name: dbs_sql_identifier;//? ALPHANUMERIC_TEXT | STRINGLITERAL
 dbs_collection_id: IDENTIFIER; //?
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: STRING_LITERAL | IDENTIFIER;
+dbs_generic_name: STRING_LITERAL | IDENTIFIER | COLOR;
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_common_table_expression: dbs_sql_identifier LPARENCHAR dbs_sql_identifier (COMMACHAR dbs_sql_identifier)* RPARENCHAR AS dbs_select; // https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_commontableexpression.html#db2z_sql_commontableexpression
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
