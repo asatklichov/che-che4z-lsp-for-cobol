@@ -404,7 +404,7 @@ dbs_create_distinct_type : DISTINCT TYPE dbs_sql_identifier AS dbs_distinct_type
 dbs_create_variable: VARIABLE dbs_variable_name (common_built_in_type_core | dbs_array_type_name) (DEFAULT NULL | DEFAULT (dbs_constant | dbs_special_register) )?;
 //CREATE VIEW
 dbs_create_view: VIEW dbs_view_name column_loop? AS tbl_expr_loop?  dbs_fullselect (WITH (CASCADED | LOCAL)? CHECK OPTION)?;
-tbl_expr_loop: WITH dbs_common_table_expression COMMACHAR dbs_common_table_expression*;
+tbl_expr_loop: WITH dbs_select_statement_common_table_expression COMMACHAR dbs_select_statement_common_table_expression*;
 
 /*DECLARE (all) */
 dbs_declare: DECLARE (dbs_declare_cursor | dbs_declare_global | dbs_declare_statement | dbs_declare_table | dbs_declare_variable);
@@ -611,7 +611,7 @@ dbs_insert_values_multi: (dbs_expression | dbs_host_variable_array | DEFAULT | N
                         dbs_integer_constant) ROWS)? (ATOMIC | NOT ATOMIC CONTINUE ON SQLEXCEPTION)?;
 dbs_insert_values_mloop: LPARENCHAR (dbs_expression | dbs_host_variable_array | DEFAULT | NULL) (COMMACHAR (dbs_expression |
                         dbs_host_variable_array | DEFAULT | NULL))* RPARENCHAR;
-dbs_insert_fullselect: (WITH dbs_common_table_expression (COMMACHAR dbs_common_table_expression)*)? dbs_fullselect (WITH (RR|RS|CS))? (QUERYNO dbs_integer)?;
+dbs_insert_fullselect: (WITH dbs_select_statement_common_table_expression (COMMACHAR dbs_select_statement_common_table_expression)*)? dbs_fullselect (WITH (RR|RS|CS))? (QUERYNO dbs_integer)?;
 
 /*LABEL */
 dbs_label: LABEL ON (dbs_label_sing | dbs_label_loop);
@@ -1002,8 +1002,18 @@ dbs_sql_procedure_statement: (dbs_sql_control_statement | dbs_allocate | ALTER (
  dbs_lock | dbs_merge | dbs_open | dbs_prepare | dbs_refresh | dbs_release | dbs_rename | dbs_revoke | dbs_rollback | dbs_savepoint |
  dbs_select_into | dbs_set | dbs_truncate | dbs_update | VALUES dbs_values_into);
 
-dbs_select_into: ; //TODO ref - https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_selectinto.html
-
+dbs_select_into: (WITH common_table_expression_loop)?  dbs_select_clause INTO (target_variable_names_loop | dbs_array_variable) dbs_from_clause dbs_where_clause? dbs_groupby_clause? dbs_having_clause?  dbs_orderby_clause? dbs_offset_clause?  dbs_fetch_clause?  (dbs_select_statement_isolation_clause | dbs_select_statement_skip_locked_data)* dbs_select_statement_queryno_clause?;
+common_table_expression_loop: dbs_select_statement_common_table_expression (COMMACHAR dbs_select_statement_common_table_expression)*;
+target_variable_names_loop: target_variable_names_opts (COMMACHAR target_variable_names_opts)*;
+target_variable_names_opts: dbs_global_variable_name | dbs_host_variable_name | dbs_sql_parameter_name | dbs_sql_variable_name | dbs_transition_variable_name;
+dbs_select_statement_common_table_expression: dbs_sql_identifier LPARENCHAR dbs_sql_identifier (COMMACHAR dbs_sql_identifier)* RPARENCHAR AS dbs_fullselect; // https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_commontableexpression.html#db2z_sql_commontableexpression
+dbs_select_statement_update_clause: FOR UPDATE (OF dbs_column_name (COMMACHAR dbs_column_name)*)?;
+dbs_select_statement_read_only_update_clause: FOR READ ONLY;
+dbs_select_statement_optimize_clause: OPTIMIZE FOR dbs_integer (ROWS | ROW);
+dbs_select_statement_isolation_clause: WITH (RR dbs_select_statement_isolation_clause_lock_clause | RS dbs_select_statement_isolation_clause_lock_clause | CS | UR );
+dbs_select_statement_isolation_clause_lock_clause: USE AND KEEP (EXCLUSIVE | UPDATE | SHARE) LOCKS;
+dbs_select_statement_queryno_clause: QUERYNO dbs_integer;
+dbs_select_statement_skip_locked_data: SKIP LOCKED DATA;
 
 /// END SQL PROCEDURE STATEMENT ///
 
@@ -1250,7 +1260,6 @@ dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
 dbs_generic_name: STRING_LITERAL | IDENTIFIER | COLOR;
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
-dbs_common_table_expression: dbs_sql_identifier LPARENCHAR dbs_sql_identifier (COMMACHAR dbs_sql_identifier)* RPARENCHAR AS dbs_select; // https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_commontableexpression.html#db2z_sql_commontableexpression
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
 dbs_constraint_name: dbs_sql_identifier;//?
 dbs_context: dbs_sql_identifier;
@@ -1280,13 +1289,13 @@ dbs_hint_string_constant:  all_words+;
 dbs_fetch_clause: FETCH (FIRST | NEXT) (PLUSCHAR? DIGIT+)? (ROW | ROWS) ONLY;
 dbs_field_name: dbs_sql_identifier;
 dbs_function_name: dbs_sql_identifier; //must not be any of the  system-reserved keywords
-dbs_global_variable_name: dbs_generic_name; //?
+dbs_global_variable_name: COLONCHAR? dbs_generic_name; //?
 dbs_graphic_string_constant: GRAPHIC_CONSTANT;
 dbs_history_table_name: dbs_table_name;//?
 dbs_host_label: IDENTIFIER; //?
 dbs_host_variable: COLONCHAR (FILENAME | IDENTIFIER) (INDICATOR? COLONCHAR (FILENAME | IDENTIFIER))? ; //https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_hoststructsinplicandcobol.html
 dbs_host_variable_array: IDENTIFIER; // variable array must be defined in the application program
-dbs_host_variable_name: IDENTIFIER; // can't find good reference. https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_fetch.html
+dbs_host_variable_name: COLONCHAR? dbs_generic_name;// can't find good reference. https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_fetch.html
 dbs_id_host_variable: NUMERICLITERAL; //?
 dbs_identifier: dbs_sql_identifier; //?
 dbs_imptkmod_param: YES | NO; //? IMPTKMOD subsystem parameter specifies the default value//https://www.ibm.com/support/knowledgecenter/en/SSEPEK_12.0.0/inst/src/tpc/db2z_ipf_imptkmod.html
@@ -1346,8 +1355,8 @@ dbs_smallint: MINUSCHAR? DIGIT DIGIT?;// -1 to 99
 dbs_specific_name: dbs_sql_identifier;
 dbs_sql_condition_name: dbs_generic_name; // No particular spec found in doc. Specifies the name of the condition.
 dbs_sql_control_statement: dbs_control_statement; //
-dbs_sql_parameter_name: dbs_generic_name; //
-dbs_sql_variable_name: dbs_generic_name; //
+dbs_sql_parameter_name: COLONCHAR? dbs_generic_name;
+dbs_sql_variable_name: COLONCHAR? dbs_generic_name;
 dbs_sqlstate_string_constant: STRING_LITERAL; //
 dbs_statement_name: dbs_generic_name; // Can't find much but seems a generic name should satify the need.
 dbs_stogroup_name: dbs_sql_identifier;
@@ -1398,10 +1407,10 @@ dbs_table_space_name: dbs_sql_identifier;
 dbs_target_namespace: HOSTNAME_IDENTIFIER;//
 dbs_token_host_variable: dbs_generic_name; // DB2 SQL variable name.
 dbs_transition_table_name: dbs_sql_identifier;
-dbs_transition_variable_name: dbs_generic_name; //
+dbs_transition_variable_name: COLONCHAR? dbs_generic_name;
 dbs_trigger_name: dbs_sql_identifier;
 dbs_trigger_version_id: dbs_sql_identifier;// up to 64 EBCDIC bytes. Ref- https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_namingconventions.html
-dbs_triggered_sql_statement : dbs_call | dbs_delete | dbs_common_table_expression | dbs_fullselect | dbs_insert | dbs_merge | dbs_refresh |
+dbs_triggered_sql_statement : dbs_call | dbs_delete | dbs_select_statement_common_table_expression | dbs_fullselect | dbs_insert | dbs_merge | dbs_refresh |
                                dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_statement; // ref https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_createtrigger.html
 dbs_values_statement : VALUES  (LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR | dbs_expression) ;
 dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | dbs_merge | dbs_refresh |
