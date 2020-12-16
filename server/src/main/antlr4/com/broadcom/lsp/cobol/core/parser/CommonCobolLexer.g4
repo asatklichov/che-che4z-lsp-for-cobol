@@ -1,5 +1,7 @@
 lexer grammar CommonCobolLexer;
-
+@lexer::members {
+    boolean sqlFlag = false;
+}
 ABCODE : A B C O D E;
 ABDUMP : A B D U M P;
 ABEND : A B E N D;
@@ -744,6 +746,11 @@ UNESCAPED : U N E S C A P E D;
 UNEXPIN : U N E X P I N;
 UNLOCK : U N L O C K;
 UNTIL : U N T I L;
+SQL : S Q L;
+EXEC_SQL: EXEC WS SQL {sqlFlag = true;};
+END_EXEC : E N D MINUSCHAR E X E C {sqlFlag = false;};
+EXEC : E X E C;
+EXECUTE : E X E C U T E;
 UOW : U O W;
 UPDATE : U P D A T E;
 URI : U R I;
@@ -822,18 +829,18 @@ NUMERICLITERAL : (PLUSCHAR | MINUSCHAR)? DIGIT* (DOT | COMMACHAR) DIGIT+ (('e' |
 
 NONNUMERICLITERAL : UNTRMSTRINGLITERAL | STRINGLITERAL | DBCSLITERAL | HEXNUMBER | NULLTERMINATED;
 
-TXTLITERAL : STRINGLITERAL | IDENTIFIER;
+//TXTLITERAL : STRINGLITERAL | IDENTIFIER;
 CHAR_STRING_CONSTANT : HEXNUMBER | STRINGLITERAL;
 
 IDENTIFIER : ([a-zA-Z0-9]+ ([-_]+ [a-zA-Z0-9]+)*);
-FILENAME : [a-zA-Z0-9]+ '.' [a-zA-Z0-9]+;
+FILENAME : IDENTIFIER+ '.' IDENTIFIER+; // TODO check , if this is OK?
 
 // whitespace, line breaks, comments, ...
 NEWLINE : '\r'? '\n' -> channel(HIDDEN);
 COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*  -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);
-SEPARATOR : ', ' -> channel(HIDDEN);
+SEPARATOR : ', ' {!sqlFlag}?  -> channel(HIDDEN);
 
 // treat all the non-processed tokens as errors
 ERRORCHAR : . ;

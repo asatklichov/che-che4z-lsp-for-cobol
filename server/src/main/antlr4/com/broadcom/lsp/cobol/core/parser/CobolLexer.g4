@@ -18,10 +18,6 @@ channels{TECHNICAL}
 
 TITLESTATEMENT : (T I T L E ' '+ .*? NEWLINE) -> skip;
 
-LEVEL_NUMBER: ([1-9])|([0][1-9])|([1234][0-9]);
-LEVEL_NUMBER_66 : '66';
-LEVEL_NUMBER_77 : '77';
-LEVEL_NUMBER_88 : '88';
 
 // keywords
 ACCEPT : A C C E P T;
