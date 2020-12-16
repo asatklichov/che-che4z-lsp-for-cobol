@@ -1132,7 +1132,7 @@ dbs_sequence_reference: (NEXT| PREVIOUS) VALUE FOR dbs_sequence_name;
 
 
 /////// Variables /////////////
-all_words: NONNUMERICLITERAL | NUMERICLITERAL | INTEGERLITERAL | db2sql_intersected_words | db2sql_only_words;
+all_words: TXTLITERAL | NONNUMERICLITERAL | NUMERICLITERAL | INTEGERLITERAL | db2sql_intersected_words | db2sql_only_words;
 
 
 db2sql_words: db2sql_only_words | db2sql_intersected_words;
@@ -1258,7 +1258,7 @@ dbs_clone_table_name: dbs_sql_identifier;//? ALPHANUMERIC_TEXT | STRINGLITERAL
 dbs_collection_id: IDENTIFIER; //?
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: STRING_LITERAL | IDENTIFIER | COLOR;
+dbs_generic_name: TXTLITERAL | COLOR;
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
 dbs_constraint_name: dbs_sql_identifier;//?
@@ -1271,7 +1271,7 @@ dbs_decimal_const: all_words+; //? nnnn.m
 dbs_database_name: dbs_sql_identifier; //?
 dbs_dc_name: dbs_sql_identifier;// lenght must be < 9
 dbs_descriptor_name: SQLD | SQLDABC | SQLN | SQLVAR; //SQLDA
-dbs_diagnostic_string_expression: STRING_LITERAL; //?
+dbs_diagnostic_string_expression: TXTLITERAL; //?
 dbs_distinct_type: db2sql_data_types+;
 dbs_distinct_type_name: dbs_sql_identifier;
 dbs_dpsegsz_param: DIGIT? (ZERO_DIGIT | NUMBER_2 | NUMBER_4 | NUMBER_6 | NUMBER_8 );// DPSEGSZ value, divisible by 4. Range [0,64], must be checked in code.
@@ -1321,7 +1321,7 @@ dbs_non_deterministic_expression: DATA CHANGE OPERATION | dbs_special_register |
 dbs_session_variable : SYSIBM DOT PACKAGE_NAME | SYSIBM DOT PACKAGE_SCHEMA | SYSIBM DOT PACKAGE_VERSION;
 dbs_numeric_constant: NUMERICLITERAL;// numeric literal without non-zero digits to the right of the decimal point.
 dbs_obfuscated_statement_text: all_words+ ; // CONFUSING encoded statement, can have all words but meaning would change.
-dbs_package_name: HOSTNAME_IDENTIFIER | STRING_LITERAL; //
+dbs_package_name: HOSTNAME_IDENTIFIER;
 dbs_password_variable: all_words+; //?
 dbs_password_string_constant: all_words+; //?
 dbs_package_path: FILENAME+; //If package-path contains SESSION_USER (or USER), PATH, or PACKAGE PATH
@@ -1331,14 +1331,14 @@ dbs_parameter_name: dbs_sql_identifier;
 dbs_permission_name: dbs_sql_identifier;
 dbs_plan_name: dbs_sql_identifier ;
 dbs_procedure_name: dbs_sql_identifier;
-dbs_profile_name: STRING_LITERAL;//
-dbs_program_name: STRING_LITERAL | NUMERICLITERAL;// Can't find much n the docs.
+dbs_profile_name: TXTLITERAL;
+dbs_program_name: TXTLITERAL | NUMERICLITERAL;// Can't find much n the docs.
 dbs_registered_xml_schema_name: dbs_sql_identifier;// relational-identifier - https://www.ibm.com/support/knowledgecenter/en/SSEPEK_12.0.0/comref/src/tpc/db2z_clpregisterxmlschemasyntax.html
 dbs_result_expression1: NONNUMERICLITERAL | NUMERICLITERAL;//TODO
 dbs_role_name: dbs_sql_identifier+;
 dbs_routine_version_id: IDENTIFIER;
 dbs_rs_locator_variable: dbs_sql_identifier;
-dbs_run_time_options: STRING_LITERAL; // a character string that is no longer than 254 bytes
+dbs_run_time_options: TXTLITERAL; // a character string that is no longer than 254 bytes
 dbs_runtime_options: VARCHAR; //no longer than 254 bytes
 dbs_s: ZERO_TO_NINE ; // a number between 1 and 9
 dbs_sc_name: IDENTIFIER;// must be from 1-8 characters in length
@@ -1349,7 +1349,7 @@ dbs_search_condition: NOT? dbs_predicate (SELECTIVITY dbs_integer_constant)? ((A
                       (dbs_predicate | dbs_search_condition))*; //? change this to predicate after the predicate is defined.
 dbs_seclabel_name: IDENTIFIER;// couldn't find much. Seems like an identifier defined in RACF. Keeping alphanumberic.
 dbs_sequence_name: dbs_sql_identifier;
-dbs_servauth_value: STRING_LITERAL;// servauth-value is an EBCDIC 64 byte RACF SERVAUTH CLASS resource name. servauth-value must be left justified in the string constant.
+dbs_servauth_value: TXTLITERAL;// servauth-value is an EBCDIC 64 byte RACF SERVAUTH CLASS resource name. servauth-value must be left justified in the string constant.
 dbs_simple_when_clause: (WHEN dbs_expression THEN (dbs_result_expression1 | NULL))+;
 dbs_smallint: MINUSCHAR? DIGIT DIGIT?;// -1 to 99
 dbs_specific_name: dbs_sql_identifier;
@@ -1357,7 +1357,7 @@ dbs_sql_condition_name: dbs_generic_name; // No particular spec found in doc. Sp
 dbs_sql_control_statement: dbs_control_statement; //
 dbs_sql_parameter_name: COLONCHAR? dbs_generic_name;
 dbs_sql_variable_name: COLONCHAR? dbs_generic_name;
-dbs_sqlstate_string_constant: STRING_LITERAL; //
+dbs_sqlstate_string_constant: TXTLITERAL; //
 dbs_statement_name: dbs_generic_name; // Can't find much but seems a generic name should satify the need.
 dbs_stogroup_name: dbs_sql_identifier;
 dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant;
@@ -1386,19 +1386,19 @@ dbs_xmltable_function : XMLTABLE LPARENCHAR (dbs_xml_namespace_declaration COMMA
                         dbs_row_xquery_argument (COMMACHAR dbs_row_xquery_argument)*)? (COLUMNS (dbs_xml_table_regular_column_defn |
                         dbs_xml_table_ordinality_column_defn) (COMMACHAR (dbs_xml_table_regular_column_defn | dbs_xml_table_ordinality_column_defn))* RPARENCHAR)?; // Ref: https://www.ibm.com/support/knowledgecenter/en/SSEPEK_12.0.0/sqlref/src/tpc/db2z_bif_xmltable.html
 dbs_xml_namespace_args : dbs_namespace_uri AS dbs_namespace_prefix | DEFAULT  dbs_namespace_uri | NO DEFAULT;
-dbs_namespace_uri : STRING_LITERAL;
-dbs_namespace_prefix : STRING_LITERAL;
-dbs_xquery_context_item_expression : STRING_LITERAL; // must not be a character string that is bit data
+dbs_namespace_uri : TXTLITERAL;
+dbs_namespace_prefix : TXTLITERAL;
+dbs_xquery_context_item_expression : TXTLITERAL; // must not be a character string that is bit data
 dbs_xquery_variable_expression : dbs_expression;
 dbs_xml_namespace_declaration : XMLNAMESPACES LPARENCHAR  dbs_xml_namespace_args (COMMACHAR dbs_xml_namespace_args)* RPARENCHAR;
-dbs_row_query_expression_constant: STRING_LITERAL; //  must not contain an empty string or a string of all blanks.
-dbs_column_xquery_expression_constant: STRING_LITERAL; // must not be an empty string or a string of all blanks
-dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS STRING_LITERAL (BY REF)?;
+dbs_row_query_expression_constant: TXTLITERAL; //  must not contain an empty string or a string of all blanks.
+dbs_column_xquery_expression_constant: TXTLITERAL; // must not be an empty string or a string of all blanks
+dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS TXTLITERAL (BY REF)?;
 dbs_xml_table_regular_column_defn : dbs_column_name dbs_insert_data_type (column_def_clause | PATH dbs_column_xquery_expression_constant)?;
 dbs_xml_table_ordinality_column_defn: dbs_column_name FOR ORDINALITY;
 dbs_collection_derived_table :  UNNEST LPARENCHAR (dbs_ordinary_array_expression (COMMACHAR dbs_ordinary_array_expression)* | dbs_assosiative_array_expression) RPARENCHAR (WITH ORDINALITY)? dbs_correlation_clause?;
 dbs_ordinary_array_expression : IDENTIFIER; // Not much info on https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
-dbs_assosiative_array_expression : STRING_LITERAL; // Mot mush info , ref: https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
+dbs_assosiative_array_expression : TXTLITERAL; // Mot mush info , ref: https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_collectionderivedtable.html
 dbs_joined_table : (dbs_table_reference (INNER | (LEFT | RIGHT | FULL) OUTER?)? JOIN dbs_table_reference ON dbs_join_condition | dbs_table_reference CROSS JOIN dbs_table_reference | LPARENCHAR dbs_joined_table RPARENCHAR);
 dbs_join_condition: dbs_inner_left_outer_join | dbs_full_join_expression;
 dbs_inner_left_outer_join : dbs_search_condition;
@@ -1423,9 +1423,9 @@ dbs_variable_name: dbs_sql_identifier;
 dbs_version_id: IDENTIFIER;
 dbs_version_name: IDENTIFIER | FILENAME;
 dbs_view_name: HOSTNAME_IDENTIFIER? dbs_sql_identifier;
-dbs_volume_id: STRING_LITERAL;// volume-id is the volume serial number of a storage volume.It can have a maximum of six characters and is specified as an identifier or a string constant.
+dbs_volume_id: TXTLITERAL;// volume-id is the volume serial number of a storage volume.It can have a maximum of six characters and is specified as an identifier or a string constant.
 dbs_wlm_env_name: dbs_sql_identifier;
-dbs_sql_identifier: STRINGLITERAL | IDENTIFIER | FILENAME;
+dbs_sql_identifier: TXTLITERAL | FILENAME;
 db2sql_integerLiterals : NUMBER_1 | NUMBER_2 | NUMBER_4 | NUMBER_5 | NUMBER_6 | NUMBER_8 | NUMBER_10 | NUMBER_12| NUMBER_14 | NUMBER_15
                           | NUMBER_16 | NUMBER_20 | NUMBER_30 | NUMBER_31 | NUMBER_33 | NUMBER_34 | NUMBER_64 | NUMBER_100 | NUMBER_256
                           | NUMBER_1200 | NUMBER_1208 | INTEGER_MAX;
