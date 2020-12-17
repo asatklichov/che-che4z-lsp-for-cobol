@@ -70,7 +70,7 @@ dbs_alter_procedure: PROCEDURE dbs_procedure_name (dbs_alter_procedure_external 
 dbs_alter_procedure_external: (DYNAMIC RESULT SETS dbs_integer | EXTERNAL NAME (dbs_external_program_name | dbs_identifier) | LANGUAGE (ASSEMBLE | LANGUAGE_C | COBOL | JAVA | PLI | REXX_LANGUAGE) | PARAMETER STYLE (SQL | GENERAL (WITH NULLS)? | JAVA) | NOT? DETERMINISTIC | (PACKAGE PATH dbs_package_path | NO PACKAGE PATH) | ((MODIFIES|READS) SQL DATA | (CONTAINS|NO) SQL) | NO? DBINFO | (NO COLLID | COLLID dbs_collection_id) | WLM ENVIRONMENT (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR) | ASUTIME (NO LIMIT | LIMIT dbs_integer) | STAY RESIDENT (YES|NO) | PROGRAM TYPE (SUB|MAIN) | SECURITY (DB2|USER|DEFINER) | RUN OPTIONS dbs_run_time_options | COMMIT ON RETURN (YES|NO) | (INHERIT|DEFAULT) SPECIAL REGISTERS | CALLED ON NULL INPUT | (STOP AFTER (SYSTEM DEFAULT|dbs_integer) FAILURES | CONTINUE AFTER FAILURE) | (DISALLOW|ALLOW|DISABLE) DEBUG MODE)+; /*java fix needed to add "once each" rule */
 dbs_alter_procedure_alter: ALTER? (ACTIVE VERSION | ALL VERSIONS | VERSION dbs_routine_version_id)? dbs_alter_procedure_options;
 dbs_alter_procedure_options: (NOT? DETERMINISTIC | ((MODIFIES|READS) SQL DATA | CONTAINS SQL) | CALLED ON NULL INPUT | DYNAMIC RESULT SETS dbs_integer | (DISALLOW|ALLOW|DISABLE) DEBUG MODE | PARAMETER CCSID (ASCII|EBCDIC|UNICODE) | QUALIFIER dbs_schema_name | PACKAGE OWNER dbs_authorization_name | ASUTIME (NO LIMIT | LIMIT dbs_integer) | ((COMMIT ON RETURN (YES|NO)) | AUTONOMOUS) | (INHERIT|DEFAULT) SPECIAL REGISTERS | WLM ENVIRONMENT FOR DEBUG MODE dbs_name | (DEFER|NODEFER) PREPARE | CURRENT DATA (YES|NO) | DEGREE (NUMBER_1|ANY) | CONCURRENT ACCESS RESOLUTION (USE CURRENTLY COMMITTED | WAIT FOR OUTCOME) | DYNAMICRULES (RUN|BIND|DEFINERUN|DEFINEBIND|INVOKERUN|INVOKEBIND) | APPLICATION ENCODING SCHEME (ASCII|EBCDIC|UNICODE) | (WITH|WITHOUT) EXPLAIN | (WITH|WITHOUT) IMMEDIATE WRITE | ISOLATION LEVEL (CS|RS|RR|UR) | (WITH|WITHOUT) KEEP DYNAMIC | OPTHINT (DOUBLEQUOTE|dbs_string_constant) | SQL PATH (dbs_schema_name | SYSTEM PATH | SESSION? USER) (COMMACHAR (dbs_schema_name | SYSTEM PATH | SESSION? USER))* | RELEASE AT (COMMIT | DEALLOCATE) | QUERY ACCELERATION (NONE|ELIGIBLE|ALL|ENABLE (WITH FAILBACK)?) | GET_ACCEL_ARCHIVE (YES|NO) | ACCELERATION WAITFORDATA dbs_nnnn_m | ACCELERATOR dbs_accelerator_name | REOPT (NONE|ALWAYS|ONCE) | VALIDATE (RUN|BIND) | ROUNDING (DEC_ROUND_CEILING|DEC_ROUND_DOWN|DEC_ROUND_FLOOR|DEC_ROUND_HALF_DOWN|DEC_ROUND_HALF_EVEN|DEC_ROUND_HALF_UP|DEC_ROUND_UP) | DATE FORMAT (ISO|EUR|USA|JIS|LOCAL) | DECIMAL LPARENCHAR (NUMBER_15|NUMBER_31) (COMMACHAR dbs_s)? | FOR UPDATE CLAUSE (REQUIRED|OPTIONAL) | TIME FORMAT (ISO|EUR|USA|JIS|LOCAL) | BUSINESS_TIME SENSITIVE (YES|NO) | SYSTEM_TIME SENSITIVE (YES|NO) | ARCHIVE SENSITIVE (YES|NO) | APPLCOMPAT dbs_applcompat_value | CONCENTRATE STATEMENTS (OFF|WITH LITERALS))*; /*java fix needed to add "one each" rule */
-dbs_alter_procedure_replace: REPLACE (ACTIVE VERSION | VERSION dbs_routine_version_id)? (LPARENCHAR dbs_alter_procedure_paramdec (COMMACHAR dbs_alter_procedure_paramdec)* RPARENCHAR)? dbs_alter_procedure_options dbs_sql_procedure_statement; 
+dbs_alter_procedure_replace: REPLACE (ACTIVE VERSION | VERSION dbs_routine_version_id)? (LPARENCHAR dbs_alter_procedure_paramdec (COMMACHAR dbs_alter_procedure_paramdec)* RPARENCHAR)? dbs_alter_procedure_options dbs_sql_procedure_statement;
 dbs_alter_procedure_paramdec: (IN|OUT|INOUT)? dbs_parameter_name (dbs_alter_procedure_bit | data_type_arr_or_distinct);
 dbs_alter_procedure_bit: (dbs_alter_procedure_bit_int | dbs_alter_procedure_bit_decimal | dbs_alter_procedure_bit_float | dbs_alter_procedure_bit_decfloat | dbs_alter_procedure_bit_char | dbs_alter_procedure_bit_clob | dbs_alter_procedure_bit_varchar | dbs_alter_procedure_bit_graphic | dbs_alter_procedure_bit_binary | DATE | TIME | dbs_alter_procedure_bit_timestamp | XML);
 dbs_alter_procedure_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
@@ -322,16 +322,16 @@ dbs_create_mask: MASK dbs_mask_name ON dbs_table_name (AS? dbs_correlation_name)
 //CREATE PERMISSION
 dbs_create_permission: PERMISSION dbs_permission_name ON dbs_table_name (AS? dbs_correlation_name)? FOR ROWS WHERE dbs_search_condition ENFORCED FOR ALL ACCESS  (DISABLE | ENABLE)?;
 
-//CREATE PERMISSION - EXTERNAL
+//CREATE PROCEDURE - EXTERNAL
 dbs_create_procedure_ext: (OR REPLACE)? dbs_procedure_name  (LPARENCHAR dbs_create_procedure_ext_pdecl (COMMACHAR dbs_create_procedure_ext_pdecl)* RPARENCHAR)? dbs_option_list_proc_ext;
 dbs_create_procedure_ext_pdecl: (IN | OUT | INOUT)? dbs_parameter_name? dbs_create_procedure_ext_ptype;
 dbs_create_procedure_ext_ptype:  (common_built_in_type | dbs_distinct_type_name) (AS LOCATOR)?  | TABLE LIKE (dbs_table_name | dbs_view_name) AS LOCATOR; //built-in-type change
 
-//CREATE PERMISSION - NATIVE
+//CCREATE PROCEDURE - NATIVE
 dbs_create_procedure_native_sql: (OR REPLACE)? PROCEDURE dbs_procedure_name  (LPARENCHAR dbs_create_procedure_native_pdecl (COMMACHAR dbs_create_procedure_native_pdecl)* RPARENCHAR)? procedure_def | WRAPPED dbs_obfuscated_statement_text;
 dbs_create_procedure_native_pdecl: (IN OUT INOUT)? (dbs_parameter_name) dbs_create_procedure_native_ptype;
 dbs_create_procedure_native_ptype: data_type  | TABLE LIKE (dbs_table_name | dbs_view_name) AS LOCATOR;//built-in-type change
-procedure_def: (VERSION dbs_routine_version_id)?  dbs_option_list_proc_native dbs_sql_procedure_statement;
+procedure_def: (VERSION dbs_routine_version_id)?  dbs_option_list_proc_native? dbs_sql_procedure_statement;
 
 //CREATE ROLE
 dbs_create_role: ROLE dbs_role_name;
@@ -387,10 +387,6 @@ partition_expression: dbs_column_name (NULLS LAST)? (ASC | DESC)?;
 partitioning_element: PARTITION dbs_integer ENDING AT? partition_element_loop partition_hash_space? INCLUSIVE?;
 partition_hash_space: HASH SPACE dbs_integer k_m_g;
 organization_clause: ORGANIZE BY HASH UNIQUE column_loop partition_hash_space?;
-no_or_yes: (NO | YES);
-yes_or_no: (YES | NO);
-k_m_g: (K_CHAR | M_CHAR | G_CHAR);
-oneof_encoding: (ASCII | EBCDIC | UNICODE);
 
 //CREATE TABLESPACE
 dbs_create_tablespace: TABLESPACE QUESTIONMARK dbs_table_space_name dbs_create_tablespace_opts*;
@@ -996,41 +992,121 @@ common_short_bit_binary: (BINARY VARYING? | VARBINARY) (LPARENCHAR dbs_integer R
 
 sql_data_type: SQL (VARCHAR (LPARENCHAR dbs_integer RPARENCHAR) | DECFLOAT (LPARENCHAR (NUMBER_34) RPARENCHAR)? | DATE | TIMESTAMP (LPARENCHAR (NUMBER_12) RPARENCHAR)? );
 
+/*option lists*/
+dbs_option_list: (LANGUAGE SQL)? option_specific? option_deterministic? option_action? option_sqldata2? (option_returned_null | option_called)? option_dispatch? option_allow_parallel? option_debug_mode?
+                 option_parameter_enc? option_qualifier? option_package_owner? option_asutime? option_registers? (wlm_env dbs_name)? option_current_data? option_degree? option_concurrency?
+                 option_dynamic_rules? option_app_enc? option_explain? option_query_accl?  option_get_accel? option_acceleration? option_accelerator? option_sql_path?
+                 option_reopt? option_validate? option_rounding? option_format_date? option_decimal? option_for_update? option_format_time? option_secured? option_sensitive_business?
+                 option_sensitive_system? option_sensitive_archive? option_app_compat? option_concentrate_statements?;
 
-dbs_option_list: (LANGUAGE SQL)? (SPECIFIC dbs_specific_name)? (NOT? DETERMINISTIC)? (NO? EXTERNAL ACTION)? (READS SQL DATA |
-                CONTAINS SQL | MODIFIES SQL DATA)? ((CALLED | RETURNS NULL) ON NULL INPUT)? (STATIC DISPATCH)? ((ALLOW | DISALLOW)
-                PARALLEL)? ((ALLOW | DISALLOW | DISABLE) DEBUG MODE)? (PARAMETER CCSID oneof_encoding)? (QUALIFIER
-                dbs_schema_name)? (PACKAGE OWNER dbs_authorization_name)? (ASUTIME (LIMIT dbs_integer | NO LIMIT))? ((INHERIT | DEFAULT)
-                SPECIAL REGISTERS)? (WLM ENVIRONMENT FOR DEBUG MODE dbs_name)? (CURRENT DATA yes_or_no)? (DEGREE (NUMBER_1 | ANY))?
-                (CONCURRENT ACCESS RESOLUTION (USE CURRENTLY COMMITTED | WAIT FOR OUTCOME))? (DYNAMICRULES (RUN | BIND | DEFINEBIND |
-                DEFINERUN | INVOKEBIND | INVOKERUN))? (APPLICATION ENCODING SCHEME oneof_encoding)? ((WITH |
-                WITHOUT) EXPLAIN)? ((WITH | WITHOUT) IMMEDIATE WRITE)? (ISOLATION LEVEL (CS | RS | RR | UR))? (OPTHINT
-                (DOUBLEQUOTE | dbs_string_constant))? (QUERY ACCELERATION (NONE | ENABLE (WITH FAILBACK)? | ELIGIBLE |
-                ALL))? (GET_ACCEL_ARCHIVE yes_or_no)? (ACCELERATION WAITFORDATA dbs_nnnn_m)? (ACCELERATOR dbs_accelerator_name)?
-                (SQL PATH (dbs_schema_name (COMMACHAR dbs_schema_name)* | SYSTEM PATH | SESSION? USER))?(REOPT (NONE | ALWAYS | ONCE))?
-                (VALIDATE (RUN | BIND))? (ROUNDING (DEC_ROUND_CEILING | DEC_ROUND_DOWN | DEC_ROUND_FLOOR | DEC_ROUND_HALF_DOWN |
-                DEC_ROUND_HALF_EVEN | DEC_ROUND_HALF_UP | DEC_ROUND_UP))? (DATE FORMAT (ISO | EUR | USA | JIS | LOCAL))? (DECIMAL
-                LPARENCHAR (NUMBER_15 | NUMBER_31) (COMMACHAR dbs_s)? RPARENCHAR)? (FOR UPDATE CLAUSE (REQUIRED | OPTIONAL))? (TIME
-                FORMAT (ISO | EUR | USA | JIS | LOCAL))? (NOT? SECURED)? (BUSINESS_TIME SENSITIVE yes_or_no)? (SYSTEM_TIME
-                SENSITIVE yes_or_no)? (ARCHIVE SENSITIVE yes_or_no)? (APPLCOMPAT dbs_level)? (CONCENTRATE STATEMENTS (OFF | WITH LITERALS))?;
+dbs_option_list_ext: option_specific? option_parameter? EXTERNAL option_name? option_language parameter_style (JAVA | SQL) option_deterministic? FENCED? (option_returned_null | option_called)?
+                     option_sqldata3? option_action? option_package_path? option_scratch? option_final_call? option_allow_parallel? option_dbinfo? option_collid?  option_wlm_env_short? option_asutime?
+                     option_stay_resident? option_program_type? option_security? option_after? option_run? option_registers? option_dispatch? option_secured?;
 
-dbs_option_list_ext: (SPECIFIC dbs_specific_name)? (PARAMETER ( CCSID oneof_encoding | VARCHAR (NULTERM | STRUCTURE) )*)? |
-                EXTERNAL ( NAME( dbs_ext_program_name | dbs_sql_identifier))? LANGUAGE (ASSEMBLE | LANGUAGE_C | COBOL | JAVA | PLI) PARAMETER STYLE (SQL | JAVA)
-                (NOT)? DETERMINISTIC FENCED? (RETURNS NULL | CALLED) ON NULL INPUT ((READS | MODIFIES ) SQL DATA | (CONTAINS | NO) SQL)? ( (NO)? EXTERNAL ACTION)?
-                (NO PACKAGE PATH | PACKAGE PATH dbs_package_path )? (NO SCRATCHPAD | SCRATCHPAD (NUMBER_100 | INTEGER)?)? ((NO)? FINAL CALL)?
-                ((ALLOW | DISALLOW) PARALLEL)? ((NO)? DBINFO)? (NO COLLID | COLLID dbs_collection_id_package_name)? (WLM ENVIRONMENT (dbs_wlm_env_name | LPARENCHAR dbs_wlm_env_name RPARENCHAR ))?
-                 (ASUTIME NO LIMIT | ASUTIME LIMIT INTEGER)? (STAY RESIDENT yes_or_no?)? (PROGRAM TYPE (SUB | MAIN))? (SECURITY (DB2 | (USER | DEFINER)))?
-                 (STOP AFTER (SYSTEM DEFAULT FAILURES | INTEGER FAILURES) | CONTINUE AFTER FAILURE)? (RUN OPTIONS dbs_runtime_options)?
-                  ((INHERIT | DEFAULT)  SPECIAL REGISTERS)? (STATIC DISPATCH)? ((NOT)? SECURED)? ;
+dbs_option_list_proc_ext: option_specific? option_dynamic? option_parameter? EXTERNAL option_name? option_language option_sql? option_parameter_style? option_deterministic?
+                          option_package_path? FENCED? option_dbinfo? option_collid? option_wlm_env? option_asutime? option_stay_resident?  option_program_type? option_security?
+                          option_after? option_run? option_commit?  option_registers? option_called?  option_debug_mode?;
 
-dbs_option_list_proc_ext: dbs_option_list_ext;//TBD
-dbs_option_list_ext_table: dbs_option_list_ext; //TBD
-dbs_option_list_proc_native:  dbs_option_list_ext; //TBD;
-dbs_option_list_trigger:  dbs_option_list; //TBD;;
+dbs_option_list_ext_table: option_specific? option_parameter? EXTERNAL option_name? option_language parameter_style SQL
+                           option_deterministic? FENCED? (option_returned_null | option_called)? option_sqldata? option_action? option_package_path? option_scratch? option_final_call? DISALLOW PARALLEL option_dbinfo?
+                           option_cardinality? option_collid? option_wlm_env_short? option_asutime? option_stay_resident?  option_program_type? option_security? option_run? option_registers? option_dispatch? option_after? option_secured?;
 
-dbs_option_list_inl_def:  (SPECIFIC dbs_specific_name)? (PARAMETER CCSID oneof_encoding) ((NOT)? DETERMINISTIC)? ( (NO)? EXTERNAL ACTION)?
-                          (READ SQL DATA | CONTAINS SQL)? (STATIC DISPATCH)? (CALLED ON NULL INPUT)? ((NOT)? SECURED)?;
+dbs_option_list_proc_native: (LANGUAGE SQL)? option_specific? option_deterministic? option_sqldata2?  option_called? option_dynamic?
+                             option_debug_mode? option_parameter_enc? option_qualifier? option_package_owner? option_asutime?
+                             option_commit_aut?  option_registers? option_wlm_env_debug? option_defer? option_current_data? option_degree?
+                             option_concurrency? option_dynamic_rules? option_app_enc? option_explain? option_write_imd? option_isolation_level?
+                             option_dynamic_keep? option_opthint? option_sql_path? option_query_accl? option_get_accel? option_acceleration? option_accelerator?
+                             option_release? option_reopt? option_validate? option_rounding? option_format_date? option_decimal?
+                             option_for_update? option_format_time? option_sensitive_business? option_sensitive_system? option_sensitive_archive? option_concentrate_statements?;
 
+dbs_option_list_trigger: option_debug_mode? option_qualifier? option_asutime? option_wlm_env_debug? option_current_data? option_concurrency? option_dynamic_rules? (DYNAMICRULES (RUN | BIND))?
+                         option_app_enc? option_explain? option_write_imd? option_isolation_level? option_opthint? option_sql_path? option_release?
+                         option_rounding? option_format_date? option_decimal? option_format_time? option_for_update? option_secured?  option_sensitive_business?
+                         option_sensitive_system? option_sensitive_archive? option_app_compat? option_concentrate_statements?;
+
+dbs_option_list_inl_def:  option_specific? option_parameter option_deterministic? option_action? option_sqldata_common? option_dispatch? option_called? option_secured?;
+
+option_acceleration: ACCELERATION WAITFORDATA dbs_decimal_const;
+option_accelerator: ACCELERATOR dbs_accelerator_name;
+option_action: NO?  EXTERNAL ACTION;
+option_after: (STOP AFTER (SYSTEM DEFAULT FAILURES | dbs_integer FAILURES) | CONTINUE AFTER FAILURE);
+option_allow_parallel: (ALLOW | DISALLOW) PARALLEL;
+option_asutime: ASUTIME (NO LIMIT | LIMIT dbs_integer);
+option_app_enc: APPLICATION ENCODING SCHEME oneof_encoding;
+option_app_compat: APPLCOMPAT dbs_applcompat_value;
+option_called: CALLED ON NULL INPUT;
+option_cardinality: CARDINALITY dbs_integer;
+option_collid: NO COLLID | COLLID dbs_collection_id;
+option_commit: COMMIT ON RETURN  no_or_yes;
+option_commit_aut: option_commit | AUTONOMOUS;
+option_concentrate_statements: CONCENTRATE STATEMENTS (OFF | WITH LITERALS);
+option_concurrency: CONCURRENT ACCESS RESOLUTION (USE CURRENTLY COMMITTED | WAIT FOR OUTCOME);
+option_current_data: CURRENT DATA no_or_yes;
+option_format_date: DATE FORMAT (ISO | EUR | USA | JIS | LOCAL);
+option_format_time: TIME FORMAT (ISO | EUR | USA | JIS | LOCAL);
+option_dbinfo: NO? DBINFO;
+option_debug_mode: (DISALLOW | ALLOW | DISABLE) DEBUG MODE;
+option_decimal: DECIMAL LPARENCHAR (NUMBER_15 (COMMACHAR dbs_s)? | NUMBER_31 (COMMACHAR dbs_s)?);
+option_defer: (DEFER | NODEFER) PREPARE;
+option_degree: DEGREE  (NUMBER_1 | ANY);
+option_deterministic: NOT? DETERMINISTIC;
+option_dispatch: STATIC DISPATCH;
+option_dynamic: DYNAMIC RESULT SETS (ZERO_DIGIT | dbs_integer);
+option_dynamic_keep: without_or_with KEEP DYNAMIC;
+option_dynamic_rules: DYNAMICRULES (RUN | BIND | DEFINEBIND | DEFINERUN | INVOKEBIND | INVOKERUN);
+option_explain: without_or_with EXPLAIN;
+option_final_call: NO? FINAL CALL;
+option_for_update: OR UPDATE CLAUSE (REQUIRED |  OPTIONAL);
+option_get_accel: GET_ACCEL_ARCHIVE no_or_yes;
+option_isolation_level: ISOLATION LEVEL cs_rs_rr_ur;
+option_language: LANGUAGE oneof_lang;
+option_name: NAME ( dbs_ext_program_name | dbs_sql_identifier);
+option_opthint: OPTHINT ( DOUBLEQUOTE | dbs_string_constant);
+option_package_owner: PACKAGE OWNER dbs_authorization_name;
+option_package_path: NO PACKAGE PATH | PACKAGE PATH dbs_package_path;
+option_parameter_enc: PARAMETER CCSID oneof_encoding;
+option_parameter: PARAMETER (CCSID oneof_encoding | VARCHAR (NULTERM | STRUCTURE))*;
+option_parameter_style: parameter_style ( SQL | GENERAL | GENERAL WITH NULLS | JAVA);
+option_qualifier: QUALIFIER dbs_schema_name;
+option_query_accl: QUERY ACCELERATION ( NONE | ENABLE (WITH FAILBACK)? |  ELIGIBLE | ALL);
+option_program_type: program_type (SUB | MAIN);
+option_release: RELEASE AT (COMMIT |  DEALLOCATE);
+option_registers: (INHERIT | DEFAULT ) SPECIAL REGISTERS;
+option_returned_null: RETURNS NULL ON NULL INPUT;
+option_reopt: REOPT (NONE | ALWAYS | ONCE);
+option_rounding: ROUNDING (DEC_ROUND_CEILING | DEC_ROUND_DOWN | DEC_ROUND_FLOOR | DEC_ROUND_HALF_DOWN | DEC_ROUND_HALF_EVEN | DEC_ROUND_HALF_UP | DEC_ROUND_UP);
+option_run: RUN OPTIONS dbs_run_time_options;
+option_scratch: NO SCRATCHPAD | (NUMBER_100 | dbs_length);
+option_security: SECURITY (DB2 | (USER | DEFINER));
+option_secured: NOT? SECURED;
+option_sensitive_archive: ARCHIVE SENSITIVE SENSITIVE no_or_yes;
+option_sensitive_business: BUSINESS_TIME SENSITIVE no_or_yes;
+option_sensitive_system: SYSTEM_TIME SENSITIVE SENSITIVE no_or_yes;
+option_specific: SPECIFIC dbs_specific_name;
+option_sqldata_common: READS SQL DATA | CONTAINS SQL;
+option_sqldata: option_sqldata_common | NO SQL;
+option_sqldata2: MODIFIES SQL DATA | option_sqldata_common;
+option_sqldata3: option_sqldata2 | NO SQL;
+option_sql: MODIFIES SQL DATA | READS SQL DATA | CONTAINS SQL | NO SQL;
+option_sql_body: (dbs_schema_name | SYSTEM PATH | SESSION? USER);
+option_sql_path: SQL PATH option_sql_body (COMMACHAR option_sql_body)*;
+option_stay_resident: STAY RESIDENT no_or_yes;
+option_validate: VALIDATE  (RUN | BIND);
+option_write_imd: without_or_with IMMEDIATE WRITE;
+option_wlm_env: wlm_env (dbs_name | LPARENCHAR dbs_name COMMACHAR ASTERISKCHAR RPARENCHAR);
+option_wlm_env_short: wlm_env (dbs_name | LPARENCHAR dbs_name RPARENCHAR);
+option_wlm_env_debug: wlm_env FOR DEBUG MODE dbs_name;
+
+k_m_g: (K_CHAR | M_CHAR | G_CHAR);
+no_or_yes: (NO | YES);
+oneof_encoding: (ASCII | EBCDIC | UNICODE);
+oneof_lang: ASSEMBLE | LANGUAGE_C | COBOL | JAVA | PLI | REXX;
+parameter_style: PARAMETER STYLE;
+program_type: PROGRAM TYPE;
+wlm_env: WLM ENVIRONMENT;
+without_or_with: (WITHOUT | WITH);
+yes_or_no: (YES | NO);
+cs_rs_rr_ur: (CS | RS | RR | UR);
 
 /// STATEMENTS ///
 dbs_control_statement: dbs_assignment_statement | dbs_call_control | dbs_case_statement_pl_sql | dbs_compund_statement | dbs_for_statement | dbs_get |
@@ -1068,7 +1144,7 @@ dbs_signal_statement: (dbs_key_label_name COLONCHAR)?  SIGNAL dbs_signal_arg1 db
 dbs_while_statement: (dbs_key_label_name COLONCHAR)? WHILE dbs_search_condition DO (dbs_sql_procedure_statement SEMICOLONCHAR)+ END WHILE dbs_key_label_name?;
 /// End STATEMENTS ///
 
-/// DB2 SQL PROCEDURE STATEMENT//////
+///SQL-routine-body: DB2 SQL PROCEDURE STATEMENT
 // ref - https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlprocedurestatement4nativesqlpl.html#db2z_sqlprocedurestatement4nativesqlpl//
 dbs_sql_procedure_statement: (dbs_sql_control_statement | dbs_allocate | ALTER (dbs_alter_database | dbs_alter_function | dbs_alter_index | dbs_alter_mask | dbs_alter_permission
  | dbs_alter_procedure | dbs_alter_sequence | dbs_alter_stogroup | dbs_alter_table | dbs_alter_tablespace | dbs_alter_trigger | dbs_alter_trusted | dbs_alter_view)
@@ -1345,7 +1421,7 @@ dbs_context_name: dbs_sql_identifier;//?
 dbs_copy_id: CURRENT | PREVIOUS | ORIGINAL; //
 dbs_correlation_name: dbs_sql_identifier;
 dbs_cursor_name: dbs_sql_identifier;
-dbs_decimal_const: all_words+; //? nnnn.m
+dbs_decimal_const: DECIMAL_CONST_SPEC; //nnnn.m
 dbs_database_name: dbs_sql_identifier; //?
 dbs_dc_name: dbs_sql_identifier;// lenght must be < 9
 dbs_descriptor_name: SQLD | SQLDABC | SQLN | SQLVAR; //SQLDA
