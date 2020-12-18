@@ -1029,7 +1029,7 @@ execCicsStatement
 
 // exec sql statement
 execSqlStatement
-   : EXEC SQL allSqlRules END_EXEC DOT_FS?
+   : EXEC_SQL allSqlRules END_EXEC DOT_FS?
    ;
 
 // exec sql ims statement
@@ -1649,7 +1649,7 @@ subtractStatement
    ;
 
 subtractFromStatement
-   : subtractSubtrahend+ FROM subtractMinuend+
+   :  subtractSubtrahend+ FROM subtractMinuend+
    ;
 
 subtractFromGivingStatement
