@@ -1,7 +1,9 @@
 lexer grammar CommonCobolLexer;
+
 @lexer::members {
     boolean sqlFlag = false;
 }
+
 ABCODE : A B C O D E;
 ABDUMP : A B D U M P;
 ABEND : A B E N D;
@@ -802,6 +804,8 @@ AMPCHAR : '&';
 ASTERISKCHAR : '*';
 DOUBLEASTERISKCHAR : '**';
 COLONCHAR : ':';
+COMMA_EOF : ',' EOF->skip;
+COMMA_LB : ',' ('\r' | '\n' | '\f' | '\t' | ' ')+->skip;
 COMMACHAR : ',';
 COMMENTTAG : '*>';
 COMMENTENTRYTAG : '*>CE';
@@ -819,6 +823,7 @@ MORETHANCHAR : '>';
 MORETHANOREQUAL : '>=';
 NOTEQUALCHAR : '<>';
 PLUSCHAR : '+';
+SEMICOLON_FS : ';' ('\r' | '\n' | '\f' | '\t' | ' ')+ | ';' EOF;
 SINGLEQUOTE : '\'';
 RPARENCHAR : ')';
 SLASHCHAR : '/';
