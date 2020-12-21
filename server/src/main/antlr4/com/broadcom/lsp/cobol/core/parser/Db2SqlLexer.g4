@@ -797,7 +797,6 @@ ZONE : Z O N E;
 
 // Constructors symbols
 GRAPHIC_CONSTANT : GRAPHICUNICODE | GRAHICCHAR;
-//STRING_LITERAL : STRINGLITERAL;
 ATCHAR :             '@';
 DOUBLESLASHCHAR : '//';
 LSQUAREBRACKET :     '[';
@@ -809,10 +808,6 @@ PIPECHAR : '||';
 QUESTIONMARK : '?';
 PERCENT : '%';
 SELECT_ALL : '.*';
-//SQL_IDENTIFIER : ([A-Z] [A-Z0-9_]*) | STRINGLITERAL;   //https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlidentifiers.html
-//VERSION_ID : ([0-9]+ ([a-zA-Z0-9]+)*);
-//ALPHANUMERIC_TEXT : [a-zA-Z0-9]+;
-//POSITIVEINTEGERLITERAL: PLUSCHAR? DIGIT+;
 TIMESTAMPLITERAL: DIGIT DIGIT '.' DIGIT DIGIT '.' DIGIT DIGIT | // hh.mm.ss;
                   DIGIT DIGIT '.' DIGIT DIGIT (A M | P M) | //hh:mm AM /PM
                   DIGIT DIGIT '.' DIGIT DIGIT ':' DIGIT DIGIT |// hh.mm:ss
@@ -821,16 +816,6 @@ DATELITERAL: '\'' (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT | //y
                    DIGIT DIGIT '/' DIGIT DIGIT '/' DIGIT DIGIT DIGIT DIGIT | //mm/dd/yyyy
                    DIGIT DIGIT '.' DIGIT DIGIT '.' DIGIT DIGIT DIGIT DIGIT |//dd.mm.yyyy
                    DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT DIGIT DIGIT) TIMESTAMPLITERAL? '\'';//yyyy-mm-dd
-//SINGLE_DIGIT : DIGIT;
-//UNSIGNED_INTEGER : DIGIT+;
-//QUAD: ZERO_DIGIT  HEXNUMBER+
-//| ZERO_DIGIT OCT_DIGIT+
-//| UNSIGNED_INTEGER
-//;
-
-//IP4: QUAD DOT QUAD DOT QUAD DOT QUAD+;
-
-//NUMBER_0 : ZERO_DIGIT;
 
 fragment BXNUMBER :
 	B X '"' [0-9A-F]+ '"'
