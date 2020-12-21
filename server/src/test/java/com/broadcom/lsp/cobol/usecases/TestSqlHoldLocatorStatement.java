@@ -15,20 +15,25 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.positive.CobolText;
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql HOLD LOCATOR statement works correctly. */
 class TestSqlHoldLocatorStatement {
-  private static final String TEXT =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL HOLD LOCATOR :LOCRES, :LOCHIST, :LOCPIC
-      ;
+  private static final String  TEXT =
+            "       IDENTIFICATION DIVISION.\n"
+            + "       PROGRAM-ID. HELLO-SQL.\n"
+            + "       DATA DIVISION.\n"
+            + "       WORKING-STORAGE SECTION.\n"
+            + "       EXEC SQL HOLD LOCATOR :LOCRES, :LOCHIST, :LOCPIC END-EXEC.\n";
+
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+     UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

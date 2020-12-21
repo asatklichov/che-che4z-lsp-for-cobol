@@ -597,7 +597,7 @@ dbs_drop_parameter_type: (common_built_in_type | dbs_distinct_type_name | dbs_ar
 dbs_drop_specific: SPECIFIC FUNCTION dbs_specific_name RESTRICT?;
 dbs_drop_index: INDEX dbs_index_name;
 dbs_drop_mask: MASK dbs_mask_name;
-dbs_drop_package: dbs_collection_id_package_name (VERSION? dbs_version_id)?;
+dbs_drop_package: PACKAGE dbs_collection_id_package_name (VERSION? dbs_version_id)?;
 dbs_drop_permission: PERMISSION dbs_permission_name;
 dbs_drop_procedure: PROCEDURE dbs_procedure_name RESTRICT?;
 dbs_drop_role: ROLE dbs_role_name RESTRICT?;
@@ -607,7 +607,7 @@ dbs_drop_synonym: SYNONYM dbs_synonym;
 dbs_drop_table: TABLE (dbs_table_name | dbs_alias_name);
 dbs_drop_tablespace: TABLESPACE dbs_database_name? dbs_table_space_name;
 dbs_drop_trigger: TRIGGER dbs_trigger_name;
-dbs_drop_trusted: TRUSTED CONTEXT dbs_context NONNUMERICLITERAL;
+dbs_drop_trusted: TRUSTED CONTEXT dbs_context;
 dbs_drop_type: TYPE dbs_type_name RESTRICT?;
 dbs_drop_variable: VARIABLE dbs_variable_name RESTRICT?;
 dbs_drop_view: VIEW (dbs_view_name | dbs_alias_name);
@@ -1652,11 +1652,11 @@ dbs_values_statement : VALUES  (LPARENCHAR dbs_expression (COMMACHAR dbs_express
 dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | dbs_merge | dbs_refresh |
                                  dbs_set | dbs_signal | dbs_truncate | dbs_update | dbs_values_into;
 dbs_triggered_sql_statement_basic: dbs_triggered_sql_statement;
-dbs_type_name: IDENTIFIER;
+dbs_type_name: IDENTIFIER | DOCUMENT;
 dbs_value: db2sql_data_value;
 dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name );
 dbs_variable_name: dbs_sql_identifier;
-dbs_version_id: IDENTIFIER;
+dbs_version_id: dbs_hostname_identifier | FILENAME | NONNUMERICLITERAL;
 dbs_version_name: IDENTIFIER | FILENAME;
 dbs_view_name: dbs_hostname_identifier? dbs_sql_identifier;
 dbs_volume_id: NONNUMERICLITERAL;

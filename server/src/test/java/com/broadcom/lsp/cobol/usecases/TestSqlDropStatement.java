@@ -26,73 +26,54 @@ import java.util.stream.Stream;
 
 /** This test checks if sql DROP statement works correctly. */
 class TestSqlDropStatement {
-  private static final String DROP1 =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP TABLE DSN8C10.DEPT;
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
+
+  private static final String DROP1 = TEXT + "       EXEC SQL DROP TABLE DSN8C10.DEPT END-EXEC.\n";
 
   private static final String DROP2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  DROP VIEW DSN8C10.VPROJRE1;
-      ;
+      TEXT + "       EXEC SQL DROP TABLESPACE DSN8D12A.DSN8S12D END-EXEC.\n";
 
   private static final String DROP3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP PACKAGE DSN8CC61.DSN8CC0 VERSION VERSZZZZ;
-      ;
+      TEXT + "       EXEC SQL DROP VIEW DSN8C10.VPROJRE1 END-EXEC.\n";
 
   private static final String DROP4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP TYPE DOCUMENT;
-      ;
+      TEXT + "       EXEC SQL DROP PACKAGE DSN8CC61.DSN8CC0 VERSION VERSZZZZ END-EXEC.\n";
 
   private static final String DROP5 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP FUNCTION CHEM.ATOMIC_WEIGHT;
-      ;
+      TEXT + "       EXEC SQL DROP PACKAGE DSN8.CC0 VERSION '1994sw3' END-EXEC.\n";
 
-  private static final String DROP6 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP PROCEDURE BIOLOGY.OSMOSIS;
-      ;
+  private static final String DROP6 = TEXT + "       EXEC SQL DROP TYPE DOCUMENT END-EXEC.\n";
 
   private static final String DROP7 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP TRIGGER BONUS;
-      ;
+      TEXT + "       EXEC SQL DROP FUNCTION CHEM.ATOMIC_WEIGHT END-EXEC.\n";
 
   private static final String DROP8 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // DROP PUBLIC ALIAS PUBALIAS1 FOR SEQUENCE;
-      ;
+      TEXT + "       EXEC SQL DROP FUNCTION CENTER(INTEGER, FLOAT) END-EXEC.\n";
+
+  private static final String DROP9 =
+      TEXT + "       EXEC SQL DROP SPECIFIC FUNCTION JOHNSON.FOCUS97 END-EXEC.\n";
+
+  private static final String DROP10 =
+      TEXT + "       EXEC SQL DROP PROCEDURE BIOLOGY.OSMOSIS END-EXEC.\n";
+
+  private static final String DROP11 = TEXT + "       EXEC SQL DROP TRIGGER BONUS END-EXEC.\n";
+
+  private static final String DROP12 = TEXT + "       EXEC SQL DROP ROLE CTXROLE END-EXEC.\n";
+
+  private static final String DROP13 =
+      TEXT + "       EXEC SQL DROP TRUSTED CONTEXT CTX1 END-EXEC.\n";
+
+  private static final String DROP14 =
+      TEXT + "       EXEC SQL DROP PUBLIC ALIAS PUBALIAS1 FOR SEQUENCE END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
-    return Stream.of(DROP1, DROP2, DROP3, DROP4, DROP5);
+    return Stream.of(
+        DROP1, DROP2, DROP3, DROP4, DROP5, DROP6, DROP7, DROP8, DROP9, DROP10, DROP11, DROP12,
+        DROP13, DROP14);
   }
 
   @ParameterizedTest
