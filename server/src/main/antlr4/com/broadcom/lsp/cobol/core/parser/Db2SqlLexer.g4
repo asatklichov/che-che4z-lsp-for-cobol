@@ -797,7 +797,6 @@ ZONE : Z O N E;
 
 // Constructors symbols
 GRAPHIC_CONSTANT : GRAPHICUNICODE | GRAHICCHAR;
-//STRING_LITERAL : STRINGLITERAL;
 ATCHAR :             '@';
 DOUBLESLASHCHAR : '//';
 LSQUAREBRACKET :     '[';
@@ -809,11 +808,6 @@ PIPECHAR : '||';
 QUESTIONMARK : '?';
 PERCENT : '%';
 SELECT_ALL : '.*';
-//QUOTEDASTREIX : '\'' ASTERISKCHAR '\'';
-//SQL_IDENTIFIER : ([A-Z] [A-Z0-9_]*) | STRINGLITERAL;   //https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlidentifiers.html
-//VERSION_ID : ([0-9]+ ([a-zA-Z0-9]+)*);
-//ALPHANUMERIC_TEXT : [a-zA-Z0-9]+;
-//POSITIVEINTEGERLITERAL: PLUSCHAR? DIGIT+;
 TIMESTAMPLITERAL: DIGIT DIGIT '.' DIGIT DIGIT '.' DIGIT DIGIT | // hh.mm.ss;
                   DIGIT DIGIT '.' DIGIT DIGIT (A M | P M) | //hh:mm AM /PM
                   DIGIT DIGIT '.' DIGIT DIGIT ':' DIGIT DIGIT |// hh.mm:ss
@@ -822,42 +816,6 @@ DATELITERAL: '\'' (DIGIT DIGIT DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT | //y
                    DIGIT DIGIT '/' DIGIT DIGIT '/' DIGIT DIGIT DIGIT DIGIT | //mm/dd/yyyy
                    DIGIT DIGIT '.' DIGIT DIGIT '.' DIGIT DIGIT DIGIT DIGIT |//dd.mm.yyyy
                    DIGIT DIGIT '-' DIGIT DIGIT '-' DIGIT DIGIT DIGIT DIGIT) TIMESTAMPLITERAL? '\'';//yyyy-mm-dd
-//SINGLE_DIGIT : DIGIT;
-//UNSIGNED_INTEGER : DIGIT+;
-//QUAD: ZERO_DIGIT  HEXNUMBER+
-//| ZERO_DIGIT OCT_DIGIT+
-//| UNSIGNED_INTEGER
-//;
-
-//IP4: QUAD DOT QUAD DOT QUAD DOT QUAD+;
-
-//NUMBER_0 : ZERO_DIGIT;
-LEVEL_NUMBER: ([1-9])|([0][1-9])|([1234][0-9]);
-LEVEL_NUMBER_66 : '66';
-LEVEL_NUMBER_77 : '77';
-LEVEL_NUMBER_88 : '88';
-NUMBER_1 : '1';
-NUMBER_2 : '2';
-NUMBER_4 : '4';
-NUMBER_5 : '5';
-NUMBER_6 : '6';
-NUMBER_8 : '8';
-NUMBER_10 : '10';
-NUMBER_12: '12';
-NUMBER_14 : '14';
-NUMBER_15 : '15';
-NUMBER_16 : '16';
-NUMBER_20 : '20';
-NUMBER_30 : '30';
-NUMBER_31 : '31';
-NUMBER_33 : '33';
-NUMBER_34 : '34';
-NUMBER_64 : '64';
-NUMBER_100 : '100';
-NUMBER_256 : '256';
-NUMBER_1200 : '1200';
-NUMBER_1208 : '1208';
-INTEGER_MAX : '2147483647';
 
 fragment BXNUMBER :
 	B X '"' [0-9A-F]+ '"'
@@ -873,7 +831,3 @@ fragment GRAHICCHAR :
 	G X '"' [0-9A-F]+ '"'
 	| G X '\'' [0-9A-F]+ '\''
 ;
-
-fragment
-OCT_DIGIT        : [0-8] ;
-
