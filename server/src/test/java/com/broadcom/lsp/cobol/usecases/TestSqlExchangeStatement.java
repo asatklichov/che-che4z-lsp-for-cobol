@@ -15,20 +15,26 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql EXCHANGE statement works correctly. */
 class TestSqlExchangeStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXCHANGE DATA BETWEEN TABLE EMPCLONE AND EMPLOYEE;
-      ;
+          + "       EXEC SQL\n"
+          + "         EXCHANGE DATA BETWEEN TABLE EMPCLONE AND EMPLOYEE \n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

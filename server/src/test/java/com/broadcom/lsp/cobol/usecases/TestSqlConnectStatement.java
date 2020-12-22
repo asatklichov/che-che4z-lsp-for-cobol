@@ -15,20 +15,26 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql CONNECT statement works correctly. */
 class TestSqlConnectStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      //EXEC SQL CONNECT TO :LOCNAME USER :AUTHID USING :PASSWORD;
-      ;
+          + "       EXEC SQL\n"
+          + "         CONNECT TO :LOCNAME USER :USER_AUTHID USING :USER_PASSWORD \n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }
