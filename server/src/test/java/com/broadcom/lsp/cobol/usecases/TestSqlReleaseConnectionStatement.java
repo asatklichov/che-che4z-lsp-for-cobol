@@ -17,7 +17,6 @@ package com.broadcom.lsp.cobol.usecases;
 
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -25,27 +24,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-/** This test checks if sql RELEASE CONNECTION  statement works correctly. */
+/** This test checks if sql RELEASE CONNECTION statement works correctly. */
 class TestSqlReleaseConnectionStatement {
+
+  private static final String TEXT =
+      "       IDENTIFICATION DIVISION.\n"
+          + "       PROGRAM-ID. HELLO-SQL.\n"
+          + "       DATA DIVISION.\n"
+          + "       WORKING-STORAGE SECTION.\n";
+
   private static final String RELEASE_CONNECTION =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          // EXEC SQL RELEASE TOROLAB1;
-          ;
+      TEXT + "       EXEC SQL RELEASE TOROLAB1  END-EXEC.\n";
 
   private static final String RELEASE_CONNECTION2 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          // EXEC SQL RELEASE CURRENT;
-          ;
-
+      TEXT + "       EXEC SQL RELEASE CURRENT  END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(RELEASE_CONNECTION, RELEASE_CONNECTION2);
   }
 

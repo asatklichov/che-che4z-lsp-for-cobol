@@ -15,20 +15,26 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql LOCK TABLE statement works correctly. */
 class TestSqlLockTableStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // LOCK TABLE DSN8C10.EMP IN EXCLUSIVE MODE;
-      ;
+          + "       EXEC SQL\n"
+          + "         LOCK TABLE DSN8C10.EMP IN EXCLUSIVE MODE \n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

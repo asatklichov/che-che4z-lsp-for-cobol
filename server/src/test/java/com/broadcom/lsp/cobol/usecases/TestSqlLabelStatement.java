@@ -26,27 +26,29 @@ import java.util.stream.Stream;
 
 /** This test checks if sql LABEL statement works correctly. */
 class TestSqlLabelStatement {
-  private static final String LABEL1 =
+
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // LABEL ON COLUMN DSN8C10.DEPT.DEPTNO
-      //     IS 'DEPARTMENT NUMBER';
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
+
+  private static final String LABEL1 =
+      TEXT
+          + "       EXEC SQL\n"
+          + "         LABEL ON COLUMN DSN8C10.DEPT.DEPTNO \n"
+          + "         IS 'DEPARTMENT NUMBER' \n"
+          + "       END-EXEC.\n";
 
   private static final String LABEL2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  LABEL ON DSN8C10.DEPT
-      //    (MGRNO IS 'EMPLOYEE NUMBER FOR THE MANAGER',
-      //     ADMRDEPT IS 'ADMINISTERING DEPARTMENT');
-      ;
+      TEXT
+          + "       EXEC SQL\n"
+          + "         LABEL ON DSN8C10.DEPT \n"
+          + "         (MGRNO IS 'EMPLOYEE NUMBER FOR THE MANAGER',\n"
+          + "         ADMRDEPT IS 'ADMINISTERING DEPARTMENT') \n"
+          + "       END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(LABEL1, LABEL2);
   }
 

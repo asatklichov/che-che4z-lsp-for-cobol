@@ -17,7 +17,6 @@ package com.broadcom.lsp.cobol.usecases;
 
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -27,33 +26,30 @@ import java.util.stream.Stream;
 
 /** This test checks if sql RENAME statement works correctly. */
 class TestSqlRenameStatement {
+
+  private static final String TEXT =
+      "       IDENTIFICATION DIVISION.\n"
+          + "       PROGRAM-ID. HELLO-SQL.\n"
+          + "       DATA DIVISION.\n"
+          + "       WORKING-STORAGE SECTION.\n";
+
   private static final String RENAME =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //   RENAME TABLE EMP TO EMPLOYEE;
-          ;
+      TEXT + "       EXEC SQL RENAME TABLE EMP TO EMPLOYEE  END-EXEC.\n";
 
   private static final String RENAME2 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //   RENAME TABLE EMP_USA_HIS2002 TO EMPLOYEE_UNITEDSTATES_HISTORY2002;
-          ;
+      TEXT
+          + "       EXEC SQL\n"
+          + "         RENAME TABLE EMP_USA_HIS2002 TO EMPLOYEE_UNITEDSTATES_HISTORY2002 \n"
+          + "       END-EXEC.\n";
 
   private static final String RENAME3 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //   RENAME INDEX COMPANY.EMPINDX1 TO EMPLOYEE_INDEX;
-          ;
+      TEXT
+          + "       EXEC SQL\n"
+          + "         RENAME INDEX COMPANY.EMPINDX1 TO EMPLOYEE_INDEX \n"
+          + "       END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
-    return Stream.of(RENAME, RENAME2);
+    return Stream.of(RENAME, RENAME2, RENAME3);
   }
 
   @ParameterizedTest

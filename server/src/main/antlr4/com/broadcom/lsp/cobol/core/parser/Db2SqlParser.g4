@@ -717,13 +717,13 @@ dbs_insert: INSERT INTO (dbs_table_name | dbs_view_name) (LPARENCHAR dbs_column_
 dbs_insert_include: INCLUDE LPARENCHAR dbs_column_name dbs_include_data_type (COMMACHAR dbs_column_name dbs_include_data_type)* RPARENCHAR;
 //?
 dbs_insert_data_type: (common_short_built_in_type | dbs_distinct_type);
-dbs_insert_values: VALUES (dbs_insert_values_single | dbs_insert_values_multi);
+dbs_insert_values: VALUES LPARENCHAR (dbs_insert_values_single | dbs_insert_values_multi) RPARENCHAR;
 dbs_insert_values_single: (dbs_expression | DEFAULT | NULL | dbs_insert_values_sgloop);
-dbs_insert_values_sgloop: LPARENCHAR (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))* RPARENCHAR;
+dbs_insert_values_sgloop: (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))*;
 dbs_insert_values_multi: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL | dbs_insert_values_mloop) (FOR (dbs_host_variable |
                         dbs_integer_constant) ROWS)? (ATOMIC | NOT ATOMIC CONTINUE ON SQLEXCEPTION)?;
-dbs_insert_values_mloop: LPARENCHAR (dbs_expression | dbs_host_variable_array | DEFAULT | NULL) (COMMACHAR (dbs_expression |
-                        dbs_host_variable_array | DEFAULT | NULL))* RPARENCHAR;
+dbs_insert_values_mloop: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL) (COMMACHAR (dbs_expression |
+                        dbs_host_variable_array | DEFAULT | NULL))*;
 dbs_insert_fullselect: (WITH dbs_select_statement_common_table_expression (COMMACHAR dbs_select_statement_common_table_expression)*)? dbs_fullselect (WITH (RR|RS|CS))? (QUERYNO dbs_integer)?;
 
 /*LABEL */
@@ -765,12 +765,12 @@ dbs_prepare: PREPARE dbs_statement_name (INTO dbs_descriptor_name (USING (NAMES 
 
 
 /*REFRESH TABLE */
-dbs_refresh: REFRESH TABLE dbs_table_name (QUERYNO dbs_integer);
+dbs_refresh: REFRESH TABLE dbs_table_name (QUERYNO dbs_integer)?;
 
 /* RELEASE (both) */
 dbs_release: RELEASE (dbs_location_name | dbs_host_variable | CURRENT | ALL SQL? | TO? SAVEPOINT dbs_savepoint_name);
 
-dbs_savepoint_name: (NONNUMERICLITERAL | NUMERICLITERAL)+;
+dbs_savepoint_name: (NONNUMERICLITERAL | NUMERICLITERAL)+ | IDENTIFIER;
 
 /*RENAME */
 dbs_rename: RENAME (TABLE? dbs_table_name TO dbs_table_identifier | INDEX dbs_index_name TO dbs_index_identifier);
@@ -1026,7 +1026,7 @@ dbs_update_positioned: dbs_correlation_name? SET dbs_update_assignment (COMMACHA
 dbs_values: VALUES (dbs_values_null | dbs_values_into);
 dbs_values_null: (dbs_expression | LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR);
 dbs_values_into: (dbs_expression | NULL | LPARENCHAR (dbs_expression | NULL) (COMMACHAR (dbs_expression | NULL))* RPARENCHAR) INTO
-                (dbs_values_target (COMMACHAR dbs_values_target)* |dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET);
+                (dbs_values_target (COMMACHAR dbs_values_target)* | dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET);
 dbs_values_target: (dbs_global_variable_name | dbs_host_variable_name | dbs_sql_parameter_name | dbs_sql_variable_name | dbs_transition_variable_name);
 
 /*WHENEVER */
@@ -1477,7 +1477,7 @@ dbs_address_value: dbs_ip4 | dbs_hostname_identifier ;
 dbs_alias_name2: dbs_sql_identifier; //must not be an alias that exists at the current server
 dbs_alias_name: dbs_sql_identifier;
 dbs_applcompat_value: FUNCTION_LEVEL_10 | FUNCTION_LEVEL_11 | FUNCTION_LEVEL_12;
-dbs_array_index: INTEGER;
+dbs_array_index: DIGIT+;
 dbs_array_type_name: dbs_sql_identifier;
 dbs_array_variable: dbs_sql_identifier;
 dbs_array_variable_name: all_words+; //TODO
@@ -1528,7 +1528,7 @@ dbs_function_name: dbs_sql_identifier; //must not be any of the  system-reserved
 dbs_global_variable_name: COLONCHAR? dbs_generic_name;
 dbs_graphic_string_constant: GRAPHIC_CONSTANT;
 dbs_history_table_name: dbs_table_name;
-dbs_host_label: IDENTIFIER;
+dbs_host_label: IDENTIFIER | HANDLER;
 dbs_host_variable: COLONCHAR (FILENAME | IDENTIFIER) (INDICATOR? COLONCHAR (FILENAME | IDENTIFIER))? ;
 dbs_host_variable_array: IDENTIFIER; // variable array must be defined in the application program
 dbs_host_variable_name: COLONCHAR? dbs_generic_name;

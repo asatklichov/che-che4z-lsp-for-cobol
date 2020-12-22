@@ -15,24 +15,44 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
-import org.junit.jupiter.api.Test;
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /** This test checks if sql SAVEPOINT statement works correctly. */
 class TestSqlSavepointStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //    SAVEPOINT A ON ROLLBACK RETAIN CURSORS;
-      //       ⋮
-      //   SAVEPOINT B UNIQUE ON ROLLBACK RETAIN CURSORS;
-      //       ⋮
-      //   SAVEPOINT A ON ROLLBACK RETAIN CURSORS;
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
 
-  @Test
-  void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+  private static final String SAVEPOINT =
+      TEXT + "       EXEC SQL  SAVEPOINT A ON ROLLBACK RETAIN CURSORS END-EXEC.\n";
+
+  private static final String SAVEPOINT2 =
+      TEXT
+          + "       EXEC SQL\n"
+          + "         SAVEPOINT B UNIQUE ON ROLLBACK RETAIN CURSORS  \n"
+          + "       END-EXEC.\n";
+
+  private static final String SAVEPOINT3 =
+      TEXT + "       EXEC SQL  SAVEPOINT A UNIQUE ON ROLLBACK RETAIN CURSORS END-EXEC.\n";
+
+  private static Stream<String> textsToTest() {
+    return Stream.of(SAVEPOINT, SAVEPOINT2, SAVEPOINT3);
+  }
+
+  @ParameterizedTest
+  @MethodSource("textsToTest")
+  @DisplayName("Parameterized - sql create statements tests")
+  void test(String text) {
+    UseCaseEngine.runTest(text, List.of(), Map.of());
   }
 }

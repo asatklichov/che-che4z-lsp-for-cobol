@@ -15,20 +15,38 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
-import org.junit.jupiter.api.Test;
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /** This test checks if sql REGRESH TABLE statement works correctly. */
 class TestSqlRefreshTableStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // REFRESH TABLE SALESCOUNT;
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
 
-  @Test
-  void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+  private static final String REFRESH =
+      TEXT + "       EXEC SQL REFRESH TABLE SALESCOUNT  END-EXEC.\n";
+
+  private static final String REFRESH2 =
+      TEXT + "       EXEC SQL REFRESH TABLE SALESCOUNT QUERYNO 23  END-EXEC.\n";
+
+  private static Stream<String> textsToTest() {
+    return Stream.of(REFRESH, REFRESH2);
+  }
+
+  @ParameterizedTest
+  @MethodSource("textsToTest")
+  @DisplayName("Parameterized - sql create statements tests")
+  void test(String text) {
+    UseCaseEngine.runTest(text, List.of(), Map.of());
   }
 }

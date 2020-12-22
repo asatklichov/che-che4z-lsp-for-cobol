@@ -15,23 +15,27 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql EXECUTE statement works correctly. */
 class TestSqlExecuteStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL PREPARE DEPT_INSERT FROM
-      //     'INSERT INTO DSN8C10.DEPT VALUES(?,?,?,?)';
-      //   -- Check for successful execution and read values into S1
-      //   EXEC SQL EXECUTE DEPT_INSERT USING :S1;
-      ;
+          + "       EXEC SQL INSERT INTO DSN8C10.DEPT VALUES('s1val') END-EXEC.\n"
+          + "       EXEC SQL\n"
+          + "         EXECUTE DEPT_INSERT USING :SS \n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

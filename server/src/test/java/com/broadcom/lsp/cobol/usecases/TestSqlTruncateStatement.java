@@ -17,7 +17,6 @@ package com.broadcom.lsp.cobol.usecases;
 
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -28,39 +27,38 @@ import java.util.stream.Stream;
 /** This test checks if sql TRUNCATE statement works correctly. */
 class TestSqlTruncateStatement {
 
-  private static final String TRUNCATE =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   TRUNCATE TABLE INVENTORY
-      //			DROP STORAGE
-      //       IGNORE DELETE TRIGGERS;
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
+
+  private static final String TRUNCATE =
+      TEXT
+          + "       EXEC SQL\n"
+          + "         TRUNCATE TABLE INVENTORY  \n"
+          + "         DROP STORAGE  \n"
+          + "         IGNORE DELETE TRIGGERS  \n"
+          + "       END-EXEC.\n";
 
   private static final String TRUNCATE2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   TRUNCATE TABLE INVENTORY
-      //      REUSE STORAGE
-      //      IGNORE DELETE TRIGGERS;
-      ;
+      TEXT
+          + "       EXEC SQL\n"
+          + "         TRUNCATE TABLE INVENTORY  \n"
+          + "         REUSE STORAGE  \n"
+          + "         IGNORE DELETE TRIGGERS  \n"
+          + "       END-EXEC.\n";
 
   private static final String TRUNCATE3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   TRUNCATE TABLE INVENTORY
-      //       REUSE STORAGE
-      //       IGNORE DELETE TRIGGERS
-      //       IMMEDIATE;
-      ;
+      TEXT
+          + "       EXEC SQL\n"
+          + "         TRUNCATE TABLE INVENTORY  \n"
+          + "         REUSE STORAGE  \n"
+          + "         IGNORE DELETE TRIGGERS  \n"
+          + "         IMMEDIATE  \n"
+          + "       END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(TRUNCATE, TRUNCATE2, TRUNCATE3);
   }
 

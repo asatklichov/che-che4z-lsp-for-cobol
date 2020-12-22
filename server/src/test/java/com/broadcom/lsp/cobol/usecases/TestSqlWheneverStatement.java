@@ -27,32 +27,22 @@ import java.util.stream.Stream;
 /** This test checks if sql WHENEVER statement works correctly. */
 class TestSqlWheneverStatement {
 
-  private static final String WHENEVER =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL WHENEVER SQLERROR GOTO HANDLER END-EXEC.
-      ;
+          + "       WORKING-STORAGE SECTION.\n";
+
+  private static final String WHENEVER =
+      TEXT + "       EXEC SQL  WHENEVER SQLERROR GOTO HANDLER  END-EXEC.\n";
 
   private static final String WHENEVER2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL WHENEVER SQLWARNING CONTINUE END-EXEC.
-      ;
+      TEXT + "       EXEC SQL  WHENEVER SQLWARNING CONTINUE   END-EXEC.\n";
 
   private static final String WHENEVER3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL WHENEVER NOT FOUND GO TO ENDDATA END-EXEC.
-      ;
+      TEXT + "       EXEC SQL  WHENEVER NOT FOUND GO TO ENDDATA  END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(WHENEVER, WHENEVER2, WHENEVER3);
   }
 

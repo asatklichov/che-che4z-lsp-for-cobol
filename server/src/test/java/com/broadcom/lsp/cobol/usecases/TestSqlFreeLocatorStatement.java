@@ -15,20 +15,26 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql FREE LOCATOR statement works correctly. */
 class TestSqlFreeLocatorStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL FREE LOCATOR :LOCRES, :LOCHIST, :LOCPIC
-      ;
+          + "       EXEC SQL\n"
+          + "         FREE LOCATOR :LOCRES, :LOCHIST, :LOCPIC \n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }
