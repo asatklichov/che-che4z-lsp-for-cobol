@@ -415,7 +415,7 @@ class TestSqlAllRevokeStatements {
 
   @ParameterizedTest
   @MethodSource("textsToTest")
-  @DisplayName("Parameterized - sql create statements tests")
+  @DisplayName("Parameterized - sql revoke statements tests")
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }

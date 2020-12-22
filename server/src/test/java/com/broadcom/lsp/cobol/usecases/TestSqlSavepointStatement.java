@@ -51,7 +51,7 @@ class TestSqlSavepointStatement {
 
   @ParameterizedTest
   @MethodSource("textsToTest")
-  @DisplayName("Parameterized - sql create statements tests")
+  @DisplayName("Parameterized - sql savepoint statements tests")
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }

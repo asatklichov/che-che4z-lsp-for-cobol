@@ -171,7 +171,7 @@ class TestSqlMergeStatement {
 
   @ParameterizedTest
   @MethodSource("textsToTest")
-  @DisplayName("Parameterized - sql create statements tests")
+  @DisplayName("Parameterized - sql merge statements tests")
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }

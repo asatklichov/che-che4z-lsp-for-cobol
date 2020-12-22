@@ -64,7 +64,7 @@ class TestSqlTruncateStatement {
 
   @ParameterizedTest
   @MethodSource("textsToTest")
-  @DisplayName("Parameterized - sql create statements tests")
+  @DisplayName("Parameterized - sql truncate statements tests")
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }

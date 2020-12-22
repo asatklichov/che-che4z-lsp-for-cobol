@@ -152,7 +152,7 @@ class TestSqlUpdateStatement {
 
   @ParameterizedTest
   @MethodSource("textsToTest")
-  @DisplayName("Parameterized - sql create statements tests")
+  @DisplayName("Parameterized - sql update statements tests")
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }
