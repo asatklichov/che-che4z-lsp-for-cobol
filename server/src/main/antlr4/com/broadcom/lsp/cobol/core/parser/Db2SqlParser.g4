@@ -511,8 +511,9 @@ tbl_expr_loop: WITH dbs_select_statement_common_table_expression COMMACHAR dbs_s
 /*DECLARE (all) */
 dbs_declare: DECLARE (dbs_declare_cursor | dbs_declare_global | dbs_declare_statement | dbs_declare_table | dbs_declare_variable);
 
-dbs_declare_cursor: dbs_cursor_name ((NO|ASENSITIVE|INSENSITIVE|SENSITIVE (DYNAMIC|STATIC)?) SCROLL)? CURSOR ((WITH|WITHOUT) HOLD |
-                    (WITHOUT RETURN|WITH RETURN TO (CALLER|CLIENT)) | (WITH|WITHOUT) ROWSET POSITIONING)* /*random ordering req*/  FOR (dbs_select | dbs_statement_name);
+dbs_declare_cursor: DECLARE dbs_cursor_name ((NO|ASENSITIVE|INSENSITIVE|SENSITIVE (DYNAMIC|STATIC)?) SCROLL)? CURSOR ((WITH|WITHOUT) HOLD |
+                    (WITHOUT RETURN|WITH RETURN TO (CALLER|CLIENT)) | (WITH|WITHOUT) ROWSET POSITIONING)* /*random ordering req*/
+                    FOR (dbs_select | dbs_statement_name);
 
 dbs_declare_global: GLOBAL TEMPORARY TABLE dbs_table_name (LPARENCHAR dbs_declare_global_coldef (COMMACHAR dbs_declare_global_coldef)* RPARENCHAR |
                     (LIKE (dbs_table_name | dbs_view_name) | AS LPARENCHAR dbs_fullselect RPARENCHAR WITH NO DATA) dbs_declare_global_copyopts) (CCSID (ASCII|EBCDIC|UNICODE) |
@@ -1049,7 +1050,7 @@ common_built_in_type4: (common_bit_int | common_bit_decimal | common_bit_float |
 common_bit_integer: INTEGER | INT;
 common_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
 common_bit_decimal_opt: (DECIMAL | DEC | NUMERIC);
-common_bit_decimal: common_bit_decimal_opt  (LPARENCHAR dbs_integer (COMMACHAR dbs_integer)? RPARENCHAR)?;
+common_bit_decimal: common_bit_decimal_opt  (LPARENCHAR (dbs_integer (COMMACHAR dbs_integer)? | NUMERICLITERAL) RPARENCHAR)?;
 common_bit_float: (FLOAT (LPARENCHAR dbs_integer RPARENCHAR)? | REAL | DOUBLE PRECISION?);
 common_bit_decfloat: DECFLOAT (LPARENCHAR (NUMBER_34 | NUMBER_16) RPARENCHAR)?;
 common_bit_char: (CHARACTER | CHAR) (VARYING common_bit_varandchar | LARGE OBJECT common_bit_clobandobj | LPARENCHAR dbs_integer RPARENCHAR common_bit_charopts);
