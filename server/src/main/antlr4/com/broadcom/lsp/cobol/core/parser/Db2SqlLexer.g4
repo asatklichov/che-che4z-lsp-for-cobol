@@ -275,7 +275,7 @@ DOUBLEQUOTE : D O U B L E Q U O T E;
 DPSEGSZ : D P S E G S Z;
 DROP : D R O P;
 DROPIN : D R O P I N;
-DSNDB04 : D S N D B '0' '4';
+DSNDB04 : D S N D B '0' '4'; //TODO: ask if this is required or it should be just an identifier
 DSSIZE: D S S I Z E;
 DYNAMIC : D Y N A M I C;
 DYNAMICRULES : D Y N A M I C R U L E S;
