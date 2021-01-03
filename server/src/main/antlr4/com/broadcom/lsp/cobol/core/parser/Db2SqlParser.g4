@@ -232,7 +232,7 @@ dbs_alter_trusted_replace: REPLACE dbs_alter_trusted_add_use;
 dbs_alter_view: VIEW dbs_view_name REGENERATE (USING APPLICATION COMPATIBILITY dbs_applcompat_value)?;
 
 /*ASSOCIATE LOCATORS */
-dbs_associate: ASSOCIATE (RESULT SET)? (LOCATOR | LOCATORS) dbs_rs_locator_variable (COMMACHAR dbs_rs_locator_variable)*
+dbs_associate: ASSOCIATE (RESULT SET)? (LOCATOR | LOCATORS) LPARENCHAR dbs_rs_locator_variable (COMMACHAR dbs_rs_locator_variable)* RPARENCHAR
                WITH PROCEDURE (dbs_procedure_name | dbs_host_variable);
 
 
@@ -515,7 +515,7 @@ tbl_expr_loop: WITH dbs_select_statement_common_table_expression COMMACHAR dbs_s
 /*DECLARE (all) */
 dbs_declare: DECLARE (dbs_declare_cursor | dbs_declare_global | dbs_declare_statement | dbs_declare_table | dbs_declare_variable);
 
-dbs_declare_cursor: DECLARE dbs_cursor_name ((NO|ASENSITIVE|INSENSITIVE|SENSITIVE (DYNAMIC|STATIC)?) SCROLL)? CURSOR ((WITH|WITHOUT) HOLD |
+dbs_declare_cursor: dbs_cursor_name ((NO|ASENSITIVE|INSENSITIVE|SENSITIVE (DYNAMIC|STATIC)?) SCROLL)? CURSOR ((WITH|WITHOUT) HOLD |
                     (WITHOUT RETURN|WITH RETURN TO (CALLER|CLIENT)) | (WITH|WITHOUT) ROWSET POSITIONING)* /*random ordering req*/
                     FOR (dbs_select | dbs_statement_name);
 
@@ -527,7 +527,7 @@ dbs_declare_global_coldef: dbs_column_name (dbs_distinct_type_name | dbs_declare
 dbs_declare_global_bit: (dbs_declare_global_bit_int | dbs_declare_global_bit_decimal | dbs_declare_global_bit_float | dbs_declare_global_bit_decfloat | dbs_declare_global_bit_char |
                             dbs_declare_global_bit_varchar | dbs_declare_global_bit_graphic | dbs_declare_global_bit_binary | DATE | TIME | dbs_declare_global_bit_timestamp );
 dbs_declare_global_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
-dbs_declare_global_bit_decimal: (DECIMAL | DEC | NUMERIC) (LPARENCHAR dbs_integer (COMMACHAR dbs_integer)? RPARENCHAR)?;
+dbs_declare_global_bit_decimal: (DECIMAL | DEC | NUMERIC) (LPARENCHAR (dbs_integer (COMMACHAR dbs_integer)? | NUMERICLITERAL) RPARENCHAR)?;
 dbs_declare_global_bit_float: (FLOAT (LPARENCHAR dbs_integer RPARENCHAR)? | REAL | DOUBLE PRECISION?);
 dbs_declare_global_bit_decfloat: DECFLOAT (LPARENCHAR (NUMBER_34 | NUMBER_16) RPARENCHAR)?;
 dbs_declare_global_bit_char: (CHARACTER | CHAR) (VARYING dbs_declare_global_bit_varchara | LPARENCHAR dbs_integer RPARENCHAR) dbs_declare_global_bit_charopts?;
@@ -549,7 +549,7 @@ dbs_declare_table_loop: dbs_column_name (dbs_distinct_type_name | dbs_declare_ta
 dbs_declare_table_bit: (dbs_declare_table_bit_int | dbs_declare_table_bit_decimal | dbs_declare_table_bit_float | dbs_declare_table_bit_decfloat | dbs_declare_table_bit_char |
                         dbs_declare_table_bit_clob | dbs_declare_table_bit_varchar | dbs_declare_table_bit_graphic | dbs_declare_table_bit_binary | DATE | TIME | TIMESTAMP | ROWID | XML);
 dbs_declare_table_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
-dbs_declare_table_bit_decimal: (DECIMAL | DEC | NUMERIC) (LPARENCHAR dbs_integer (COMMACHAR dbs_integer)? RPARENCHAR)?;
+dbs_declare_table_bit_decimal: (DECIMAL | DEC | NUMERIC) (LPARENCHAR (dbs_integer (COMMACHAR dbs_integer)? | NUMERICLITERAL) RPARENCHAR)?;
 dbs_declare_table_bit_float: (FLOAT (LPARENCHAR dbs_integer RPARENCHAR)? | REAL | DOUBLE PRECISION?);
 dbs_declare_table_bit_decfloat: DECFLOAT (LPARENCHAR (NUMBER_34 | NUMBER_16) RPARENCHAR)?;
 dbs_declare_table_bit_char: (CHARACTER | CHAR) (VARYING dbs_declare_table_bit_varchara | LARGE OBJECT dbs_declare_table_bit_cloba | LPARENCHAR dbs_integer RPARENCHAR);
@@ -653,10 +653,10 @@ dbs_fetch_singlerow: INTO (DESCRIPTOR dbs_descriptor_name | dbs_array_variable L
                     dbs_fetch_target_variable (COMMACHAR dbs_fetch_target_variable)*);
 dbs_fetch_target_variable: (dbs_global_variable_name | dbs_host_variable_name | dbs_sql_parameter_name |
                     dbs_sql_variable_name | dbs_transition_variable_name);
-dbs_fetch_multi: dbs_fetch_rowsetpos FROM? dbs_cursor_name dbs_fetch_multirow;
+dbs_fetch_multi: dbs_fetch_rowsetpos? FROM? dbs_cursor_name dbs_fetch_multirow;
 dbs_fetch_rowsetpos: (ROWSET STARTING AT (ABSOLUTE | RELATIVE) (dbs_host_variable | dbs_integer_constant) | (NEXT | PRIOR |
                     FIRST | LAST | CURRENT) ROWSET);
-dbs_fetch_multirow: (FOR (dbs_host_variable | dbs_integer_constant) ROWS)? (INTO (DESCRIPTOR dbs_descriptor_name |
+dbs_fetch_multirow: (FOR (dbs_host_variable | dbs_integer_constant) ROWS)? ((INTO | USING) (DESCRIPTOR dbs_descriptor_name |
                     dbs_host_variable_array (COMMACHAR dbs_host_variable_array)*))?;
 
 
@@ -693,10 +693,10 @@ dbs_grant_null: dbs_authorization_specification TO dbs_grant_authloop (COMMACHAR
 dbs_grant_collection: (CREATE|PACKADM) (ON|IN) COLLECTION (ASTERISKCHAR | dbs_collection_id (COMMACHAR dbs_collection_id)*) TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_database: db2sql_db_privileges (COMMACHAR db2sql_db_privileges)* ON DATABASE dbs_database_name (COMMACHAR dbs_database_name)* TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_function: EXECUTE ON (PROCEDURE (ASTERISKCHAR | dbs_procedure_name (COMMACHAR dbs_procedure_name)*) | SPECIFIC FUNCTION dbs_specific_name (COMMACHAR dbs_specific_name)* |
-                    dbs_grant_function_loop (COMMACHAR dbs_grant_function_loop)*) TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
+                    FUNCTION dbs_grant_function_loop (COMMACHAR dbs_grant_function_loop)*) TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_function_loop: dbs_function_name (LPARENCHAR (data_type (AS LOCATOR)? (COMMACHAR data_type (AS LOCATOR)?)*)? RPARENCHAR)?;
-dbs_grant_package: (ALL | (BIND|COPY|EXECUTE|RUN) (COMMACHAR (BIND|COPY|EXECUTE|RUN))*) ON PACKAGE dbs_collection_id (dbs_package_name|ASTERISKCHAR)
-                    (COMMACHAR dbs_collection_id (dbs_package_name|ASTERISKCHAR))* TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
+dbs_grant_package: (ALL | (BIND|COPY|EXECUTE|RUN) (COMMACHAR (BIND|COPY|EXECUTE|RUN))*) ON PACKAGE (FILENAME | dbs_collection_id SELECT_ALL)
+                    (COMMACHAR (FILENAME | dbs_collection_id SELECT_ALL))* TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_plan: (BIND|EXECUTE) (COMMACHAR (BIND|EXECUTE))* ON PLAN dbs_plan_name (COMMACHAR dbs_plan_name)* TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_schema: (ALTERIN|CREATEIN|DROPIN) (COMMACHAR (ALTERIN|CREATEIN|DROPIN))* ON SCHEMA (ASTERISKCHAR|dbs_schema_name (COMMACHAR dbs_schema_name)*) TO dbs_grant_authloop
                     (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
@@ -707,7 +707,9 @@ dbs_grant_table: (ALL PRIVILEGES? | db2sql_table_view_privileges (COMMACHAR db2s
 dbs_grant_type: USAGE ON (TYPE dbs_type_name (COMMACHAR dbs_type_name)* | JAR dbs_jar_name (COMMACHAR dbs_jar_name)*) TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_variable: (ALL PRIVILEGES? | (READ|WRITE) (COMMACHAR (READ|WRITE))*) ON VARIABLE dbs_variable_name TO dbs_grant_authloop (COMMACHAR dbs_grant_authloop)* (WITH GRANT OPTION)?;
 dbs_grant_use: USE OF (BUFFERPOOL dbs_bp_name  (COMMACHAR dbs_bp_name)* | ALL BUFFERPOOLS | STOGROUP dbs_stogroup_name (COMMACHAR dbs_stogroup_name)* |
-                TABLESPACE (dbs_database_name DOT)? dbs_table_space_name (COMMACHAR (dbs_database_name DOT)? dbs_table_space_name)*) (WITH GRANT OPTION)?;
+                TABLESPACE (dbs_database_name DOT)? dbs_table_space_name (COMMACHAR (dbs_database_name DOT)? dbs_table_space_name)*)
+                TO (dbs_authorization_name | ROLE dbs_role_name | PUBLIC) (COMMACHAR (dbs_authorization_name | ROLE dbs_role_name | PUBLIC))*
+                (WITH GRANT OPTION)?;
 
 
 /*HOLD LOCATOR */
@@ -1396,9 +1398,9 @@ all_words: NONNUMERICLITERAL | NUMERICLITERAL | INTEGERLITERAL | db2sql_intersec
 
 db2sql_words: db2sql_only_words | db2sql_intersected_words;
 
-db2sql_db_privileges: DBADM | DBCTRL | DBMAINT | CREATETAB | CREATETS | DISPLAYDB | IMAGCOPY | RECOVERDB | REORG | REPAIR | STARTDB | STATS | STOPDB;
-db2sql_system_privileges: ACCESSCTRL | ARCHIVE | BINDADD | BINDAGENT | BSDS | CREATEALIAS | CREATEDBA | CREATEDBC CREATESG | CREATETMTAB | CREATE_SECURE_OBJECT |
-                         DATAACCESS | DBADM | DEBUGSESSION | DISPLAY | EXPLAIN | MONITOR1 | MONITOR2 | RECOVER | SQLADM | STOPALL | STOSPACE | SYSADM | SYSCTRL | SYSOPR | TRACE;
+db2sql_db_privileges: DBADM | DBCTRL | DBMAINT | CREATETAB | CREATETS | DISPLAYDB | DROP | IMAGCOPY | LOAD | RECOVERDB | REORG | REPAIR | STARTDB | STATS | STOPDB;
+db2sql_system_privileges: ACCESSCTRL | ARCHIVE | BINDADD | BINDAGENT | BSDS | CREATEALIAS | CREATEDBA | CREATEDBC | CREATESG | CREATETMTAB | CREATE_SECURE_OBJECT |
+                         DATAACCESS | DBADM ((WITH | WITHOUT) ACCESSCTRL )? ((WITH | WITHOUT) DATAACCESS)? | DEBUGSESSION | DISPLAY | EXPLAIN | MONITOR1 | MONITOR2 | RECOVER | SQLADM | STOPALL | STOSPACE | SYSADM | SYSCTRL | SYSOPR | TRACE;
 
 db2sql_table_view_privileges: ALTER | DELETE | INDEX | INSERT | REFERENCES | SELECT | TRIGGER | UPDATE;
 
@@ -1528,7 +1530,7 @@ dbs_correlation_name: dbs_sql_identifier;
 dbs_cursor_name: dbs_sql_identifier;
 dbs_database_name: dbs_sql_identifier;
 dbs_dc_name: dbs_sql_identifier;// JAVA - lenght must be < 9
-dbs_descriptor_name: SQLD | SQLDABC | SQLN | SQLVAR;
+dbs_descriptor_name: COLONCHAR? (SQLD | SQLDABC | SQLN | SQLVAR | SQLDA | IDENTIFIER); // TODO: check the docs , why only few discriptor names are allowed
 dbs_diagnostic_string_expression: NONNUMERICLITERAL;
 dbs_distinct_type: db2sql_data_types+;
 dbs_distinct_type_name: dbs_sql_identifier;
@@ -1549,7 +1551,7 @@ dbs_global_variable_name: COLONCHAR? dbs_generic_name;
 dbs_graphic_string_constant: GRAPHIC_CONSTANT;
 dbs_history_table_name: dbs_table_name;
 dbs_host_label: IDENTIFIER | HANDLER;
-dbs_host_variable: COLONCHAR (FILENAME | IDENTIFIER) (INDICATOR? COLONCHAR (FILENAME | IDENTIFIER))? ;
+dbs_host_variable: COLONCHAR? (FILENAME | IDENTIFIER) (INDICATOR? COLONCHAR (FILENAME | IDENTIFIER))? ;
 dbs_host_variable_array: IDENTIFIER; // variable array must be defined in the application program
 dbs_host_variable_name: COLONCHAR? dbs_generic_name;
 dbs_id_host_variable: NUMERICLITERAL;
@@ -1593,7 +1595,7 @@ dbs_registered_xml_schema_name: dbs_sql_identifier;
 dbs_result_expression1: dbs_expressions;
 dbs_role_name: dbs_sql_identifier+;
 dbs_routine_version_id: IDENTIFIER;
-dbs_rs_locator_variable: dbs_sql_identifier;
+dbs_rs_locator_variable: COLONCHAR? dbs_sql_identifier;
 dbs_run_time_options: NONNUMERICLITERAL; // a character string that is no longer than 254 bytes
 dbs_runtime_options: VARCHAR; //no longer than 254 bytes
 dbs_s: SINGLEDIGITLITERAL ; // a number between 1 and 9

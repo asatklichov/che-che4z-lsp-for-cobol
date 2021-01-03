@@ -37,64 +37,45 @@ import java.util.stream.Stream;
  * </pre>
  */
 class TestSqlAllDescribeStatements {
-  private static final String DESCRIBE_CURSOR =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL DESCRIBE CURSOR C1 INTO :sqlda1
-      ;
+          + "       EXEC SQL\n";
+
+  private static final String DESCRIBE_CURSOR =
+      TEXT + "        DESCRIBE CURSOR C1 INTO :sqlda1\n" + "       END-EXEC.";
 
   private static final String DESCRIBE_INPUT =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   /* STMT1_STR contains INSERT statement with VALUES clause  */
-      //   EXEC SQL  PREPARE STMT1_NAME FROM :STMT1_STR;
-      //  … /* code to set SQLN to 5 and to allocate the SQLDA         */
-      //   EXEC SQL  DESCRIBE INPUT STMT1_NAME INTO :SQLDA;
-      ;
+      TEXT
+          + "        PREPARE STMT1_NAME FROM :STMT1_STR;\n"
+          + "        DESCRIBE INPUT STMT1_NAME INTO :SQLDA;\n"
+          + "       END-EXEC.";
 
   private static final String DESCRIBE_OUTPUT =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL  BEGIN DECLARE SECTION;
-      //    DCL  STMT1_STR   CHAR(200)  VARYING;
-      //  EXEC SQL  END DECLARE SECTION;
-      //  EXEC SQL  INCLUDE SQLDA;
-      //  EXEC SQL  DECLARE DYN_CURSOR CURSOR FOR STMT1_NAME;
-      //  … /* code to prompt user for a query, then to generate */
-      //      /* a select-statement in the STMT1_STR            */
-      //  EXEC SQL  PREPARE STMT1_NAME FROM :STMT1_STR;
-      //  … /* code to set SQLN to zero and to allocate the SQLDA */
-      //  EXEC SQL  DESCRIBE STMT1_NAME INTO :SQLDA;
-      //  … /* code to check that SQLD is greater than zero, to set */
-      //      /* SQLN to SQLD, then to re-allocate the SQLDA          */
-      //  EXEC SQL  DESCRIBE STMT1_NAME INTO :SQLDA;
-      //  … /* code to prepare for the use of the SQLDA             */
-      //  EXEC SQL  OPEN DYN_CURSOR;
-      //  … /* loop to fetch rows from result table                 */
-      //  EXEC SQL  FETCH DYN_CURSOR USING DESCRIPTOR :SQLDA;
-      ;
+      TEXT
+          + "        BEGIN DECLARE SECTION;\n"
+          + "        END DECLARE SECTION;\n"
+          + "        INCLUDE SQLDA;\n"
+          + "        DECLARE DYN_CURSOR CURSOR FOR STMT1_NAME;\n"
+          + "        PREPARE STMT1_NAME FROM :STMT1_STR;\n"
+          + "        DESCRIBE STMT1_NAME INTO :SQLDA;\n"
+          + "        DESCRIBE STMT1_NAME INTO :SQLDA;\n"
+          + "        OPEN DYN_CURSOR;\n"
+          + "        FETCH DYN_CURSOR USING DESCRIPTOR :SQLDA;\n"
+          + "       END-EXEC.";
 
   private static final String DESCRIBE_PROCEDURE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL CONNECT TO SITE2;
-      //   EXEC SQL CALL P1;
-      //   EXEC SQL DESCRIBE PROCEDURE P1 INTO :SQLDA1;
-      ;
+      TEXT
+          + "        CONNECT TO SITE2;\n"
+          + "        CALL SITE2.MYSCHEMA.P1;\n"
+          + "        ASSOCIATE LOCATORS (:LOC1, :LOC2)\n"
+          + "            WITH PROCEDURE :HV1;\n"
+          + "       END-EXEC.";
 
   private static final String DESCRIBE_TABLE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
+      TEXT + "        DESCRIBE TABLE MySchemaName.MyTableName INTO holder;\n" + "       END-EXEC."
       //  ?
       ;
 
