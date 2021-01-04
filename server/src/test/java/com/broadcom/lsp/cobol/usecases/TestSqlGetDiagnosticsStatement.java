@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql GET DIAGNOSTICS statement works correctly. */
 class TestSqlGetDiagnosticsStatement {
@@ -24,6 +28,14 @@ class TestSqlGetDiagnosticsStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
+          + "       EXEC SQL\n"
+          + "        GET CURRENT DIAGNOSTICS CONDITION 1 \n"
+          + "            msg_text = MESSAGE_TEXT;\n"
+          + "        \n"
+          + "        GET STACKED DIAGNOSTICS CONDITION 1 \n"
+          + "             divide_error = MESSAGE_TEXT;\n"
+          + "       END-EXEC."
+      // TODO: check if below mentioned declare statement is supported in DB2
       // CREATE PROCEDURE TEST
       //	MODIFIES SQL DATA
       //	LANGUAGE SQL
@@ -49,6 +61,6 @@ class TestSqlGetDiagnosticsStatement {
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

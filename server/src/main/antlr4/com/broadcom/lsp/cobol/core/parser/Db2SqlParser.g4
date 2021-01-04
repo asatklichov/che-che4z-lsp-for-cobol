@@ -671,7 +671,7 @@ dbs_get_statement_item: (DB2_LAST_ROW | DB2_NUMBER_PARAMETER_MARKERS | DB2_NUMBE
                         DB2_RETURN_STATUS | DB2_SQL_ATTR_CURSOR_HOLD | DB2_SQL_ATTR_CURSOR_ROWSET | DB2_SQL_ATTR_CURSOR_SCROLLABLE |
                         DB2_SQL_ATTR_CURSOR_SENSITIVITY | DB2_SQL_ATTR_CURSOR_TYPE | MORECHAR | NUMBER | ROW_COUNT);
 dbs_get_condition: CONDITION (dbs_variable | dbs_integer) dbs_variable EQUALCHAR (dbs_get_condition_item | dbs_get_connection_item) (COMMACHAR
-                   dbs_variable EQUALCHAR (dbs_get_condition_item | dbs_get_connection_item)*);
+                   dbs_variable EQUALCHAR (dbs_get_condition_item | dbs_get_connection_item))*;
 dbs_get_condition_item: (CATALOG_NAME | CONDITION_NUMBER | CURSOR_NAME | DB2_ERROR_CODE1 | DB2_ERROR_CODE2 | DB2_ERROR_CODE3 |
                         DB2_ERROR_CODE4 | DB2_INTERNAL_ERROR_POINTER | DB2_LINE_NUMBER | DB2_MESSAGE_ID | DB2_MODULE_DETECTING_ERROR |
                         DB2_ORDINAL_TOKEN1 | DB2_ORDINAL_TOKEN2 |DB2_ORDINAL_TOKEN3 |DB2_ORDINAL_TOKEN4 | DB2_REASON_CODE |
@@ -724,10 +724,10 @@ dbs_insert: INSERT INTO (dbs_table_name | dbs_view_name) (LPARENCHAR dbs_column_
 dbs_insert_include: INCLUDE LPARENCHAR dbs_column_name dbs_include_data_type (COMMACHAR dbs_column_name dbs_include_data_type)* RPARENCHAR;
 //?
 dbs_insert_data_type: (common_short_built_in_type | dbs_distinct_type);
-dbs_insert_values: VALUES LPARENCHAR (dbs_insert_values_single | dbs_insert_values_multi) RPARENCHAR;
-dbs_insert_values_single: (dbs_expression | DEFAULT | NULL | dbs_insert_values_sgloop);
-dbs_insert_values_sgloop: (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL))*;
-dbs_insert_values_multi: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL | dbs_insert_values_mloop) (FOR (dbs_host_variable |
+//dbs_insert_values: VALUES LPARENCHAR (dbs_insert_values_single | dbs_insert_values_multi) RPARENCHAR;
+dbs_insert_values: VALUES ((dbs_expression | DEFAULT | NULL) | LPARENCHAR dbs_insert_values_sgloop RPARENCHAR) | dbs_insert_fullselect | dbs_insert_values_multi;
+dbs_insert_values_sgloop: (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL) | NUMERICLITERAL)*;
+dbs_insert_values_multi: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL | LPARENCHAR dbs_insert_values_mloop RPARENCHAR) (FOR (dbs_host_variable |
                         dbs_integer_constant) ROWS)? (ATOMIC | NOT ATOMIC CONTINUE ON SQLEXCEPTION)?;
 dbs_insert_values_mloop: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL) (COMMACHAR (dbs_expression |
                         dbs_host_variable_array | DEFAULT | NULL))*;
@@ -1521,7 +1521,7 @@ dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
 dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE | SERVER | LOCATOR | V1 | TYPE; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
-dbs_constant : (dbs_string_constant | dbs_integer_constant);
+dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
 dbs_constraint_name: dbs_sql_identifier;
 dbs_context: dbs_sql_identifier;
 dbs_context_name: dbs_sql_identifier;
