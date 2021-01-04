@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql VALUES statement works correctly. */
 class TestSqlValuesStatement {
@@ -24,18 +28,19 @@ class TestSqlValuesStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      //   CREATE TRIGGER EMPISRT1
-      //      AFTER INSERT ON EMP
-      //      REFERENCING NEW AS N
-      //      FOR EACH ROW
-      //      MODE DB2SQL
-      //      BEGIN ATOMIC
-      //         VALUES(NEWEMP(N.EMPNO, N.LASTNAME, N.FIRSTNAME));
-      //      END
-      ;
+          + "       EXEC SQL\n"
+          + "        TRIGGER EMPISRT1\n"
+          + "        AFTER INSERT ON EMP\n"
+          + "        REFERENCING NEW AS N\n"
+          + "        FOR EACH ROW\n"
+          + "        MODE DB2SQL\n"
+          + "        BEGIN ATOMIC\n"
+          + "         VALUES(NEWEMP(N.EMPNO,N.LASTNAME,N.FIRSTNAME));\n"
+          + "        END\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }
