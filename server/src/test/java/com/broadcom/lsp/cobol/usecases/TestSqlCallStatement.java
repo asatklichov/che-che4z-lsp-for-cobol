@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql CALL statement works correctly. */
 class TestSqlCallStatement {
@@ -24,14 +28,15 @@ class TestSqlCallStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL CONNECT TO BETA;
-      // V1 = 528671;
-      // IV = -1;
-      // EXEC SQL CALL SUMARIZE(:V1,:V2 INDICATOR :IV);
-      ;
+          + "       EXEC SQL\n"
+          + "         CONNECT TO BETA;\n"
+          + "         SET v1 = 528671;\n"
+          + "         SET IV = -1;\n"
+          + "         CALL SUMARIZE(:V1,:V2 INDICATOR :IV);\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

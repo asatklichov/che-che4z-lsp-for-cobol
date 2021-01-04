@@ -27,50 +27,42 @@ import java.util.stream.Stream;
 /** This test checks if sql COMMENT statement works correctly. */
 class TestSqlCommentStatement {
 
-  private static final String COMMENT1 =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // COMMENT ON TABLE DSN8C10.EMP
-      //     IS 'REFLECTS 1ST QTR 81 REORG';
-      ;
+          + "       EXEC SQL\n";
+
+  private static final String COMMENT1 =
+      TEXT
+          + "         COMMENT ON TABLE DSN8C10.EMP\n"
+          + "          IS 'REFLECTS 1ST QTR 81 REORG';\n"
+          + "       END-EXEC.";
 
   private static final String COMMENT2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // COMMENT ON COLUMN DSN8C10.DEPT.DEPTNO
-      //     IS 'DEPARTMENT ID - UNIQUE';
-      ;
+      TEXT
+          + "         COMMENT ON COLUMN DSN8C10.DEPT.DEPTNO\n"
+          + "         IS 'DEPARTMENT ID - UNIQUE';\n"
+          + "       END-EXEC.";
 
   private static final String COMMENT3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // COMMENT ON FUNCTION CHEM.ATOMIC_WEIGHT
-      //     IS 'TAKES ATOMIC NUMBER AND GIVES ATOMIC WEIGHT';
-      ;
+      TEXT
+          + "         COMMENT ON FUNCTION CHEM.ATOMIC_WEIGHT\n"
+          + "         IS 'TAKES ATOMIC NUMBER AND GIVES ATOMIC WEIGHT';\n"
+          + "       END-EXEC.";
 
   private static final String COMMENT4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // COMMENT ON PROCEDURE BIOLOGY.OSMOSIS
-      //     IS 'CALCULATIONS THAT MODEL OSMOSIS';
-      ;
+      TEXT
+          + "         COMMENT ON PROCEDURE BIOLOGY.OSMOSIS\n"
+          + "         IS 'CALCULATIONS THAT MODEL OSMOSIS'\n"
+          + "       END-EXEC.";
 
   private static final String COMMENT5 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // COMMENT ON ROLE ROLE1
-      //     IS 'Role defined for trusted context, ctx1';
-      ;
+      TEXT
+          + "       COMMENT ON ROLE ROLE1 \n"
+          + "       IS 'Role defined for trusted context, ctx1';\n"
+          + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
     return Stream.of(COMMENT1, COMMENT2, COMMENT3, COMMENT4, COMMENT5);
