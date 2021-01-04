@@ -929,7 +929,7 @@ dbs_set_current_app_compatibility: CURRENT APPLICATION COMPATIBILITY EQUALCHAR? 
 dbs_set_current_app_enc_schema: CURRENT APPLICATION? ENCODING SCHEME EQUALCHAR? (dbs_string_constant | dbs_host_variable);
 
 //SET CURRENT DEBUG MODE
-dbs_set_current_debug_mode: CURRENT DEBUG MODE APPLICATION? (dbs_host_variable | DISALLOW | ALLOW | DISABLE);
+dbs_set_current_debug_mode: CURRENT DEBUG MODE EQUALCHAR? (dbs_host_variable | DISALLOW | ALLOW | DISABLE);
 
 //SET CURRENT DECFLOAT ROUNDING MODE
 dbs_set_decfloat_round_mode: CURRENT DECFLOAT ROUNDING MODE EQUALCHAR? (dbs_rounding_mode | dbs_string_constant | dbs_host_variable);
@@ -969,7 +969,7 @@ dbs_set_current_precision:  CURRENT PRECISION EQUALCHAR? (dbs_string_constant | 
 dbs_set_current_query_accel: CURRENT QUERY ACCELERATION EQUALCHAR? (NONE | ENABLE | ENABLE WITH FAILBACK | ELIGIBLE | ALL | dbs_host_variable);
 
 //SET CURRENT QUERY ACCELARATION WAITFORDATA
-dbs_set_current_query_accel_wfdata: CURRENT QUERY ACCELERATION WAITFORDATA EQUALCHAR? (DECIMAL_CONST | dbs_variable);
+dbs_set_current_query_accel_wfdata: CURRENT QUERY ACCELERATION WAITFORDATA EQUALCHAR? (NUMERICLITERAL | dbs_variable); //TODO: java, here numreic literal must be of format %d%d%d%d.%d
 
 //SET CURRENT REFRESH AGE
 dbs_set_current_refresh_age: CURRENT REFRESH AGE EQUALCHAR? (dbs_numeric_constant | ANY | dbs_host_variable);
@@ -981,10 +981,10 @@ dbs_set_current_routine_version: CURRENT ROUTINE VERSION EQUALCHAR? (dbs_routine
 dbs_set_current_rules: CURRENT RULES EQUALCHAR? (dbs_string_constant | dbs_host_variable);
 
 //SET CURRENT SQLID
-dbs_set_current_sqlid: CURRENT SQLID EQUALCHAR? ( (SESSION_USER | USER) dbs_string_constant | dbs_host_variable);
+dbs_set_current_sqlid: CURRENT SQLID EQUALCHAR? (SESSION_USER | USER | dbs_string_constant | dbs_host_variable);
 
 //SET CURRENT TEMPORAL BUSINESS_TIME
-dbs_set_current_temp_business_time: CURRENT TEMPORAL BUSINESS_TIME EQUALCHAR? (NULL | dbs_expression);
+dbs_set_current_temp_business_time: CURRENT TEMPORAL BUSINESS_TIME EQUALCHAR? (NULL | dbs_expressions);
 
 //SET CURRENT TEMPORAL SYSTEM_TIME
 dbs_set_current_temp_system_time: CURRENT TEMPORAL SYSTEM_TIME EQUALCHAR? (NULL | dbs_expression);
@@ -1133,7 +1133,7 @@ dbs_option_list_trigger: option_debug_mode? option_qualifier? option_asutime? op
 
 //dbs_option_list_inl_def:  option_specific? option_parameter option_deterministic? option_action? option_sqldata_common? option_dispatch? option_called? option_secured?;
 dbs_option_list_inl_def:  (option_specific| option_parameter | option_deterministic| option_action| option_sqldata_common| option_dispatch| option_called| option_secured | LANGUAGE SQL)+;
-option_acceleration: ACCELERATION WAITFORDATA DECIMAL_CONST;
+option_acceleration: ACCELERATION WAITFORDATA NUMERICLITERAL; // TODO: java, here numreic literal must be of format %d%d%d%d.%d
 option_accelerator: ACCELERATOR dbs_accelerator_name;
 option_action: NO?  EXTERNAL ACTION;
 option_after: (STOP AFTER (SYSTEM DEFAULT FAILURES | dbs_integer FAILURES) | CONTINUE AFTER FAILURE);
@@ -1322,7 +1322,7 @@ dbs_predicate: (dbs_basic_predicate | dbs_quantified_predicate | dbs_array_exist
 dbs_searched_when_clause : (WHEN LPARENCHAR dbs_predicate RPARENCHAR THEN (dbs_result_expression1 | NULL))+;
 
 dbs_function_invocation : dbs_function_name LPARENCHAR (ALL | DISTINCT)? (TABLE dbs_transition_table_name |
-dbs_expressions (COMMACHAR dbs_expressions | NUMERICLITERAL)*)? RPARENCHAR;
+(dbs_expressions | DATELITERAL) (COMMACHAR (dbs_expressions | DATELITERAL) | NUMERICLITERAL)*)? RPARENCHAR;
 dbs_cast_specification: CAST LPARENCHAR (dbs_expression | NULL | dbs_parameter_marker) AS dbs_comment_parameter_type RPARENCHAR;
 dbs_time_zone_expression : ( dbs_function_invocation | LPARENCHAR dbs_expression RPARENCHAR | dbs_constant |
 dbs_column_name | dbs_variable | dbs_special_register | dbs_scalar_fullselect | dbs_case_expression | dbs_cast_specification);
@@ -1417,7 +1417,7 @@ db2sql_intersected_words: ACCESS | ALL | ANY | APPLY | ARE | AS | ASCII | AT | A
                             SQL | START | THEN | TIME | TO TRAILING | TRUE | TYPE | UNTIL | USAGE | USE | USING | VALUE |
                             VALUES | VARYING | WHEN | WITH | WRITE | XML | YEAR;
 
-dbs_inbuild_functions : LENGTH | SUBSTR | COUNT | CAST | COALESCE; // TODO REF https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlfunctionslist.html
+dbs_inbuild_functions : LENGTH | SUBSTR | COUNT | CAST | COALESCE | TIMESTAMP; // TODO REF https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlfunctionslist.html
 db2sql_only_words: ABSOLUTE | ACCELERATION | ACCELERATOR | ACTIVATE | ACTIVE | ADA | AGE | ALIAS | ALLOW | ALTERIN | ALWAYS | APPEND |
                             APPLCOMPAT | APPLICATION | ARCHIVE | ASC | ASSERTION | ASSOCIATE | ASUTIME | ATOMIC | AUTHID |
                             AUTHORIZATION | AUTOMATIC | AVG | AUX | BEGIN | BETWEEN | BIGINT | BIND | BINDADD | BIT_LENGTH | BLOCKED |
@@ -1519,7 +1519,7 @@ dbs_clone_table_name: dbs_sql_identifier;
 dbs_collection_id: IDENTIFIER;
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
+dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE | SERVER | LOCATOR; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
 dbs_constraint_name: dbs_sql_identifier;
@@ -1542,8 +1542,8 @@ dbs_explainable_sql_statement: ( dbs_allocate | dbs_alter | dbs_associate | dbs_
  dbs_prepare | dbs_refresh | dbs_release | dbs_rename | dbs_select | dbs_truncate | dbs_select | dbs_set | dbs_delete | dbs_drop); // RE-CHECK
 dbs_ext_program_name: dbs_sql_identifier;
 dbs_external_program_name: IDENTIFIER;
-dbs_hint_variable:  all_words+; //TODO
-dbs_hint_string_constant:  all_words+; //TODO
+dbs_hint_variable:  dbs_variable;
+dbs_hint_string_constant:  STRINGLITERAL; //TODO
 dbs_fetch_clause: FETCH (FIRST | NEXT) (PLUSCHAR? INTEGERLITERAL)? (ROW | ROWS) ONLY;
 dbs_field_name: dbs_sql_identifier;
 dbs_function_name: dbs_sql_identifier | dbs_inbuild_functions; //must not be any of the  system-reserved keywords
@@ -1580,8 +1580,8 @@ dbs_session_variable : SYSIBM DOT PACKAGE_NAME | SYSIBM DOT PACKAGE_SCHEMA | SYS
 dbs_numeric_constant: dbs_integer;// numeric literal without non-zero digits to the right of the decimal point.
 dbs_obfuscated_statement_text: all_words+ ; // TODO CONFUSING encoded statement, can have all words but meaning would change.
 dbs_package_name: NONNUMERICLITERAL;
-dbs_password_variable: all_words+; // TODO
-dbs_password_string_constant: all_words+; // TODO
+dbs_password_variable: COLONCHAR? (all_words | dbs_generic_name)+;
+dbs_password_string_constant: STRINGLITERAL; // TODO
 dbs_package_path: FILENAME+;
 dbs_pageset_pagenum_param: ABSOLUTE | CHAR_A | RELATIVE | CHAR_R ;
 dbs_parameter_marker: ( QUESTIONMARK | COLONCHAR dbs_variable);
@@ -1602,7 +1602,7 @@ dbs_s: SINGLEDIGITLITERAL ; // a number between 1 and 9
 dbs_sc_name: IDENTIFIER;// must be from 1-8 characters in length
 dbs_scalar_fullselect : LPARENCHAR dbs_fullselect RPARENCHAR;
 dbs_schema_location: dbs_hostname_identifier;
-dbs_schema_name: IDENTIFIER;
+dbs_schema_name: IDENTIFIER | SYSIBM;
 dbs_search_condition: NOT? dbs_predicate (SELECTIVITY dbs_integer_constant)? ((AND|OR) NOT?
                       (dbs_predicate | dbs_search_condition))*;
 dbs_seclabel_name: IDENTIFIER;
