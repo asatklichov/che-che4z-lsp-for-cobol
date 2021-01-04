@@ -29,7 +29,7 @@ class TestSqlValuesStatement {
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
           + "       EXEC SQL\n"
-          + "        TRIGGER EMPISRT1\n"
+          + "        CREATE TRIGGER EMPISRT1\n"
           + "        AFTER INSERT ON EMP\n"
           + "        REFERENCING NEW AS N\n"
           + "        FOR EACH ROW\n"
