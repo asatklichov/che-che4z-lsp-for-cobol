@@ -66,12 +66,11 @@ class TestSqlInsertStatement {
       ;
 
   private static final String INSERT5 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          // EXEC SQL INSERT INTO T1 FOR :hv ROWS VALUES (:hva:hvind) ATOMIC;
-          ;
+      TEXT
+          + "        INSERT INTO T1 FOR :hv \n"
+          + "        ROWS VALUES (:hva:hvind) ATOMIC;\n"
+          + "       END-EXEC."
+      ;
 
   private static Stream<String> textsToTest() {
     return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5);
