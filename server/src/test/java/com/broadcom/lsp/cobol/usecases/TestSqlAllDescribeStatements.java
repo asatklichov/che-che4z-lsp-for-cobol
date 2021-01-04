@@ -80,7 +80,6 @@ class TestSqlAllDescribeStatements {
       ;
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         DESCRIBE_CURSOR, DESCRIBE_INPUT, DESCRIBE_OUTPUT, DESCRIBE_PROCEDURE, DESCRIBE_TABLE);
   }

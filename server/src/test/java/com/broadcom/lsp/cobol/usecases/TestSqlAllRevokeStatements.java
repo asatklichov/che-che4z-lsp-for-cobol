@@ -250,7 +250,6 @@ class TestSqlAllRevokeStatements {
           + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         REVOKE_IN_COLLECTION,
         REVOKE_IN_COLLECTION2,

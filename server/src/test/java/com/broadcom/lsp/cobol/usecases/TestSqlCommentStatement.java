@@ -73,7 +73,6 @@ class TestSqlCommentStatement {
       ;
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(COMMENT1, COMMENT2, COMMENT3, COMMENT4, COMMENT5);
   }
 

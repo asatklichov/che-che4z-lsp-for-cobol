@@ -35,7 +35,7 @@ class TestSqlValuesStatement {
           + "        FOR EACH ROW\n"
           + "        MODE DB2SQL\n"
           + "        BEGIN ATOMIC\n"
-          + "         VALUES(NEWEMP(N.EMPNO,N.LASTNAME,N.FIRSTNAME));\n"
+          + "         VALUES(NEWEMP(N.EMPNO, N.LASTNAME,N.FIRSTNAME));\n"
           + "        END\n"
           + "       END-EXEC.";
 

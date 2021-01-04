@@ -1499,7 +1499,7 @@ dbs_address_value: dbs_ip4 | dbs_hostname_identifier | NONNUMERICLITERAL ;
 dbs_alias_name2: dbs_sql_identifier; //must not be an alias that exists at the current server
 dbs_alias_name: dbs_sql_identifier;
 dbs_applcompat_value: FUNCTION_LEVEL_10 | FUNCTION_LEVEL_11 | FUNCTION_LEVEL_12;
-dbs_array_index: DIGIT+;
+dbs_array_index: dbs_integer;
 dbs_array_type_name: dbs_sql_identifier;
 dbs_array_variable: dbs_sql_identifier;
 dbs_array_variable_name: all_words+; //TODO
@@ -1519,7 +1519,7 @@ dbs_clone_table_name: dbs_sql_identifier;
 dbs_collection_id: IDENTIFIER;
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE | SERVER | LOCATOR; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
+dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE | SERVER | LOCATOR | TYPE; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant);
 dbs_constraint_name: dbs_sql_identifier;

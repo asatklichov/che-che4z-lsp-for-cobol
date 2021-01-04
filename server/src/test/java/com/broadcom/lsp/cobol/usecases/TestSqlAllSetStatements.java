@@ -239,7 +239,6 @@ class TestSqlAllSetStatements {
       TEXT + "         SET SESSION TIME ZONE = '-8:00';\n" + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         SET_CONNECTION,
         SET_ASSIGNMENT_STATE,

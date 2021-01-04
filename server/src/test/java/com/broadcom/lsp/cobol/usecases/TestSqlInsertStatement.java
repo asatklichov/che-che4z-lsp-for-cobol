@@ -77,7 +77,6 @@ class TestSqlInsertStatement {
           ;
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5);
   }
 

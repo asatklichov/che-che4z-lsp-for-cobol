@@ -71,7 +71,6 @@ class TestSqlSelectIntoStatement {
           ;
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(SELECT_INTO2,SELECT_INTO3,SELECT_INTO4 );
   }
 

@@ -1016,7 +1016,6 @@ class TestSqlAllCreateStatements {
           + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         CREATE_ALIAS,
         CREATE_AUX_TABLE,

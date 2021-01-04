@@ -27,44 +27,27 @@ import java.util.stream.Stream;
 /** This test checks if sql VALUES INTO statement works correctly. */
 class TestSqlValuesIntoStatement {
 
-  private static final String VALUES_INTO =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL VALUES(CURRENT PATH)
-      //            INTO :HV1;
-      ;
+          + "       EXEC SQL \n";
+
+  private static final String VALUES_INTO =
+      TEXT + "       VALUES(CURRENT PATH) INTO :HV1; END-EXEC.";
 
   private static final String VALUES_INTO2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL VALUES(CURRENT MEMBER)
-      //            INTO :MEM;
-      ;
+      TEXT + "       VALUES(CURRENT MEMBER) INTO :MEM; END-EXEC.";
 
   private static final String VALUES_INTO3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL VALUES (SUBSTR(:LOB1,1,35))
-      //            INTO :DETAILS;
-      ;
+      TEXT + "       VALUES (SUBSTR(:LOB1,1,35)) INTO :DETAILS; END-EXEC.";
 
   private static final String VALUES_INTO4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // VALUES INTVAR1 INTO MYINTARRAY1[INTCOL2+MYINTVAR+1];
-      ;
+      TEXT + "       VALUES INTVAR1 INTO MYINTARRAY1[23]; END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
-    return Stream.of(VALUES_INTO, VALUES_INTO2, VALUES_INTO3);
+    return Stream.of(VALUES_INTO, VALUES_INTO2, VALUES_INTO3, VALUES_INTO4);
   }
 
   @ParameterizedTest

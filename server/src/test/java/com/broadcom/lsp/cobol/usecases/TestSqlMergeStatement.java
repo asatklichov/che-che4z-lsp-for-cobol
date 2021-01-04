@@ -165,7 +165,6 @@ class TestSqlMergeStatement {
       ;
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(MERGE1, MERGE2, MERGE3, MERGE4, MERGE5);
   }
 

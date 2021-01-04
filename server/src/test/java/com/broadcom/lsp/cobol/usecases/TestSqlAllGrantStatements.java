@@ -232,7 +232,6 @@ class TestSqlAllGrantStatements {
           + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         GRANT_ON_COLLECTION,
         GRANT_ON_COLLECTION2,

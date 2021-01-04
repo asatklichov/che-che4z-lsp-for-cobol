@@ -106,7 +106,6 @@ class TestSqlAllDeclareStatements {
           + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    // add all
     return Stream.of(
         DECLARE_CURSOR,
         DECLARE_GLOBAL_TEMP_TABLE,
