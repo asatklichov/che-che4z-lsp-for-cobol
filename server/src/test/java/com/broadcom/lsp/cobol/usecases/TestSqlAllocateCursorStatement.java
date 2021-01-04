@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql ALLOCATE CURSOR statement works correctly. */
 class TestSqlAllocateCursorStatement {
@@ -24,11 +28,12 @@ class TestSqlAllocateCursorStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL ALLOCATE C1 CURSOR FOR RESULT SET :LOC1;
-      ;
+          + "       EXEC SQL\n"
+          + "         ALLOCATE C1 CURSOR FOR RESULT SET :LOC1;\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }
