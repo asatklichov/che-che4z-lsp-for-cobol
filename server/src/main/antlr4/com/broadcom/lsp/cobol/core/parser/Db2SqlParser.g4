@@ -804,8 +804,8 @@ db_name_loop: dbs_database_name (COMMACHAR dbs_database_name)*;
 
 //REVOKE FUNCTION OR PROCEDURE PRIVILEGES
 dbs_revoke_func_or_proc_prvg:  EXECUTE ON function_or_procedure  FROM auth_name_loop_pub  auth_name_loop_all? dependent_privileges? RESTRICT?;
-function_or_procedure: (FUNCTION (db_function_name_body_loop | ASTERISKCHAR) | SPECIFIC FUNCTION db_specific_name_loop) | PROCEDURE db_procedure_name_loop;
-db_function_name_body_loop: dbs_function_name param_loop (COMMACHAR dbs_function_name param_loop)*;
+function_or_procedure: (FUNCTION (db_function_name_body_loop | ASTERISKCHAR) | SPECIFIC FUNCTION db_specific_name_loop | PROCEDURE db_procedure_name_loop);
+db_function_name_body_loop: dbs_function_name param_loop? (COMMACHAR dbs_function_name param_loop?)*;
 param_loop: LPARENCHAR param_type (COMMACHAR param_type)*  RPARENCHAR;
 param_type: data_type (AS LOCATOR)?; //AS LOCATOR can be specified only for a LOB data type
 db_specific_name_loop: dbs_specific_name (COMMACHAR dbs_specific_name)*;
@@ -816,7 +816,7 @@ dbs_revoke_pack_prvg: (ALL | revoke_opt_loop) ON PACKAGE package_name_loop FROM 
 revoke_opt_loop: revoke_opt (COMMACHAR revoke_opt)*;
 revoke_opt: BIND | COPY | EXECUTE | RUN;
 package_name_loop: package_name (COMMACHAR package_name)*;
-package_name: dbs_collection_id DOT (dbs_package_name | ASTERISKCHAR);
+package_name: dbs_collection_id SELECT_ALL? | FILENAME;
 
 //REVOKE PLAN PRIVILEGES
 dbs_revoke_plan_prvg: (BIND | EXECUTE) (COMMACHAR (BIND | EXECUTE))* ON PLAN plan_name_loop FROM auth_name_loop_pub  auth_name_loop_all? dependent_privileges?;
