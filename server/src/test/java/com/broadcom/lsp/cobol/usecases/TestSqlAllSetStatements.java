@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * This PARAMETERIZED test checks if all below sql SET statements works correctly.
@@ -58,406 +59,236 @@ import java.util.Map;
  * </pre>
  */
 class TestSqlAllSetStatements {
-  private static final String SET_CONNECTION =
+  private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL CONNECT TO TOROLAB1;
-      //
-      //    -- execute statements referencing objects at TOROLAB1
-      //
-      //  EXEC SQL CONNECT TO TOROLAB2;
-      //
-      //    -- execute statements referencing objects at TOROLAB2
-      //
-      //  EXEC SQL SET CONNECTION TOROLAB1;
-      //
-      //    -- execute statements referencing objects at TOROLAB1
-      ;
+          + "       EXEC SQL\n";
+
+  private static final String SET_CONNECTION =
+      TEXT + "        SET CONNECTION TOROLAB1;\n" + "       END-EXEC.";
 
   private static final String SET_ASSIGNMENT_STATE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET :HVL = CURRENT PATH;
-      ;
+      TEXT + "        SET :HVL = CURRENT PATH;\n" + "       END-EXEC.";
 
   private static final String SET_ASSIGNMENT_STATE2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET :SERVER = CURRENT PATH,
-      //       :XTIME = CURRENT TIME,
-      //       :MEM = CURRENT MEMBER;
-      ;
+      TEXT
+          + "        SET :SERVER = CURRENT PATH,\n"
+          + "       :XTIME = CURRENT TIME,\n"
+          + "       :MEM = CURRENT MEMBER;\n"
+          + "       END-EXEC.";
 
   private static final String SET_ASSIGNMENT_STATE3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET :DETAILS = SUBSTR(:LOCATOR,1,35);
-      ;
+      TEXT + "        SET :DETAILS = SUBSTR(:LOCATOR,1,35);\n" + "       END-EXEC.";
 
   private static final String SET_ASSIGNMENT_STATE4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SELECT SUBSTR(:LOCATOR,1,35)
-      //      INTO :DETAILS
-      //      FROM SYSIBM.SYSDUMMYU;
-      ;
+      TEXT
+          + "        SELECT SUBSTR(:LOCATOR,1,35)\n"
+          + "         INTO :DETAILS\n"
+          + "         FROM SYSIBM.SYSDUMMYU;\n"
+          + "       END-EXEC.";
 
   private static final String SET_ASSIGNMENT_STATE5 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET (SALARY, COMMISSION) = (50000, 8000);
-      ;
+      TEXT + "        SET (SALARY, COMMISSION) = (50000, 8000);\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_ACCELARATOR_ =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT ACCELERATOR = ACCEL1;
-      ;
+      TEXT + "        SET CURRENT ACCELERATOR = ACCEL1;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_APPLICATION_COMPATIBILITY =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL SET CURRENT APPLICATION COMPATIBILITY = 'V11R1';
-      //  EXEC SQL SET CURRENT APPLICATION COMPATIBILITY = :HV1;
-      ;
+      TEXT
+          + "         SET CURRENT APPLICATION COMPATIBILITY = 'V11R1';\n"
+          + "         SET CURRENT APPLICATION COMPATIBILITY = :HV1;\n"
+          + "       END-EXEC.";
 
   private static final String SET_CURRENT_ENCODING_SCHEMA =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL SET CURRENT APPLICATION ENCODING SCHEME = 'EBCDIC';
-      //  EXEC SQL SET CURRENT ENCODING SCHEME  = :HV1;
-      ;
+      TEXT
+          + "         SET CURRENT APPLICATION ENCODING SCHEME = 'EBCDIC';\n"
+          + "         SET CURRENT ENCODING SCHEME  = :HV1;\n"
+          + "       END-EXEC.";
 
   private static final String SET_CURRENT_DEBUG_MODE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT DEBUG MODE = ALLOW;
-      ;
+      TEXT + "         SET CURRENT DEBUG MODE = ALLOW;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_DECFLOAT_ROUNDING_MODE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT DECFLOAT ROUNDING MODE = ROUND_CEILING;
-      ;
+      TEXT + "         SET CURRENT DECFLOAT ROUNDING MODE = ROUND_CEILING;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_DEGREE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT DEGREE = '1';
-      ;
+      TEXT + "         SET CURRENT DEGREE = '1';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_DEGREE2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT DEGREE = 'ANY';
-      ;
+      TEXT + "         SET CURRENT DEGREE = 'ANY';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_EXPLAIN_MODE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT EXPLAIN MODE = YES;
-      ;
+      TEXT + "         SET CURRENT EXPLAIN MODE = YES;\n" + "       END-EXEC.";
   private static final String SET_CURRENT_GET_ACCEL_ARCHIVE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT GET_ACCEL_ARCHIVE=NO;
-      ;
+      TEXT + "         SET CURRENT GET_ACCEL_ARCHIVE=NO;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_LOCALE_LC_CTYPE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET CURRENT LOCALE LC_CTYPE = 'En_US';
-      ;
+      TEXT + "         SET CURRENT LOCALE LC_CTYPE = 'En_US';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_LOCALE_LC_CTYPE2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET CURRENT LOCALE LC_CTYPE = :HV1;
-      ;
+      TEXT + "         SET CURRENT LOCALE LC_CTYPE = :HV1;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_MAINTAINED_TABLE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET CURRENT LOCALE LC_CTYPE = :HV1;
-      ;
+      TEXT + "         SET CURRENT MAINTAINED TABLE TYPES ALL;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_MAINTAINED_TABLE2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT MAINTAINED TABLE TYPES ALL;
-      ;
+      TEXT
+          + "         VALUES (CURRENT MAINTAINED TABLE TYPES) INTO :CURMAINTYPES;\n"
+          + "       END-EXEC.";
   private static final String SET_CURRENT_MAINTAINED_TABLE3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET CURRENT LOCALE LC_CTYPE = :HV1;
-      ;
+      TEXT + "         SET CURRENT MAINTAINED TABLE TYPES NONE;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_OPTIMIZATION_HINT =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT OPTIMIZATION HINT = 'NOHYB';
-      ;
+      TEXT + "         SET CURRENT OPTIMIZATION HINT = 'NOHYB';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_OPTIMIZATION_HINT2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT OPTIMIZATION HINT = '';
-      ;
+      TEXT + "         SET CURRENT OPTIMIZATION HINT = '';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_PACKAGE_PATH =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT PACKAGE PATH :hvar1;
-      ;
+      TEXT + "         SET CURRENT PACKAGE PATH :hvar1;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_PACKAGE_PATH2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT PACKAGE PATH = "COLL1","COLL#2","COLL3", :hvar1;
-      ;
+      TEXT
+          + "         SET CURRENT PACKAGE PATH = \n"
+          + "         \"COLL1\",\"COLL#2\",\"COLL3\", :hvar1;\n"
+          + "       END-EXEC.";
 
   private static final String SET_CURRENT_PACKAGE_PATH3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT PACKAGE PATH = ' ';
-      ;
+      TEXT + "         SET CURRENT PACKAGE PATH = ' ';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_PACKAGESET =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL SET CURRENT PACKAGESET = 'PERSONNEL';
-      ;
+      TEXT + "         SET CURRENT PACKAGESET = 'PERSONNEL';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_PACKAGESET2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL SET CURRENT PACKAGESET = '';
-      ;
+      TEXT + "         SET CURRENT PACKAGESET = '';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_PRECISION =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET CURRENT PRECISION = 'DEC15';
-      ;
-
-  private static final String SET_CURRENT_PRECISION2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT QUERY ACCELERATION NONE;
-      ;
+      TEXT + "         SET CURRENT PRECISION = 'DEC15';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_QUERY_ACCELERATION =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT QUERY ACCELERATION NONE;
-      ;
+      TEXT + "         SET CURRENT QUERY ACCELERATION NONE;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_QUERY_ACCELERATION_WAITFORDATA =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT QUERY ACCELERATION WAITFORDATA = 180.0;
-      ;
+      TEXT + "         SET CURRENT QUERY ACCELERATION WAITFORDATA = 180.0;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_QUERY_ACCELERATION_WAITFORDATA2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT QUERY ACCELERATION WAITFORDATA = 2.5;
-      ;
+      TEXT + "         SET CURRENT QUERY ACCELERATION WAITFORDATA = 2.5;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_REFRESH_AGE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET CURRENT REFRESH AGE ANY;
-      ;
+      TEXT + "         SET CURRENT REFRESH AGE ANY;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_ROUTINE_VERSION =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //    SET CURRENT ROUTINE VERSION = :rvid;
-      ;
+      TEXT + "         SET CURRENT ROUTINE VERSION = :rvid;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_RULES =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  EXEC SQL SET CURRENT RULES = 'DB2';
-      ;
+      TEXT + "         SET CURRENT RULES = 'DB2';\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_SQLID =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT SQLID = SESSION_USER;
-      ;
+      TEXT + "         SET CURRENT SQLID = SESSION_USER;\n" + "       END-EXEC.";
 
   private static final String SET_CURRENT_TEMPORAL_BUSINESS_TIME =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT TEMPORAL BUSINESS_TIME = TIMESTAMP('2008-01-01') + 5 DAYS ;
-      // SET CURRENT TEMPORAL BUSINESS_TIME = '2008-01-06-00.00.00.000000000000';
-      ;
-
-  private static final String SET_CURRENT_TEMPORAL_SYSTEM_TIME =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT TEMPORAL SYSTEM_TIME = TIMESTAMP('2008-01-01') + 5 DAYS;
-      // SET CURRENT TEMPORAL SYSTEM_TIME = '2008-01-06-00.00.00.000000000000';
-      ;
+      TEXT
+          + "         SET CURRENT TEMPORAL BUSINESS_TIME = \n"
+          + "                TIMESTAMP('2008-01-01') + 5 DAYS ;\n"
+          + "         SET CURRENT TEMPORAL BUSINESS_TIME = \n"
+          + "               '2008-01-06-00.00.00.000000000000';\n"
+          + "       END-EXEC.";
 
   private static final String SET_CURRENT_TEMPORAL_SYSTEM_TIME2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT TEMPORAL SYSTEM_TIME = NULL
-      ;
+      TEXT
+          + "         SET CURRENT TEMPORAL BUSINESS_TIME = \n"
+          + "                     CURRENT TIMESTAMP - 1 MONTH\n"
+          + "         UPDATE att1 SET c1 = 5 WHERE pk = 100\n"
+          + "       END-EXEC.";
+
+  private static final String SET_CURRENT_TEMPORAL_SYSTEM_TIME3 =
+      TEXT + "         SET CURRENT TEMPORAL BUSINESS_TIME = NULL\n" + "       END-EXEC.";
 
   private static final String SET_ENCRYPTION_PASSWORD =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET ENCRYPTION PASSWORD = :hv1
-      ;
+      TEXT + "         SET ENCRYPTION PASSWORD = :hv1\n" + "       END-EXEC.";
 
   private static final String SET_ENCRYPTION_PASSWORD2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  SET ENCRYPTION PASSWORD = :hv1 WITH HINT :hv2
-      ;
+      TEXT + "         SET ENCRYPTION PASSWORD = :hv1 WITH HINT :hv2\n" + "       END-EXEC.";
 
   private static final String SET_PATH =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //    SET PATH = SCHEMA1,"SCHEMA#2", SYSIBM;
-      ;
+      TEXT + "         SET PATH = SCHEMA1,\"SCHEMA#2\", SYSIBM;\n" + "       END-EXEC.";
 
   private static final String SET_PATH2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET PATH = CURRENT PATH, SMITH, SYSPROC;
-      ;
+      TEXT + "         SET PATH = CURRENT PATH, SMITH, SYSPROC;\n" + "       END-EXEC.";
 
   private static final String SET_SCHEMA =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SET SCHEMA RICK;
-      ;
+      TEXT + "         SET SCHEMA RICK;\n" + "       END-EXEC.";
 
   private static final String SET_SCHEMA2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   EXEC SQL SELECT CURRENT SCHEMA INTO :CURSCHEMA
-      //      FROM SYSIBM.SYSDUMMY1;
-      ;
+      TEXT
+          + "         SELECT CURRENT SCHEMA INTO :CURSCHEMA\n"
+          + "          FROM SYSIBM.SYSDUMMY1;\n"
+          + "       END-EXEC.";
   private static final String SET_SCHEMA3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // SET CURRENT SQLID = 'USRT001';
-      // SET CURRENT SCHEMA = 'USRT002';
-      ;
+      TEXT
+          + "         SET CURRENT SQLID = 'USRT001';\n"
+          + "         SET CURRENT SCHEMA = 'USRT002';\n"
+          + "       END-EXEC.";
 
   private static final String SET_SCHEMA4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //   SET CURRENT SCHEMA = 'JOHN';
-      ;
+      TEXT + "         SET CURRENT SCHEMA = 'JOHN';\n" + "       END-EXEC.";
 
   private static final String SET_SESSION_TIME_ZONE =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //	SET SESSION TIME ZONE = '-8:00';
-      ;
+      TEXT + "         SET SESSION TIME ZONE = '-8:00';\n" + "       END-EXEC.";
+
+  private static Stream<String> textsToTest() {
+    // add all
+    return Stream.of(
+        SET_CONNECTION,
+        SET_ASSIGNMENT_STATE,
+        SET_ASSIGNMENT_STATE2,
+        SET_ASSIGNMENT_STATE3,
+        SET_ASSIGNMENT_STATE4,
+        SET_ASSIGNMENT_STATE5,
+        SET_CURRENT_ACCELARATOR_,
+        SET_CURRENT_APPLICATION_COMPATIBILITY,
+        SET_CURRENT_ENCODING_SCHEMA,
+        SET_CURRENT_DEBUG_MODE,
+        SET_CURRENT_DECFLOAT_ROUNDING_MODE,
+        SET_CURRENT_DEGREE,
+        SET_CURRENT_DEGREE2,
+        SET_CURRENT_EXPLAIN_MODE,
+        SET_CURRENT_GET_ACCEL_ARCHIVE,
+        SET_CURRENT_LOCALE_LC_CTYPE,
+        SET_CURRENT_LOCALE_LC_CTYPE2,
+        SET_CURRENT_MAINTAINED_TABLE,
+        SET_CURRENT_MAINTAINED_TABLE2,
+        SET_CURRENT_MAINTAINED_TABLE3,
+        SET_CURRENT_OPTIMIZATION_HINT,
+        SET_CURRENT_OPTIMIZATION_HINT2,
+        SET_CURRENT_PACKAGE_PATH,
+        SET_CURRENT_PACKAGE_PATH2,
+        SET_CURRENT_PACKAGE_PATH3,
+        SET_CURRENT_PACKAGESET,
+        SET_CURRENT_PACKAGESET2,
+        SET_CURRENT_PRECISION,
+        SET_CURRENT_QUERY_ACCELERATION,
+        SET_CURRENT_QUERY_ACCELERATION_WAITFORDATA,
+        SET_CURRENT_QUERY_ACCELERATION_WAITFORDATA2,
+        SET_CURRENT_REFRESH_AGE,
+        SET_CURRENT_ROUTINE_VERSION,
+        SET_CURRENT_RULES,
+        SET_CURRENT_SQLID,
+        SET_CURRENT_TEMPORAL_BUSINESS_TIME,
+        SET_CURRENT_TEMPORAL_SYSTEM_TIME2,
+        SET_CURRENT_TEMPORAL_SYSTEM_TIME3,
+        SET_ENCRYPTION_PASSWORD,
+        SET_ENCRYPTION_PASSWORD2,
+        SET_PATH,
+        SET_PATH2,
+        SET_SCHEMA,
+        SET_SCHEMA2,
+        SET_SCHEMA3,
+        SET_SCHEMA4,
+        SET_SESSION_TIME_ZONE);
+  }
 
   @ParameterizedTest
   @MethodSource("textsToTest")

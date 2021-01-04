@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql ASSOCIATE LOCATORS statement works correctly. */
 class TestSqlAssociateLocatorsStatement {
@@ -24,14 +28,15 @@ class TestSqlAssociateLocatorsStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL CONNECT TO SITE2;
-      //   EXEC SQL CALL P1;
-      //   EXEC SQL ASSOCIATE RESULT SET LOCATORS (:LOC1, :LOC2)
-      //            WITH PROCEDURE P1;
-      ;
+          + "       EXEC SQL\n"
+          + "         CONNECT TO SITE2;\n"
+          + "         CALL SITE2.MYSCHEMA.P1;\n"
+          + "         ASSOCIATE LOCATORS (:LOC1, :LOC2)\n"
+          + "            WITH PROCEDURE :HV1;\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }
