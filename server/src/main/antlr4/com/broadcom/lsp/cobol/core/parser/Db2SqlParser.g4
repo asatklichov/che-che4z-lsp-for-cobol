@@ -1604,7 +1604,7 @@ dbs_scalar_fullselect : LPARENCHAR dbs_fullselect RPARENCHAR;
 dbs_schema_location: dbs_hostname_identifier;
 dbs_schema_name: IDENTIFIER | SYSIBM;
 dbs_search_condition: NOT? dbs_predicate (SELECTIVITY dbs_integer_constant)? ((AND|OR) NOT?
-                      (dbs_predicate | dbs_search_condition))*;
+                      (dbs_predicate | dbs_search_condition))* | LPARENCHAR dbs_search_condition RPARENCHAR;
 dbs_seclabel_name: IDENTIFIER;
 dbs_sequence_name: dbs_sql_identifier;
 dbs_servauth_value: NONNUMERICLITERAL;
