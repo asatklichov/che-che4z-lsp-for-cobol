@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql PREPARE statement works correctly. */
 class TestSqlPrepareStatement {
@@ -24,14 +28,12 @@ class TestSqlPrepareStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL PREPARE DEPT_INSERT FROM
-      //     'INSERT INTO DSN8C10.DEPT VALUES(?,?,?,?,?)';
-      //   -- Check for successful execution and read values into host variables
-      //   EXEC SQL EXECUTE DEPT_INSERT USING :S1, :S2, :S3, :S4, :S5;
-      ;
+          + "       EXEC SQL PREPARE DEPT_INSERT FROM\n"
+          + "        'INSERT INTO DSN8C10.DEPT VALUES(?,?,?,?,?)';\n"
+          + "       END-EXEC.\n";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

@@ -104,19 +104,38 @@ class TestSqlUpdateStatement {
 
   private static final String UPDATE10 =
       TEXT + "         UPDATE T1 SET C1 = 5 WHERE CURRENT OF CS1;  END-EXEC.\n";
-//
-//  private static final String UPDATE11 =
-//      TEXT
-//          + "         UPDATE POLICY \n"
-//          + "           FOR PORTION OF BUSINESS_TIME  \n"
-//          + "               FROM '2014-01-01' TO '9999-12-31'\n"
-//          + "               SET TYPE='HMO'\n"
-//          + "               WHERE BK = '138', CLIENT='C882';\n"
-//          + "       END-EXEC.\n";
+
+  private static final String UPDATE11 =
+      TEXT
+          + "         UPDATE POLICY \n"
+          + "           FOR PORTION OF BUSINESS_TIME   \n"
+          + "               FROM '2014-01-01' TO '9999-12-31'\n"
+          + "                SET TYPE='HMO'\n"
+          + "                WHERE BK='P138', CLIENT='C882';\n"
+          + "       END-EXEC.\n";
+
+  private static final String UPDATE12 =
+      TEXT
+          + "         UPDATE POLICY \n"
+          + "           FOR PORTION OF BUSINESS_TIME  \n"
+          + "               FROM '2014-01-01' TO '9999-12-31'\n"
+          + "                BETWEEN '2014-01-01' AND '9999-12-31'\n"
+          + "                SET TYPE='HMO'\n"
+          + "                WHERE BK='P138', CLIENT='C882';\n"
+          + "       END-EXEC.\n";
 
   private static Stream<String> textsToTest() {
     return Stream.of(
-        UPDATE, UPDATE2, UPDATE3, UPDATE4, UPDATE5, UPDATE6, UPDATE7, UPDATE8, UPDATE9, UPDATE10);
+        UPDATE,
+        UPDATE2,
+        UPDATE3,
+        UPDATE4,
+        UPDATE5,
+        UPDATE6,
+        UPDATE7,
+        UPDATE8,
+        UPDATE9,
+        UPDATE10);
   }
 
   @ParameterizedTest
