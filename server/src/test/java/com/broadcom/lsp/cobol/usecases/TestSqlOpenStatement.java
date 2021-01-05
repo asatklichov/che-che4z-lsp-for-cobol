@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql OPEN statement works correctly. */
 class TestSqlOpenStatement {
@@ -24,18 +28,18 @@ class TestSqlOpenStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL DECLARE C1 CURSOR FOR
-      //     SELECT DEPTNO, DEPTNAME, MGRNO FROM DSN8C10.DEPT
-      //     WHERE ADMRDEPT = 'A00';
-      //   EXEC SQL OPEN C1;
-      //    DO WHILE (SQLCODE = 0);
-      //     EXEC SQL FETCH C1 INTO :DNUM, :DNAME, :MNUM;
-      //   END;
-      //    EXEC SQL CLOSE C1;
-      ;
+          + "       EXEC SQL\n"
+          + "       DECLARE C1 CURSOR FOR\n"
+          + "       SELECT DEPTNO, DEPTNAME, MGRNO FROM DSN8C10.DEPT\n"
+          + "       WHERE ADMRDEPT = 'A00';\n"
+          + "\n"
+          + "       OPEN C1;\n"
+          + "       FETCH C1 INTO :DNUM, :DNAME, :MNUM;\n"
+          + "       CLOSE C1;\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

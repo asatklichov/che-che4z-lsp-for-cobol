@@ -1033,7 +1033,7 @@ dbs_update_positioned: dbs_correlation_name? SET dbs_update_assignment (COMMACHA
 dbs_values: VALUES (dbs_values_null | dbs_values_into);
 dbs_values_null: (dbs_expression | LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR);
 dbs_values_into: (dbs_expression | NULL | LPARENCHAR (dbs_expression | NULL) (COMMACHAR (dbs_expression | NULL))* RPARENCHAR) INTO
-                (dbs_values_target (COMMACHAR dbs_values_target)* | dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET);
+                (dbs_values_target (COMMACHAR dbs_values_target)* | dbs_array_variable);
 dbs_values_target: (dbs_global_variable_name | dbs_host_variable_name | dbs_sql_parameter_name | dbs_sql_variable_name | dbs_transition_variable_name);
 
 /*WHENEVER */
@@ -1269,7 +1269,7 @@ dbs_select_statement_skip_locked_data: SKIPCHAR LOCKED DATA;
 
 
 ///////////////// DBS EXPRESSION STARTS/////////////
-dbs_expression: ('+'|'-')? (dbs_function_invocation |
+dbs_expression: (PLUSCHAR | MINUSCHAR)? (dbs_function_invocation |
  LPARENCHAR dbs_expressions RPARENCHAR  |
  dbs_constant |
  dbs_column_name |
@@ -1318,7 +1318,7 @@ dbs_labeled_duration: (dbs_function_invocation | LPARENCHAR dbs_expression RPARE
 dbs_column_name | dbs_variable) dbs_time_unit;
 
 dbs_XMLCAST_specification: XMLCAST LPARENCHAR (dbs_expression | NULL | dbs_parameter_marker) AS dbs_comment_parameter_type RPARENCHAR;
-dbs_array_element_specification: dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET ;
+dbs_array_element_specification: dbs_array_variable;
 dbs_array_constructor: ARRAY LSQUAREBRACKET (QUESTIONMARK | dbs_fullselect | (dbs_array_element_specification | NULL)
 (COMMACHAR (dbs_array_element_specification | NULL))*) RSQUAREBRACKET;
 
@@ -1486,7 +1486,7 @@ dbs_alias_name: dbs_sql_identifier;
 dbs_applcompat_value: FUNCTION_LEVEL_10 | FUNCTION_LEVEL_11 | FUNCTION_LEVEL_12;
 dbs_array_index: dbs_integer;
 dbs_array_type_name: dbs_sql_identifier;
-dbs_array_variable: dbs_sql_identifier;
+dbs_array_variable: dbs_sql_identifier LSQUAREBRACKET (dbs_expressions) RSQUAREBRACKET;
 dbs_array_variable_name: all_words+; //TODO
 dbs_attr_host_variable: dbs_hostname_identifier | NUMERICLITERAL ; // VARCHAR(128)
 dbs_authorization_name: dbs_sql_identifier;
@@ -1661,7 +1661,7 @@ dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | 
 dbs_triggered_sql_statement_basic: dbs_triggered_sql_statement;
 dbs_type_name: IDENTIFIER | DOCUMENT;
 dbs_value: db2sql_data_value;
-dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name );
+dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ) INTEGERLITERAL*;
 dbs_variable_name: dbs_sql_identifier;
 dbs_version_id: dbs_hostname_identifier | FILENAME | NONNUMERICLITERAL;
 dbs_version_name: IDENTIFIER | FILENAME;

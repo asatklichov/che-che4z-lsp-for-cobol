@@ -17,7 +17,6 @@ package com.broadcom.lsp.cobol.usecases;
 
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -27,51 +26,44 @@ import java.util.stream.Stream;
 
 /** This test checks if sql SELECT INTO statement works correctly. */
 class TestSqlSelectIntoStatement {
+  private static final String TEXT =
+      "       IDENTIFICATION DIVISION.\n"
+          + "       PROGRAM-ID. HELLO-SQL.\n"
+          + "       DATA DIVISION.\n"
+          + "       WORKING-STORAGE SECTION.\n"
+          + "       EXEC SQL";
   private static final String SELECT_INTO1 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //   EXEC SQL SELECT MAX(SALARY)
-          //     INTO :MAXSALRY
-          //     FROM DSN8C10.EMP;
-          ;
+      TEXT
+          + "       SELECT MAX(SALARY)\n"
+          + "        INTO :MAXSALRY\n"
+          + "        FROM DSN8C10.EMP;\n"
+          + "       END-EXEC.";
 
   private static final String SELECT_INTO2 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //    EXEC SQL SELECT * INTO :EMPREC
-          //     FROM DSN8C10.EMP
-          //     WHERE EMPNO = '528671'
-          //   END-EXEC.
-          ;
+      TEXT
+          + "       SELECT * INTO :EMPREC\n"
+          + "        FROM DSN8C10.EMP\n"
+          + "        WHERE EMPNO = '528671'\n"
+          + "       END-EXEC.";
 
   private static final String SELECT_INTO3 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //   EXEC SQL SELECT * INTO :EMPREC
-          //     FROM DSN8C10.EMP
-          //     WHERE EMPNO = '528671'
-          //     WITH RS USE AND KEEP EXCLUSIVE LOCKS
-          //   END-EXEC.
-          ;
+      TEXT
+          + "       SELECT * INTO :EMPREC\n"
+          + "       FROM DSN8C10.EMP\n"
+          + "       WHERE EMPNO = '528671'\n"
+          + "       WITH RS USE AND KEEP EXCLUSIVE LOCKS\n"
+          + "       END-EXEC.";
 
   private static final String SELECT_INTO4 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          //SELECT INTCOL1 INTO MYINTARRAY1[INTCOL2+MYINTVAR+1]
-          // FROM T1
-          // WHERE INTCOL1 = MYINTARRAY1[INTCOL2] ;
-          ;
+      TEXT
+          + "       SELECT INTCOL1 INTO \n"
+          + "       MYINTARRAY1[INTCOL2+MYINTVAR+1]\n"
+          + "       FROM T1\n"
+          + "       WHERE INTCOL1 = MYINTARRAY1[INTCOL2]\n"
+          + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
-    return Stream.of(SELECT_INTO2,SELECT_INTO3,SELECT_INTO4 );
+    return Stream.of(SELECT_INTO1, SELECT_INTO2, SELECT_INTO3, SELECT_INTO4);
   }
 
   @ParameterizedTest
@@ -81,5 +73,3 @@ class TestSqlSelectIntoStatement {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }
 }
-
-
