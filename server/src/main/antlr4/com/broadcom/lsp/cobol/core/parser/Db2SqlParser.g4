@@ -1506,7 +1506,7 @@ dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
 dbs_generic_name: ACTIVITY | AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
-dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL) INTEGERLITERAL*;
+dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
 dbs_constraint_name: dbs_sql_identifier;
 dbs_context: dbs_sql_identifier;
 dbs_context_name: dbs_sql_identifier;
@@ -1603,7 +1603,7 @@ dbs_sql_variable_name: COLONCHAR? dbs_generic_name | ASTERISKCHAR;
 dbs_sqlstate_string_constant: NONNUMERICLITERAL;
 dbs_statement_name: dbs_generic_name;
 dbs_stogroup_name: dbs_sql_identifier;
-dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant | IDENTIFIER;
+dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant | NONNUMERICLITERAL;
 dbs_string_expression: DOUBLEQUOTE (dbs_allocate | dbs_alter | dbs_associate | dbs_comment | dbs_commit | dbs_create | dbs_declare_global |
   dbs_delete | dbs_drop | dbs_explain | dbs_free | dbs_grant |dbs_hold |dbs_insert | dbs_label | dbs_lock | dbs_merge | dbs_refresh | dbs_release|
   dbs_rename | dbs_revoke | dbs_rollback | dbs_savepoint | dbs_set | dbs_signal |dbs_truncate | dbs_update) DOUBLEQUOTE; // ref- https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_executeimmediate.html
@@ -1661,7 +1661,7 @@ dbs_triggered_sql_statement_adv: dbs_call | dbs_delete | dbs_get | dbs_insert | 
 dbs_triggered_sql_statement_basic: dbs_triggered_sql_statement;
 dbs_type_name: IDENTIFIER | DOCUMENT;
 dbs_value: db2sql_data_value;
-dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name );
+dbs_variable : ( dbs_host_variable | dbs_transition_variable_name | dbs_sql_variable_name | dbs_global_variable_name ) INTEGERLITERAL*;
 dbs_variable_name: dbs_sql_identifier;
 dbs_version_id: dbs_hostname_identifier | FILENAME | NONNUMERICLITERAL;
 dbs_version_name: IDENTIFIER | FILENAME;
