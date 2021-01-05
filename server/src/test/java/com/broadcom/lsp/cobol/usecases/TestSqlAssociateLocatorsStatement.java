@@ -29,9 +29,9 @@ class TestSqlAssociateLocatorsStatement {
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
           + "       EXEC SQL\n"
-          + "         CONNECT TO SITE2;\n"
-          + "         CALL SITE2.MYSCHEMA.P1;\n"
-          + "         ASSOCIATE LOCATORS (:LOC1, :LOC2)\n"
+          + "       CONNECT TO SITE2;\n"
+          + "       CALL SITE2.MYSCHEMA.P1;\n"
+          + "       ASSOCIATE LOCATORS (:LOC1, :LOC2)\n"
           + "            WITH PROCEDURE :HV1;\n"
           + "       END-EXEC.";
 

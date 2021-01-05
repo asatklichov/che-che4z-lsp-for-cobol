@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql EXPLAIN statement works correctly. */
 class TestSqlExplainStatement {
@@ -24,17 +28,18 @@ class TestSqlExplainStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXPLAIN PLAN SET QUERYNO = 13
-      //   FOR SELECT X.ACTNO, X.PROJNO, X.EMPNO, Y.JOB, Y.EDLEVEL
-      //       FROM DSN8C10.EMPPROJACT X, DSN8C10.EMP Y
-      //          WHERE X.EMPNO = Y.EMPNO
-      //             AND X.EMPTIME > 0.5
-      //             AND (Y.JOB = 'DESIGNER' OR Y.EDLEVEL >= 12)
-      //          ORDER BY X.ACTNO, X.PROJNO;
-      ;
+          + "       EXEC SQL\n"
+          + "        EXPLAIN PLAN SET QUERYNO = 13\n"
+          + "        FOR SELECT X.ACTNO, X.PROJNO, X.EMPNO, Y.JOB, Y.EDLEVEL\n"
+          + "        FROM DSN8C10.EMPPROJACT X, DSN8C10.EMP Y\n"
+          + "          WHERE X.EMPNO = Y.EMPNO\n"
+          + "             AND X.EMPTIME > 0.5\n"
+          + "             AND (Y.JOB = 'DESIGNER' OR Y.EDLEVEL >= 12)\n"
+          + "          ORDER BY X.ACTNO, X.PROJNO;\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

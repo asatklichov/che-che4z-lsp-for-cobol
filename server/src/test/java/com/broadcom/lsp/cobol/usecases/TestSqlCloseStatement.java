@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql CLOSE statement works correctly. */
 class TestSqlCloseStatement {
@@ -24,30 +28,19 @@ class TestSqlCloseStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXEC SQL DECLARE C1 CURSOR FOR
-      //      SELECT DEPTNO, DEPTNAME, MGRNO
-      //      FROM DSN8C10.DEPT
-      //      WHERE ADMRDEPT = 'A00'
-      //      END-EXEC.
-      //
-      //   EXEC SQL OPEN C1 END-EXEC.
-      //
-      //   EXEC SQL FETCH C1 INTO :DNUM, :DNAME, :MNUM END-EXEC.
-      //
-      //   IF SQLCODE = 100
-      //      PERFORM DATA-NOT-FOUND
-      //   ELSE
-      //      PERFORM GET-REST-OF-DEPT
-      //      UNTIL SQLCODE IS NOT EQUAL TO ZERO.
-      //
-      //   EXEC SQL CLOSE C1 END-EXEC.
-      //
-      //   GET-REST-OF-DEPT.
-      //      EXEC SQL FETCH C1 INTO :DNUM, :DNAME, :MNUM END-EXEC.
-      ;
+          + "       EXEC SQL\n"
+          + "         DECLARE C1 CURSOR FOR\n"
+          + "         SELECT DEPTNO, DEPTNAME, MGRNO\n"
+          + "         FROM DSN8C10.DEPT\n"
+          + "         WHERE ADMRDEPT = 'A00';\n"
+          + "         OPEN C1;\n"
+          + "         FETCH C1 INTO :DNUM, :DNAME, :MNUM;\n"
+          + "         \n"
+          + "         CLOSE C1;\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

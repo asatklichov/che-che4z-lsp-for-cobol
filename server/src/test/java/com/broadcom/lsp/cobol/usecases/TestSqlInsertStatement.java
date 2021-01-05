@@ -27,54 +27,50 @@ import java.util.stream.Stream;
 
 /** This test checks if sql INSERT statement works correctly. */
 class TestSqlInsertStatement {
+  private static final String TEXT = "       IDENTIFICATION DIVISION.\n" +
+          "       PROGRAM-ID. HELLO-SQL.\n" +
+          "       DATA DIVISION.\n" +
+          "       WORKING-STORAGE SECTION.\n" +
+          "       EXEC SQL";
   private static final String INSERT1 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // INSERT INTO DSN8C10.EMP
-      //     VALUES ('000205','MARY','T','SMITH','D11','2866',
-      //              '1981-08-10','ANALYST',16,'F','1956-05-22',
-      //             16345,500,2300);
+      TEXT
+          + "        INSERT INTO DSN8C10.EMP\n"
+          + "         VALUES ('000205','MARY','T','SMITH','D11','2866',\n"
+          + "              '1981-08-10','ANALYST',16,'F','1956-05-22',\n"
+          + "             16345,500,2300);\n"
+          + "       END-EXEC."
       ;
 
   private static final String INSERT2 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      //  INSERT INTO SMITH.TEMPEMPL
-      //     SELECT *
-      //     FROM DSN8C10.EMP;
+      TEXT
+          + "        INSERT INTO SMITH.TEMPEMPL\n"
+          + "        SELECT *\n"
+          + "        FROM DSN8C10.EMP;\n"
+          + "       END-EXEC."
       ;
 
   private static final String INSERT3 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // INSERT INTO SESSION.TEMPEMPL
-      //     SELECT *
-      //     FROM DSN8C10.EMP
-      //     WHERE WORKDEPT='D11';
+      TEXT
+          + "        INSERT INTO SESSION.TEMPEMPL\n"
+          + "        SELECT *\n"
+          + "        FROM DSN8C10.EMP\n"
+          + "        WHERE WORKDEPT='D11';\n"
+          + "       END-EXEC."
       ;
 
   private static final String INSERT4 =
-      "       IDENTIFICATION DIVISION.\n"
-          + "       PROGRAM-ID. HELLO-SQL.\n"
-          + "       DATA DIVISION.\n"
-          + "       WORKING-STORAGE SECTION.\n"
-      // INSERT INTO DSN8C10.EMP_PHOTO_RESUME(EMPNO, EMP_ROWID)
-      //     VALUES (:HV_ENUM, DEFAULT);
+      TEXT
+          + "        INSERT INTO DSN8C10.EMP_PHOTO_RESUME(EMPNO, EMP_ROWID)\n"
+          + "        VALUES (:HV_ENUM, DEFAULT);\n"
+          + "       END-EXEC."
       ;
 
   private static final String INSERT5 =
-          "       IDENTIFICATION DIVISION.\n"
-                  + "       PROGRAM-ID. HELLO-SQL.\n"
-                  + "       DATA DIVISION.\n"
-                  + "       WORKING-STORAGE SECTION.\n"
-          // EXEC SQL INSERT INTO T1 FOR :hv ROWS VALUES (:hva:hvind) ATOMIC;
-          ;
+      TEXT
+          + "        INSERT INTO T1 FOR :hv \n"
+          + "        ROWS VALUES (:hva:hvind) ATOMIC;\n"
+          + "       END-EXEC."
+      ;
 
   private static Stream<String> textsToTest() {
     return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5);
