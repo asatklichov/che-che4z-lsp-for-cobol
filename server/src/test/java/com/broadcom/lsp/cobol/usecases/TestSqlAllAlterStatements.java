@@ -128,64 +128,45 @@ class TestSqlAllAlterStatements {
       TEXT
           + "       EXEC SQL ALTER FUNCTION REVERSE(INSTR VARCHAR(4000))\n"
           + "       ACTIVATE VERSION V3;\n"
-          + "       END-EXEC."
-      // ALTER FUNCTION REVERSE(INSTR VARCHAR(4000))
-      //		ACTIVATE VERSION V3;
-      ;
+          + "       END-EXEC.";
 
   private static final String ALTER_FUNCTION_COMPILED6 =
       TEXT
           + "       EXEC SQL ALTER FUNCTION REVERSE(INSTR VARCHAR(4000))\n"
           + "       REGENERATE ACTIVE VERSION;\n"
-          + "       END-EXEC."
-      // ALTER FUNCTION REVERSE(INSTR VARCHAR(4000))
-      //		REGENERATE ACTIVE VERSION;
-      ;
+          + "       END-EXEC.";
 
   // ALTER FUNCTION (inlined SQL scalar)
   private static final String ALTER_FUNCTION_INLINED =
       TEXT
           + "       EXEC SQL ALTER FUNCTION MY_UDF1\n"
           + "       DETERMINISTIC;\n"
-          + "       END-EXEC."
-      // ALTER FUNCTION MY_UDF1
-      //		DETERMINISTIC;
-      ;
+          + "       END-EXEC.";
 
   private static final String ALTER_FUNCTION_SQL_TABLE =
       TEXT
           + "       EXEC SQL ALTER FUNCTION GET_TABLE\n"
           + "       RESTRICT CARDINALITY 10000;\n"
-          + "       END-EXEC."
-      // ALTER FUNCTION GET_TABLE
-      //	RESTRICT CARDINALITY 10000;
-      ;
+          + "       END-EXEC.";
+
   // ALTER INDEX
   private static final String ALTER_INDEX =
       TEXT
           + "       EXEC SQL ALTER INDEX DSN8C10.XEMP1\n"
           + "       CLOSE NO;\n"
-          + "       END-EXEC."
-      // ALTER INDEX DSN8C10.XEMP1
-      //     CLOSE NO;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_INDEX2 =
       TEXT
           + "       EXEC SQL ALTER INDEX DSN8C10.XPROJ1\n"
           + "       BUFFERPOOL BP1\n"
           + "       COPY YES\n"
           + "       PIECESIZE 8M;\n"
-          + "       END-EXEC."
-      // ALTER INDEX DSN8C10.XPROJ1
-      //     BUFFERPOOL BP1
-      //     COPY YES
-      //     PIECESIZE 8M;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_INDEX3 =
-      TEXT + "       EXEC SQL ALTER INDEX X1\n" + "       NOT PADDED;\n" + "       END-EXEC."
-      // ALTER INDEX X1
-      //     NOT PADDED;
-      ;
+      TEXT + "       EXEC SQL ALTER INDEX X1\n" + "       NOT PADDED;\n" + "       END-EXEC.";
+
   private static final String ALTER_INDEX4 =
       TEXT
           + "       EXEC SQL ALTER INDEX DSN8C10.XDEPT1\n"
@@ -207,53 +188,31 @@ class TestSqlAllAlterStatements {
           + "       USING VCAT CATLGG\n"
           + "       FREEPAGE 25\n"
           + "       PCTFREE 25;\n"
-          + "       END-EXEC."
-      // ALTER INDEX DSN8C10.XDEPT1
-      //      BUFFERPOOL BP1
-      //      CLOSE YES
-      //      COPY YES
-      //      USING VCAT CATLGG
-      //      FREEPAGE 6
-      //      PCTFREE 11
-      //      GBPCACHE ALL
-      //      ALTER PARTITION 3
-      //         USING VCAT CATLGG
-      //         FREEPAGE 13
-      //         PCTFREE 13,
-      //      ALTER PARTITION 4
-      //         USING VCAT CATLGG
-      //         GBPCACHE CHANGED,
-      //      ALTER PARTITION 5
-      //         USING VCAT CATLGG
-      //         FREEPAGE 25
-      //         PCTFREE 25;
-      ;
+          + "       END-EXEC.";
+
   // ALTER MASK
   private static final String ALTER_MASK =
-      TEXT + "       EXEC SQL ALTER MASK M1 ENABLE\n" + "       END-EXEC."
-      // ALTER MASK M1 ENABLE;
-      ;
+      TEXT + "       EXEC SQL ALTER MASK M1 ENABLE\n" + "       END-EXEC.";
+
   private static final String ALTER_MASK2 =
-      TEXT + "       EXEC SQL ALTER MASK M1 REGENERATE;\n" + "       COMMIT;\n" + "       END-EXEC."
-      // ALTER MASK M1 REGENERATE;
-      //  COMMIT;
-      ;
+      TEXT
+          + "       EXEC SQL ALTER MASK M1 REGENERATE;\n"
+          + "       COMMIT;\n"
+          + "       END-EXEC.";
+
   // ALTER PERMISSION
   private static final String ALTER_PERMISSION =
-      TEXT + "       EXEC SQL ALTER PERMISSION P1 ENABLE;\n" + "       END-EXEC."
-      // ALTER PERMISSION P1 ENABLE;
-      ;
+      TEXT + "       EXEC SQL ALTER PERMISSION P1 ENABLE;\n" + "       END-EXEC.";
+
   private static final String ALTER_PERMISSION2 =
-      TEXT + "       EXEC SQL ALTER PERMISSION P1 REGENERATE;\n" + "       END-EXEC."
-      // ALTER PERMISSION P1 REGENERATE;
-      ;
+      TEXT + "       EXEC SQL ALTER PERMISSION P1 REGENERATE;\n" + "       END-EXEC.";
+
   // ALTER PROCEDURE external
   private static final String ALTER_PROCEDURE_EXT =
       TEXT
           + "       EXEC SQL ALTER PROCEDURE SYSPROC.MYPROC WLM ENVIRONMENT PARTSEC\n"
-          + "       END-EXEC."
-      // ALTER PROCEDURE SYSPROC.MYPROC WLM ENVIRONMENT PARTSEC;
-      ;
+          + "       END-EXEC.";
+
   // ALTER PROCEDURE SQL external
   private static final String ALTER_PROCEDURE_SQL_NATIVE =
       TEXT
@@ -264,14 +223,8 @@ class TestSqlAllAlterStatements {
           + "       CALLED ON NULL INPUT\n"
           + "       ALLOW DEBUG MODE\n"
           + "       ASUTIME LIMIT 10\n"
-          + "       END-EXEC."
-      // ALTER PROCEDURE UPDATE_SALARY_1
-      //      ALTER ACTIVE VERSION
-      //      NOT DETERMINISTIC
-      //      CALLED ON NULL INPUT
-      //      ALLOW DEBUG MODE
-      //      ASUTIME LIMIT 10
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_PROCEDURE_SQL_NATIVE2 =
       TEXT
           + "       EXEC SQL\n"
@@ -280,13 +233,8 @@ class TestSqlAllAlterStatements {
           + "       MODIFIES SQL DATA\n"
           + "       UPDATE EMP SET SALARY = SALARY * RATE\n"
           + "        WHERE EMPNO = EMPLOYEE_NUMBER;\n"
-          + "       END-EXEC."
-      // ALTER PROCEDURE UPDATE_SALARY_1
-      //      REPLACE VERSION V2 (P1 INTEGER, P2 CHAR(5))
-      //      MODIFIES SQL DATA
-      //      UPDATE EMP SET SALARY = SALARY * RATE
-      //            WHERE EMPNO = EMPLOYEE_NUMBER;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_PROCEDURE_SQL_NATIVE3 =
       TEXT
           + "       EXEC SQL\n"
@@ -294,12 +242,8 @@ class TestSqlAllAlterStatements {
           + "       ADD VERSION V3 (P1 INTEGER, P2 CHAR(5))\n"
           + "          UPDATE EMP SET SALARY = SALARY * (RATE*10)\n"
           + "          WHERE EMPNO = EMPLOYEE_NUMBER;\n"
-          + "       END-EXEC."
-      // ALTER PROCEDURE UPDATE_SALARY_1
-      //      ADD VERSION V3 (P1 INTEGER, P2 CHAR(5))
-      //        UPDATE EMP SET SALARY = SALARY * (RATE*10)
-      //            WHERE EMPNO = EMPLOYEE_NUMBER;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_PROCEDURE_SQL_NATIVE4 =
       TEXT
           + "       EXEC SQL\n"
@@ -314,43 +258,34 @@ class TestSqlAllAlterStatements {
           + "       EXEC SQL\n"
           + "       ALTER PROCEDURE UPDATE_SALARY_1\n"
           + "       REGENERATE ACTIVE VERSION;\n"
-          + "       END-EXEC."
-      // ALTER PROCEDURE UPDATE_SALARY_1
-      //      REGENERATE ACTIVE VERSION;
-      ;
+          + "       END-EXEC.";
+
   // ALTER SEQUENCE
   private static final String ALTER_SEQUENCE =
-      TEXT + "       EXEC SQL\n" + "       ALTER SEQUENCE org_seq RESTART;\n" + "       END-EXEC."
-      // ALTER SEQUENCE org_seq RESTART;
-      ;
+      TEXT + "       EXEC SQL\n" + "       ALTER SEQUENCE org_seq RESTART;\n" + "       END-EXEC.";
+
   // ALTER STOGROUP
   private static final String ALTER_STOGROUP =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER STOGROUP DSN8G120\n"
           + "       ADD VOLUMES (DSNV04, DSNV05);\n"
-          + "       END-EXEC."
-      // ALTER STOGROUP DSN8G120
-      //       ADD VOLUMES (DSNV04,DSNV05);
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_STOGROUP2 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER STOGROUP DSN8G120\n"
           + "       REMOVE VOLUMES (DSNV04,DSNV05);\n"
-          + "       END-EXEC."
-      // ALTER STOGROUP DSN8G120
-      //     REMOVE VOLUMES (DSNV04,DSNV05);
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_STOGROUP3 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER STOGROUP DSN8G120\n"
           + "       NO KEY LABEL;\n"
-          + "       END-EXEC."
-      // ALTER STOGROUP DSNCG120
-      //     NO KEY LABEL;
-      ;
+          + "       END-EXEC.";
+
   // ALTER TABLE
   private static final String ALTER_TABLE =
       TEXT
@@ -358,67 +293,51 @@ class TestSqlAllAlterStatements {
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         ALTER COLUMN DEPTNAME SET DATA TYPE VARCHAR(50)\n"
           + "         ADD BLDG CHAR(3) FOR SBCS DATA;\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.DEPT
-      //     ALTER COLUMN DEPTNAME SET DATA TYPE VARCHAR(50)
-      //     ADD BLDG CHAR(3) FOR SBCS DATA;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE2 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         VALIDPROC DSN8EAEM;\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.EMP
-      //     VALIDPROC DSN8EAEM;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE3 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         VALIDPROC NULL;\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.EMP
-      //     VALIDPROC NULL;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE4 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         FOREIGN KEY(ADMRDEPT) REFERENCES DSN8C10.DEPT ON DELETE CASCADE;\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.DEPT
-      //     FOREIGN KEY(ADMRDEPT) REFERENCES DSN8C10.DEPT ON DELETE CASCADE;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE5 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         ADD CHECK (SALARY >= 10000);\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.EMP
-      //     ADD CHECK (SALARY >= 10000);
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE6 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE PRODINFO\n"
           + "         FOREIGN KEY (PRODNAME,PRODVERNO)\n"
           + "         REFERENCES PRODVER_1 (VERNAME,RELNO) ON DELETE RESTRICT;\n"
-          + "       END-EXEC."
-      // ALTER TABLE PRODINFO
-      //     FOREIGN KEY (PRODNAME,PRODVERNO)
-      //       REFERENCES PRODVER_1 (VERNAME,RELNO) ON DELETE RESTRICT;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE7 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.DEPT\n"
           + "         ADD CONSTRAINT KEY_DEPTNAME UNIQUE( DEPTNAME );\n"
-          + "       END-EXEC."
-      //  ALTER TABLE DSN8C10.DEPT
-      //     ADD CONSTRAINT KEY_DEPTNAME UNIQUE( DEPTNAME );
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE8 =
       TEXT
           + "       EXEC SQL\n"
@@ -429,35 +348,23 @@ class TestSqlAllAlterStatements {
           + "       DATA INITIALLY DEFERRED\n"
           + "       REFRESH DEFERRED\n"
           + "       MAINTAINED BY USER;\n"
-          + "       END-EXEC.\n"
-      //  ALTER TABLE TRANSCOUNT ADD MATERIALIZED QUERY
-      //     (SELECT ACCTID, LOCID, YEAR, COUNT(*) as cnt
-      //      FROM TRANS
-      //      GROUP BY ACCTID, LOCID, YEAR )
-      //      DATA INITIALLY DEFERRED
-      //      REFRESH DEFERRED
-      //      MAINTAINED BY USER;
-      ;
+          + "       END-EXEC.\n";
+
   private static final String ALTER_TABLE9 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE TB1\n"
           + "         ALTER COLUMN COL1\n"
           + "         SET DATA TYPE BINARY(6);\n"
-          + "       END-EXEC."
-      //  ALTER TABLE TB1
-      //		ALTER COLUMN COL1
-      //			SET DATA TYPE BINARY(6);
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLE10 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLE DSN8C10.EMP\n"
           + "         KEY LABEL SECUREKEY01;\n"
-          + "       END-EXEC."
-      // ALTER TABLE DSN8C10.EMP
-      //             KEY LABEL SECUREKEY01;
-      ;
+          + "       END-EXEC.";
+
   // ALTER TABLESPACE
   private static final String ALTER_TABLESPACE =
       TEXT
@@ -465,11 +372,8 @@ class TestSqlAllAlterStatements {
           + "       ALTER TABLESPACE DSN8D12A.DSN8S12D\n"
           + "         BUFFERPOOL BP2\n"
           + "         LOCKSIZE PAGE;\n"
-          + "       END-EXEC."
-      //  ALTER TABLESPACE DSN8D12A.DSN8S12D
-      //     BUFFERPOOL BP2
-      //     LOCKSIZE PAGE;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLESPACE2 =
       TEXT
           + "       EXEC SQL\n"
@@ -477,58 +381,43 @@ class TestSqlAllAlterStatements {
           + "         CLOSE NO\n"
           + "         SECQTY -1\n"
           + "         ALTER PARTITION 1 PCTFREE 20;\n"
-          + "       END-EXEC."
-      // ALTER TABLESPACE DSN8D12A.DSN8S12E
-      //     CLOSE NO
-      //     SECQTY -1
-      //     ALTER PARTITION 1 PCTFREE 20;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TABLESPACE3 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TABLESPACE TS01DB.TS01TS\n"
           + "         MAXPARTITIONS 30;\n"
-          + "       END-EXEC."
-      // ALTER TABLESPACE TS01DB.TS01TS
-      //  MAXPARTITIONS 30;
-      ;
+          + "       END-EXEC.";
+
   // ALTER TRIGGER ADVANCED
   private static final String ALTER_TRIGGER_ADV =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRIGGER TRIGGER1\n"
           + "         SECURED;\n"
-          + "       END-EXEC."
-      // ALTER TRIGGER TRIGGER1
-      // SECURED;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRIGGER_ADV2 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRIGGER TRIGGER1\n"
           + "        ALTER ALLOW DEBUG MODE;\n"
-          + "       END-EXEC."
-      // ALTER TRIGGER TRIGGER1
-      // ALTER ALLOW DEBUG MODE;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRIGGER_ADV3 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRIGGER TRIGGER1\n"
           + "        ACTIVATE VERSION V3;\n"
-          + "       END-EXEC."
-      // ALTER TRIGGER TRIGGER1
-      // ACTIVATE VERSION V3;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRIGGER_ADV4 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRIGGER TRIGGER1\n"
           + "        REGENERATE ACTIVE VERSION;\n"
-          + "       END-EXEC."
-      // ALTER TRIGGER TRIGGER1
-      // REGENERATE ACTIVE VERSION;
-      ;
+          + "       END-EXEC.";
 
   // ALTER TRUSTED CONTEXT
   private static final String ALTER_TRUSTED_CONTEXT =
@@ -536,21 +425,16 @@ class TestSqlAllAlterStatements {
           + "       EXEC SQL\n"
           + "       ALTER TRUSTED CONTEXT CTX1\n"
           + "        ALTER DEFAULT ROLE CTXROLE2;\n"
-          + "       END-EXEC."
-      // ALTER TRUSTED CONTEXT CTX1
-      //       ALTER DEFAULT ROLE CTXROLE2;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRUSTED_CONTEXT2 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRUSTED CONTEXT CTX3\n"
           + "        DISABLE\n"
           + "        ADD USE FOR BILL;\n"
-          + "       END-EXEC."
-      // ALTER TRUSTED CONTEXT CTX3
-      //        DISABLE
-      //        ADD USE FOR BILL;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRUSTED_CONTEXT3 =
       TEXT
           + "       EXEC SQL\n"
@@ -558,39 +442,27 @@ class TestSqlAllAlterStatements {
           + "        REPLACE USE FOR JOE WITHOUT AUTHENTICATION\n"
           + "        ADD USE FOR PUBLIC WITH AUTHENTICATION,\n"
           + "        TOM ROLE SPLROLE;\n"
-          + "       END-EXEC."
-      //  ALTER TRUSTED CONTEXT CTX4
-      //      REPLACE USE FOR JOE WITHOUT AUTHENTICATION
-      //      ADD USE FOR PUBLIC WITH AUTHENTICATION,
-      //      TOM ROLE SPLROLE;
-      ;
+          + "       END-EXEC.";
+
   private static final String ALTER_TRUSTED_CONTEXT4 =
       TEXT
           + "       EXEC SQL\n"
           + "       ALTER TRUSTED CONTEXT REMOTECTX\n"
           + "        ALTER ATTRIBUTES (ADDRESS '9.12.155.200',\n"
           + "        ENCRYPTION 'LOW');\n"
-          + "       END-EXEC."
-      //  ALTER TRUSTED CONTEXT REMOTECTX
-      //      ALTER ATTRIBUTES (ADDRESS '9.12.155.200',
-      //                        ENCRYPTION 'LOW');
-      ;
+          + "       END-EXEC.";
+
   // ALTER VIEW
   private static final String ALTER_VIEW =
-      TEXT + "       EXEC SQL\n" + "        ALTER VIEW MYVIEW REGENERATE;;\n" + "       END-EXEC."
-      //   ALTER VIEW MYVIEW REGENERATE;
-      ;
+      TEXT + "       EXEC SQL\n" + "        ALTER VIEW MYVIEW REGENERATE;;\n" + "       END-EXEC.";
+
   private static final String ALTER_VIEW2 =
       TEXT
           + "       EXEC SQL\n"
           + "        ALTER TRUSTED CONTEXT REMOTECTX\n"
           + "        ALTER ATTRIBUTES (ADDRESS '9.12.155.200',\n"
           + "        ENCRYPTION 'LOW');\n"
-          + "       END-EXEC."
-      //  ALTER TRUSTED CONTEXT REMOTECTX
-      //      ALTER ATTRIBUTES (ADDRESS '9.12.155.200',
-      //                        ENCRYPTION 'LOW');
-      ;
+          + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
     return Stream.of(
