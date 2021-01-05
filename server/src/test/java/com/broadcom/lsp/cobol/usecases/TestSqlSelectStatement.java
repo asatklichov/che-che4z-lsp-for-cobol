@@ -15,26 +15,73 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
-import org.junit.jupiter.api.Test;
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-/** This test checks if sql SELECT  statement works correctly. */
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+/** This test checks if sql SELECT statement works correctly. */
 class TestSqlSelectStatement {
+
   private static final String TEXT =
       "       IDENTIFICATION DIVISION.\n"
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // EXPLAIN PLAN SET QUERYNO = 13
-      //   FOR SELECT X.ACTNO, X.PROJNO, X.EMPNO, Y.JOB, Y.EDLEVEL
-      //       FROM DSN8C10.EMPPROJACT X, DSN8C10.EMP Y
-      //          WHERE X.EMPNO = Y.EMPNO
-      //             AND X.EMPTIME > 0.5
-      //             AND (Y.JOB = 'DESIGNER' OR Y.EDLEVEL >= 12)
-      //          ORDER BY X.ACTNO, X.PROJNO;
-      ;
+          + "       EXEC SQL\n";
 
-  @Test
-  void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+  private static final String SELECT = TEXT + "       SELECT * FROM DSN8C10.EMP;  END-EXEC.\n";
+
+  private static final String SELECT2 =
+      TEXT
+          + "         SELECT * FROM DSN8C10.EMP  \n"
+          + "           ORDER BY HIREDATE;  \n"
+          + "       END-EXEC.\n";
+
+  private static final String SELECT3 =
+      TEXT
+          + "         SELECT WORKDEPT, AVG(SALARY)  \n"
+          + "           FROM DSN8C10.EMP  \n"
+          + "           GROUP BY WORKDEPT \n"
+          + "           ORDER BY 2; \n"
+          + "       END-EXEC.\n";
+
+  private static final String SELECT4 =
+      TEXT
+          + "           DECLARE UP_CUR CURSOR FOR \n"
+          + "           SELECT WORKDEPT, EMPNO, SALARY, BONUS, COMM \n"
+          + "              FROM DSN8C10.EMP \n"
+          + "              WHERE WORKDEPT IN ('D11','D21') \n"
+          + "       END-EXEC.\n";
+
+  private static final String SELECT5 =
+      TEXT
+          + "           SELECT MAX(BONUS), MIN(BONUS), AVG(BONUS) \n"
+          + "               INTO :MAX, :MIN, :AVG \n"
+          + "               FROM DSN8C10.EMP \n"
+          + "               WITH UR \n"
+          + "               QUERYNO 13; \n"
+          + "       END-EXEC.\n";
+
+  private static final String SELECT6 =
+      TEXT
+          + "            DECLARE C1 CURSOR FOR \n"
+          + "             SELECT * FROM RMTTAB\n"
+          + "               FETCH FIRST 50 ROWS ONLY \n"
+          + "       END-EXEC.\n";
+
+  private static Stream<String> textsToTest() {
+    return Stream.of(SELECT, SELECT2, SELECT3, SELECT4, SELECT5, SELECT6);
+  }
+
+  @ParameterizedTest
+  @MethodSource("textsToTest")
+  @DisplayName("Parameterized - sql whenever statements tests")
+  void test(String text) {
+    UseCaseEngine.runTest(text, List.of(), Map.of());
   }
 }

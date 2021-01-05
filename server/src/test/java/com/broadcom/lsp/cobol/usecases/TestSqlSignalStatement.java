@@ -15,7 +15,11 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
+import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 /** This test checks if sql SIGNAL statement works correctly. */
 class TestSqlSignalStatement {
@@ -24,23 +28,13 @@ class TestSqlSignalStatement {
           + "       PROGRAM-ID. HELLO-SQL.\n"
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
-      // CREATE PROCEDURE SUBMIT_ORDER
-      //            (IN ONUM INTEGER, IN CNUM INTEGER,
-      //             IN PNUM INTEGER, IN QNUM INTEGER)
-      // LANGUAGE SQL
-      // SPECIFIC SUBMIT_ORDER
-      // MODIFIES SQL DATA
-      // BEGIN
-      //   DECLARE EXIT HANDLER FOR SQLSTATE VALUE '23503'
-      //     SIGNAL SQLSTATE '75002'
-      //         SET MESSAGE_TEXT = 'Customer number is not known';
-      //   INSERT INTO ORDERS (ORDERNO, CUSTNO, PARTNO, QUANTITY)
-      //      VALUES (ONUM, CNUM, PNUM, QNUM);
-      // END
-      ;
+          + "       EXEC SQL\n"
+          + "        SIGNAL SQLSTATE '75002'\n"
+          + "         SET MESSAGE_TEXT = 'Customer number is not known';\n"
+          + "       END-EXEC.";
 
   @Test
   void test() {
-    // UseCaseEngine.runTest(TEXT, List.of(), Map.of());
+    UseCaseEngine.runTest(TEXT, List.of(), Map.of());
   }
 }

@@ -1087,37 +1087,23 @@ common_short_bit_binary: (BINARY VARYING? | VARBINARY) (LPARENCHAR dbs_integer R
 sql_data_type: SQL (VARCHAR (LPARENCHAR dbs_integer RPARENCHAR) | DECFLOAT (LPARENCHAR (NUMBER_34) RPARENCHAR)? | DATE | TIMESTAMP (LPARENCHAR (NUMBER_12) RPARENCHAR)? );
 
 /*option lists*/
-//dbs_option_list: (LANGUAGE SQL)? option_specific? option_deterministic? option_action? option_sqldata2? (option_returned_null | option_called)? option_dispatch? option_allow_parallel? option_debug_mode?
-//                 option_parameter_enc? option_qualifier? option_package_owner? option_asutime? option_registers? (wlm_env dbs_name)? option_current_data? option_degree? option_concurrency?
-//                 option_dynamic_rules? option_app_enc? option_explain? option_query_accl?  option_get_accel? option_acceleration? option_accelerator? option_sql_path?
-//                 option_reopt? option_validate? option_rounding? option_format_date? option_decimal? option_for_update? option_format_time? option_secured? option_sensitive_business?
-//                 option_sensitive_system? option_sensitive_archive? option_app_compat? option_concentrate_statements?;
+dbs_option_list: ((LANGUAGE SQL) | option_specific | option_deterministic | option_action | option_sqldata2 | (option_returned_null | option_called)| option_dispatch| option_allow_parallel| option_debug_mode|
+                 option_parameter_enc | option_qualifier| option_package_owner | option_asutime | option_registers| (wlm_env dbs_name)| option_current_data| option_degree| option_concurrency|
+                 option_dynamic_rules | option_app_enc| option_explain| option_query_accl |  option_get_accel | option_acceleration| option_accelerator| option_sql_path|
+                 option_reopt| option_validate | option_rounding | option_format_date | option_decimal | option_for_update | option_format_time| option_secured| option_sensitive_business|
+                 option_sensitive_system | option_sensitive_archive | option_app_compat | option_concentrate_statements)+;
 
-dbs_option_list: ((LANGUAGE SQL)| option_specific| option_deterministic| option_action| option_sqldata2| (option_returned_null | option_called)| option_dispatch| option_allow_parallel| option_debug_mode|
-                 option_parameter_enc| option_qualifier| option_package_owner| option_asutime| option_registers| (wlm_env dbs_name)| option_current_data| option_degree| option_concurrency|
-                 option_dynamic_rules| option_app_enc| option_explain| option_query_accl|  option_get_accel| option_acceleration| option_accelerator| option_sql_path|
-                 option_reopt| option_validate| option_rounding| option_format_date| option_decimal| option_for_update| option_format_time| option_secured| option_sensitive_business|
-                 option_sensitive_system| option_sensitive_archive| option_app_compat| option_concentrate_statements)+;
-
-//dbs_option_list_ext: option_specific? option_parameter? EXTERNAL option_name? option_language parameter_style (JAVA | SQL) option_deterministic? FENCED? (option_returned_null | option_called)?
-//                     option_sqldata3? option_action? option_package_path? option_scratch? option_final_call? option_allow_parallel? option_dbinfo? option_collid?  option_wlm_env_short? option_asutime?
-//                     option_stay_resident? option_program_type? option_security? option_after? option_run? option_registers? option_dispatch? option_secured?;
 dbs_option_list_ext: (option_specific| option_parameter | EXTERNAL option_name? | option_language | parameter_style (JAVA | SQL) | option_deterministic |  FENCED | (option_returned_null | option_called) |
-                     option_sqldata3| option_action| option_package_path| option_scratch| option_final_call| option_allow_parallel| option_dbinfo| option_collid|  option_wlm_env_short| option_asutime|
-                     option_stay_resident| option_program_type| option_security| option_after| option_run| option_registers| option_dispatch| option_secured)+;
-//dbs_option_list_proc_ext: option_specific? option_dynamic? option_parameter? EXTERNAL option_name? option_language option_sql? option_parameter_style? option_deterministic?
-//                          option_package_path? FENCED? option_dbinfo? option_collid? option_wlm_env? option_asutime? option_stay_resident?  option_program_type? option_security?
-//                          option_after? option_run? option_commit?  option_registers? option_called?  option_debug_mode?;
-dbs_option_list_proc_ext: (option_specific| option_dynamic| option_parameter| EXTERNAL option_name| option_language | option_sql| option_parameter_style| option_deterministic|
-                          option_package_path| FENCED| option_dbinfo| option_collid| option_wlm_env| option_asutime| option_stay_resident|  option_program_type| option_security|
-                          option_after| option_run| option_commit|  option_registers| option_called|  option_debug_mode)+;
+                     option_sqldata3 | option_action | option_package_path | option_scratch| option_final_call| option_allow_parallel| option_dbinfo | option_collid |  option_wlm_env_short | option_asutime |
+                     option_stay_resident | option_program_type | option_security | option_after | option_run | option_registers | option_dispatch | option_secured)+;
 
-//dbs_option_list_ext_table: option_specific? option_parameter? EXTERNAL option_name? option_language parameter_style SQL  option_deterministic? FENCED? (option_returned_null | option_called)?
-//                           option_sqldata? option_action? option_package_path? option_scratch? option_final_call? DISALLOW PARALLEL option_dbinfo? option_cardinality? option_collid?
-//                           option_wlm_env_short? option_asutime? option_stay_resident?  option_program_type? option_security? option_run? option_registers? option_dispatch? option_after? option_secured?;
-dbs_option_list_ext_table: (option_specific| option_parameter| EXTERNAL option_name| option_language | parameter_style SQL | option_deterministic| FENCED| (option_returned_null | option_called)|
-                           option_sqldata| option_action| option_package_path| option_scratch| option_final_call| DISALLOW PARALLEL | option_dbinfo| option_cardinality| option_collid|
-                           option_wlm_env_short| option_asutime| option_stay_resident|  option_program_type| option_security| option_run| option_registers| option_dispatch| option_after| option_secured)+;
+dbs_option_list_proc_ext: (option_specific | option_dynamic | option_parameter| EXTERNAL option_name| option_language | option_sql| option_parameter_style| option_deterministic|
+                          option_package_path | FENCED| option_dbinfo| option_collid | option_wlm_env | option_asutime | option_stay_resident|  option_program_type| option_security|
+                          option_after | option_run | option_commit |  option_registers | option_called | option_debug_mode)+;
+
+dbs_option_list_ext_table: (option_specific | option_parameter | EXTERNAL option_name | option_language | parameter_style SQL | option_deterministic| FENCED| (option_returned_null | option_called)|
+                           option_sqldata| option_action | option_package_path| option_scratch | option_final_call | DISALLOW PARALLEL | option_dbinfo| option_cardinality| option_collid|
+                           option_wlm_env_short | option_asutime | option_stay_resident |  option_program_type | option_security| option_run | option_registers | option_dispatch | option_after | option_secured)+;
 dbs_option_list_proc_native: (LANGUAGE SQL)? option_specific? option_deterministic? option_sqldata2?  option_called? option_dynamic?
                              option_debug_mode? option_parameter_enc? option_qualifier? option_package_owner? option_asutime?
                              option_commit_aut?  option_registers? option_wlm_env_debug? option_defer? option_current_data? option_degree?
@@ -1131,8 +1117,7 @@ dbs_option_list_trigger: option_debug_mode? option_qualifier? option_asutime? op
                          option_rounding? option_format_date? option_decimal? option_format_time? option_for_update? option_secured?  option_sensitive_business?
                          option_sensitive_system? option_sensitive_archive? option_app_compat? option_concentrate_statements?;
 
-//dbs_option_list_inl_def:  option_specific? option_parameter option_deterministic? option_action? option_sqldata_common? option_dispatch? option_called? option_secured?;
-dbs_option_list_inl_def:  (option_specific| option_parameter | option_deterministic| option_action| option_sqldata_common| option_dispatch| option_called| option_secured | LANGUAGE SQL)+;
+dbs_option_list_inl_def:  (option_specific | option_parameter | option_deterministic| option_action| option_sqldata_common| option_dispatch| option_called| option_secured | LANGUAGE SQL)+;
 option_acceleration: ACCELERATION WAITFORDATA NUMERICLITERAL; // TODO: java, here numreic literal must be of format %d%d%d%d.%d
 option_accelerator: ACCELERATOR dbs_accelerator_name;
 option_action: NO?  EXTERNAL ACTION;
@@ -1519,7 +1504,7 @@ dbs_clone_table_name: dbs_sql_identifier;
 dbs_collection_id: IDENTIFIER;
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: NONNUMERICLITERAL | IDENTIFIER | FILENAME | COLOR | HOURS | HOUR | YEAR | LOCATION | ID | NAME | MONTH | YEAR | DATE | DAY | STATE | SERVER | LOCATOR | V1 | ACTIVITY | IN | COUNT | TRANSACTION | GROUP | TYPE; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
+dbs_generic_name: ACTIVITY | AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
 dbs_constraint_name: dbs_sql_identifier;
