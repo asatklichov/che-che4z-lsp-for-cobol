@@ -1033,7 +1033,7 @@ dbs_update_positioned: dbs_correlation_name? SET dbs_update_assignment (COMMACHA
 dbs_values: VALUES (dbs_values_null | dbs_values_into);
 dbs_values_null: (dbs_expression | LPARENCHAR dbs_expression (COMMACHAR dbs_expression)* RPARENCHAR);
 dbs_values_into: (dbs_expression | NULL | LPARENCHAR (dbs_expression | NULL) (COMMACHAR (dbs_expression | NULL))* RPARENCHAR) INTO
-                (dbs_values_target (COMMACHAR dbs_values_target)* | dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET);
+                (dbs_values_target (COMMACHAR dbs_values_target)* | dbs_array_variable);
 dbs_values_target: (dbs_global_variable_name | dbs_host_variable_name | dbs_sql_parameter_name | dbs_sql_variable_name | dbs_transition_variable_name);
 
 /*WHENEVER */

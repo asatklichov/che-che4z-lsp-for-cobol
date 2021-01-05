@@ -17,7 +17,6 @@ package com.broadcom.lsp.cobol.usecases;
 
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -27,27 +26,26 @@ import java.util.stream.Stream;
 
 /** This test checks if sql INSERT statement works correctly. */
 class TestSqlInsertStatement {
-  private static final String TEXT = "       IDENTIFICATION DIVISION.\n" +
-          "       PROGRAM-ID. HELLO-SQL.\n" +
-          "       DATA DIVISION.\n" +
-          "       WORKING-STORAGE SECTION.\n" +
-          "       EXEC SQL";
+  private static final String TEXT =
+      "       IDENTIFICATION DIVISION.\n"
+          + "       PROGRAM-ID. HELLO-SQL.\n"
+          + "       DATA DIVISION.\n"
+          + "       WORKING-STORAGE SECTION.\n"
+          + "       EXEC SQL";
   private static final String INSERT1 =
       TEXT
           + "        INSERT INTO DSN8C10.EMP\n"
           + "         VALUES ('000205','MARY','T','SMITH','D11','2866',\n"
           + "              '1981-08-10','ANALYST',16,'F','1956-05-22',\n"
           + "             16345,500,2300);\n"
-          + "       END-EXEC."
-      ;
+          + "       END-EXEC.";
 
   private static final String INSERT2 =
       TEXT
           + "        INSERT INTO SMITH.TEMPEMPL\n"
           + "        SELECT *\n"
           + "        FROM DSN8C10.EMP;\n"
-          + "       END-EXEC."
-      ;
+          + "       END-EXEC.";
 
   private static final String INSERT3 =
       TEXT
@@ -55,22 +53,21 @@ class TestSqlInsertStatement {
           + "        SELECT *\n"
           + "        FROM DSN8C10.EMP\n"
           + "        WHERE WORKDEPT='D11';\n"
-          + "       END-EXEC."
-      ;
+          + "       END-EXEC.";
 
   private static final String INSERT4 =
       TEXT
-          + "        INSERT INTO DSN8C10.EMP_PHOTO_RESUME(EMPNO, EMP_ROWID)\n"
+          + "        INSERT INTO DSN8C10.EMP_PHOTO_RESUME\n"
+          + "        (EMPNO, EMP_ROWID)\n"
           + "        VALUES (:HV_ENUM, DEFAULT);\n"
-          + "       END-EXEC."
-      ;
+          + "       END-EXEC.";
 
   private static final String INSERT5 =
       TEXT
-          + "        INSERT INTO T1 FOR :hv \n"
-          + "        ROWS VALUES (:hva:hvind) ATOMIC;\n"
-          + "       END-EXEC."
-      ;
+          + "        INSERT INTO DSN8C10.EMP_PHOTO_RESUME\n"
+          + "        (EMPNO,EMP_ROWID)\n"
+          + "         VALUES (:HV_ENUM,DEFAULT);\n"
+          + "       END-EXEC.";
 
   private static Stream<String> textsToTest() {
     return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5);
