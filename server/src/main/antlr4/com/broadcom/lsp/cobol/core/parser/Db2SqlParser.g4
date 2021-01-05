@@ -1269,7 +1269,7 @@ dbs_select_statement_skip_locked_data: SKIPCHAR LOCKED DATA;
 
 
 ///////////////// DBS EXPRESSION STARTS/////////////
-dbs_expression: ('+'|'-')? (dbs_function_invocation |
+dbs_expression: (PLUSCHAR | MINUSCHAR)? (dbs_function_invocation |
  LPARENCHAR dbs_expressions RPARENCHAR  |
  dbs_constant |
  dbs_column_name |
@@ -1318,7 +1318,7 @@ dbs_labeled_duration: (dbs_function_invocation | LPARENCHAR dbs_expression RPARE
 dbs_column_name | dbs_variable) dbs_time_unit;
 
 dbs_XMLCAST_specification: XMLCAST LPARENCHAR (dbs_expression | NULL | dbs_parameter_marker) AS dbs_comment_parameter_type RPARENCHAR;
-dbs_array_element_specification: dbs_array_variable LSQUAREBRACKET dbs_array_index RSQUAREBRACKET ;
+dbs_array_element_specification: dbs_array_variable;
 dbs_array_constructor: ARRAY LSQUAREBRACKET (QUESTIONMARK | dbs_fullselect | (dbs_array_element_specification | NULL)
 (COMMACHAR (dbs_array_element_specification | NULL))*) RSQUAREBRACKET;
 
@@ -1486,7 +1486,7 @@ dbs_alias_name: dbs_sql_identifier;
 dbs_applcompat_value: FUNCTION_LEVEL_10 | FUNCTION_LEVEL_11 | FUNCTION_LEVEL_12;
 dbs_array_index: dbs_integer;
 dbs_array_type_name: dbs_sql_identifier;
-dbs_array_variable: dbs_sql_identifier;
+dbs_array_variable: dbs_sql_identifier LSQUAREBRACKET (dbs_expressions) RSQUAREBRACKET;
 dbs_array_variable_name: all_words+; //TODO
 dbs_attr_host_variable: dbs_hostname_identifier | NUMERICLITERAL ; // VARCHAR(128)
 dbs_authorization_name: dbs_sql_identifier;
@@ -1506,7 +1506,7 @@ dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
 dbs_generic_name: ACTIVITY | AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
-dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
+dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL) INTEGERLITERAL*;
 dbs_constraint_name: dbs_sql_identifier;
 dbs_context: dbs_sql_identifier;
 dbs_context_name: dbs_sql_identifier;
@@ -1603,7 +1603,7 @@ dbs_sql_variable_name: COLONCHAR? dbs_generic_name | ASTERISKCHAR;
 dbs_sqlstate_string_constant: NONNUMERICLITERAL;
 dbs_statement_name: dbs_generic_name;
 dbs_stogroup_name: dbs_sql_identifier;
-dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant | NONNUMERICLITERAL;
+dbs_string_constant: dbs_binary_string_constant | dbs_character_string_constant | dbs_graphic_string_constant | IDENTIFIER;
 dbs_string_expression: DOUBLEQUOTE (dbs_allocate | dbs_alter | dbs_associate | dbs_comment | dbs_commit | dbs_create | dbs_declare_global |
   dbs_delete | dbs_drop | dbs_explain | dbs_free | dbs_grant |dbs_hold |dbs_insert | dbs_label | dbs_lock | dbs_merge | dbs_refresh | dbs_release|
   dbs_rename | dbs_revoke | dbs_rollback | dbs_savepoint | dbs_set | dbs_signal |dbs_truncate | dbs_update) DOUBLEQUOTE; // ref- https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sql_executeimmediate.html
