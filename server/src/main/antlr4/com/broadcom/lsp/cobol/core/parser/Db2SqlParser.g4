@@ -1504,7 +1504,7 @@ dbs_clone_table_name: dbs_sql_identifier;
 dbs_collection_id: IDENTIFIER;
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: ACTIVITY | AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
+dbs_generic_name: ACTIVITY | ADDRESS |AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | SQLCODE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
 dbs_constraint_name: dbs_sql_identifier;
