@@ -127,7 +127,6 @@ class TestSqlAllRevokeStatements {
 
   private static final String REVOKE_ON_SCHEMA4 =
       TEXT
-          + "       EXEC SQL\n"
           + "        REVOKE ALTERIN, DROPIN ON SCHEMA \n"
           + "        NEW_HIRE, PROMO, RESIGN FROM HR;\n"
           + "       END-EXEC.";

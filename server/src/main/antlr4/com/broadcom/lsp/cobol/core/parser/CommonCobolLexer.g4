@@ -306,6 +306,7 @@ HTTPVNUM : H T T P V N U M;
 IGNORE : I G N O R E;
 IMMEDIATE : I M M E D I A T E;
 INCREMENT : I N C R E M E N T;
+INCLUDE : I N C L U D E {sqlFlag = false;};
 INITIMG : I N I T I M G;
 INITPARM : I N I T P A R M;
 INITPARMLEN : I N I T P A R M L E N;
@@ -833,6 +834,7 @@ SEMICOLON_FS : ';' ('\r' | '\n' | '\f' | '\t' | ' ')+ | ';' EOF;
 SINGLEQUOTE : '\'';
 RPARENCHAR : ')';
 SLASHCHAR : '/';
+SQLLINECOMMENTCHAR: '--';
 
 LEVEL_NUMBER: ([1-9])|([0][1-9])|([1234][0-9]);
 LEVEL_NUMBER_66 : '66';
@@ -888,6 +890,23 @@ COMMENTLINE : COMMENTTAG WS ~('\n' | '\r')* -> channel(HIDDEN);
 COMMENTENTRYLINE : COMMENTENTRYTAG WS ~('\n' | '\r')*  -> channel(HIDDEN);
 WS : [ \t\f;]+ -> channel(HIDDEN);
 SEPARATOR : ', ' {!sqlFlag}?  -> channel(HIDDEN);
+
+//SQL comments
+SQLLINECOMMENT
+	:	SQLLINECOMMENTCHAR ~[\r\n]* NEWLINE {sqlFlag}? -> channel(HIDDEN)
+	;
+
+SQLBLOCKCOMMENT
+	:	(	'/*'
+			(	'/'* SQLBLOCKCOMMENT
+			|	~[/*]
+			|	'/'+ ~[/*]
+			|	'*'+ ~[/*]
+			)*
+			'*'*
+			'*/'
+		) {sqlFlag}? -> channel(HIDDEN)
+	;
 
 // treat all the non-processed tokens as errors
 ERRORCHAR : . ;
