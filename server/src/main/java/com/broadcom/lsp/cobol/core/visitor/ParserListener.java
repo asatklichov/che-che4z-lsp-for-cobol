@@ -50,4 +50,5 @@ public class ParserListener extends BaseErrorListener {
     LOG.debug("Syntax error by CobolParser: " + error.toString());
     errors.add(error);
   }
+
 }

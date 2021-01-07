@@ -380,7 +380,7 @@ class TestSqlAllAlterStatements {
           + "       ALTER TABLESPACE DSN8D12A.DSN8S12E\n"
           + "         CLOSE NO\n"
           + "         SECQTY -1\n"
-          + "         ALTER PARTITION 1 PCTFREE 20;\n"
+          + "         ALTER PARTITION 1 PCTFREE 8;\n"
           + "       END-EXEC.";
 
   private static final String ALTER_TABLESPACE3 =
@@ -526,4 +526,5 @@ class TestSqlAllAlterStatements {
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }
+
 }
