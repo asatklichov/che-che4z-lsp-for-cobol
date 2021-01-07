@@ -269,7 +269,7 @@ dbs_comment_role: ROLE dbs_role_name;
 dbs_comment_sequence: SEQUENCE dbs_sequence_name;
 dbs_comment_table: TABLE (dbs_table_name | dbs_view_name);
 dbs_comment_trigger: TRIGGER dbs_trigger_name (ACTIVE VERSION | VERSION dbs_routine_version_id)?;
-dbs_comment_trusted: TRUSTED CONTEXT dbs_context NONNUMERICLITERAL; //TODO check previous version - name.
+dbs_comment_trusted: TRUSTED CONTEXT dbs_context NONNUMERICLITERAL;
 dbs_comment_type: TYPE dbs_type_name;
 dbs_comment_mask: MASK dbs_mask_name;
 dbs_comment_permission: PERMISSION dbs_permission_name;
@@ -343,7 +343,7 @@ dbs_create_function_sql_table: (dbs_create_function_sql_table_param_decl (COMMAC
 dbs_create_function_sql_table_param_decl: (dbs_parameter_name)? dbs_create_function_sql_table_param_type;
 dbs_create_function_sql_table_param_type: (common_built_in_type | dbs_distinct_type_name)  | TABLE LIKE (dbs_table_name | dbs_view_name) AS LOCATOR;
 dbs_create_function_sql_func_def: RETURNS TABLE LPARENCHAR  dbs_column_name common_built_in_type (COMMACHAR dbs_column_name common_built_in_type)* RPARENCHAR dbs_option_list_inl_def dbs_create_function_func_sql_routine;
-dbs_create_function_func_sql_routine: RETURN dbs_control_statement | BEGIN ATOMIC RETURN dbs_control_statement END;//TODO
+dbs_create_function_func_sql_routine: RETURN dbs_control_statement | BEGIN ATOMIC RETURN dbs_control_statement END;
 
 //CREATE GLOBAL TEMP TABLE
 dbs_create_global_temp_table: GLOBAL TEMPORARY TABLE  dbs_table_name LPARENCHAR (dbs_create_global_temp_table_col_def (COMMACHAR dbs_create_global_temp_table_col_def)*) RPARENCHAR | LIKE (dbs_table_name | dbs_view_name)
@@ -361,7 +361,9 @@ prolog: (DECLARE NAMESPACE NCNAME  EQUALCHAR dbs_namespace_name SEMICOLON_FS | D
 pattern_expression: ( (SLASHCHAR | DOUBLESLASHCHAR)  )*;
 other_opt_part1: (NOT? CLUSTER | PARTITIONED | NOT? PADDED | using_specification | free_specification | gbpcache_specification | DEFINE yes_or_no |  COMPRESS yes_or_no | (INCLUDE | EXCLUDE) NULL KEYS)*;
 other_opt_part2: (PARTITION BY (RANGE)? LPARENCHAR (partition_using_specification (COMMACHAR  partition_using_specification)*)? RPARENCHAR)?;
-other_opt_part3: (BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | DEFER no_or_yes | DSSIZE dbs_integer G_CHAR | PIECESIZE (dbs_integer k_m_g | IDENTIFIER) | COPY no_or_yes)*; // TODO : dbs_integer k_m_g is interpreted as IDENTIFIER. Add action for <Integer><K|M|G>
+other_opt_part3: (BUFFERPOOL dbs_bp_name | CLOSE yes_or_no | DEFER no_or_yes | DSSIZE dbs_integer G_CHAR
+               | PIECESIZE IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[MmGgKk]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in KB,MB or GB.");}}
+               | COPY no_or_yes)*;
 partition_using_specification: partition_element (using_specification | free_specification | gbpcache_specification | DSSIZE dbs_integer G_CHAR)*;
 using_specification: USING (VCAT dbs_catalog_name | STOGROUP dbs_stogroup_name (PRIQTY dbs_integer? | SECQTY dbs_integer | ERASE yes_or_no?)*);
 free_specification: (FREEPAGE dbs_integer (PCTFREE dbs_integer)? | PCTFREE  dbs_integer (FREEPAGE dbs_integer)?);
@@ -452,7 +454,8 @@ dbs_create_table_data_def: in_clause_def | partitioning_clause | organization_cl
                     TRACKMOD (yes_or_no | dbs_imptkmod_param)  | PAGENUM (dbs_pageset_pagenum_param | RELATIVE | ABSOLUTE) | (NO KEY LABEL | KEY LABEL dbs_key_label_name) ;
 in_clause_def: (IN dbs_table_name? dbs_table_space_name | IN DATABASE dbs_database_name | IN ACCELERATOR dbs_accelerator_name);
 partitioning_clause:  PARTITION BY (RANGE? LPARENCHAR partition_expression (COMMACHAR partition_expression)*  RPARENCHAR
-                        LPARENCHAR partitioning_element (COMMACHAR partitioning_element)*  RPARENCHAR  |  SIZE (EVERY (dbs_integer G_CHAR | IDENTIFIER))?); // TODO: add action for dbs_integer G_CHAR
+                        LPARENCHAR partitioning_element (COMMACHAR partitioning_element)*  RPARENCHAR
+                        |  SIZE (EVERY IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[Gg]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in GB.");}})?);
 partition_expression: dbs_column_name (NULLS LAST)? (ASC | DESC)?;
 partitioning_element: PARTITION dbs_integer ENDING AT? partition_element_loop partition_hash_space? INCLUSIVE?;
 partition_hash_space: HASH SPACE dbs_integer k_m_g;
@@ -466,7 +469,8 @@ dbs_create_tablespace_opts : IN (DSNDB04  | dbs_database_name) | BUFFERPOOL dbs_
 partition_by_growth_spec: MAXPARTITIONS (NUMBER_256 | dbs_integer (NUMPARTS dbs_integer)?);
 partition_by_range_spec: NUMPARTS dbs_integer partition_by_range_spec_body*;
 partition_by_range_spec_body: LPARENCHAR partitions_opts (COMMACHAR partitions_opts)*  RPARENCHAR | PAGENUM (dbs_pageset_pagenum_param | ABSOLUTE | RELATIVE);
-partitions_opts: PARTITION dbs_integer (using_block | free_block | gbpcache_block | COMPRESS  yes_or_no | ERASE yes_or_no?  | dbs_imptkmod_param | TRACKMOD yes_or_no | DSSIZE dbs_integer G_CHAR)+; // TODO: check -> added ERASE yes_or_no? as IBM example support this but not the syntax tree
+partitions_opts: PARTITION dbs_integer (using_block | free_block | gbpcache_block | COMPRESS  yes_or_no | ERASE yes_or_no?  | dbs_imptkmod_param | TRACKMOD yes_or_no
+               | DSSIZE (dbs_integer G_CHAR | IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[Gg]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in GB.");}}))+;
 free_block: (FREEPAGE  dbs_integer | PCTFREE (dbs_smallint (FOR UPDATE dbs_smallint)?)?)+;
 locksize_block_tbl: LOCKSIZE (ANY | TABLESPACE | PAGE | ROW);
 
@@ -728,7 +732,8 @@ dbs_insert_data_type: (common_short_built_in_type | dbs_distinct_type);
 dbs_insert_values: VALUES ((dbs_expression | DEFAULT | NULL) | LPARENCHAR dbs_insert_values_sgloop RPARENCHAR) | (FOR (dbs_host_variable | dbs_integer_constant) ROWS)? VALUES dbs_insert_values_multi;
 dbs_insert_values_sgloop: (dbs_expression | DEFAULT | NULL) (COMMACHAR (dbs_expression | DEFAULT | NULL) | NUMERICLITERAL)*;
 dbs_insert_values_multi: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL | LPARENCHAR dbs_insert_values_mloop RPARENCHAR)
-                        (FOR (dbs_host_variable | dbs_integer_constant) ROWS)? (ATOMIC | NOT ATOMIC CONTINUE ON SQLEXCEPTION)?; //TODO: FOR K ROWS, 0<k<=32767
+                        (FOR (dbs_host_variable | T=dbs_integer_constant {if(!(Integer.parseInt($T.text) > 0 && Integer.parseInt($T.text) <= 32767)) { notifyErrorListeners( $T.text+" not allowed. Allowed range is 0<k<=32767.");}}) ROWS)?
+                        (ATOMIC | NOT ATOMIC CONTINUE ON SQLEXCEPTION)?;
 dbs_insert_values_mloop: (dbs_expression | dbs_host_variable_array | DEFAULT | NULL) (COMMACHAR (dbs_expression |
                         dbs_host_variable_array | DEFAULT | NULL))*;
 dbs_insert_fullselect: (WITH dbs_select_statement_common_table_expression (COMMACHAR dbs_select_statement_common_table_expression)*)? dbs_fullselect (WITH (RR|RS|CS))? (QUERYNO dbs_integer)?;
@@ -969,7 +974,9 @@ dbs_set_current_precision:  CURRENT PRECISION EQUALCHAR? (dbs_string_constant | 
 dbs_set_current_query_accel: CURRENT QUERY ACCELERATION EQUALCHAR? (NONE | ENABLE | ENABLE WITH FAILBACK | ELIGIBLE | ALL | dbs_host_variable);
 
 //SET CURRENT QUERY ACCELARATION WAITFORDATA
-dbs_set_current_query_accel_wfdata: CURRENT QUERY ACCELERATION WAITFORDATA EQUALCHAR? (NUMERICLITERAL | dbs_variable); //TODO: java, here numreic literal must be of format %d%d%d%d.%d
+dbs_set_current_query_accel_wfdata: CURRENT QUERY ACCELERATION WAITFORDATA EQUALCHAR?
+                               (NUMERICLITERAL {if(!$NUMERICLITERAL.text.matches("\\d{1,4}.\\d\\b")) {notifyErrorListeners($NUMERICLITERAL.text+ " not valid. Must be of format %d%d%d%d.%d");}}
+                               | dbs_variable);
 
 //SET CURRENT REFRESH AGE
 dbs_set_current_refresh_age: CURRENT REFRESH AGE EQUALCHAR? (dbs_numeric_constant | ANY | dbs_host_variable);
@@ -1058,7 +1065,9 @@ common_bit_int: (SMALLINT | INT | INTEGER | BIGINT);
 common_bit_decimal_opt: (DECIMAL | DEC | NUMERIC);
 common_bit_decimal: common_bit_decimal_opt  (LPARENCHAR (dbs_integer (COMMACHAR dbs_integer)? | NUMERICLITERAL) RPARENCHAR)?;
 common_bit_float: (FLOAT (LPARENCHAR dbs_integer RPARENCHAR)? | REAL | DOUBLE PRECISION?);
-common_bit_decfloat: DECFLOAT (LPARENCHAR (NUMBER_34| LEVEL_NUMBER | NUMBER_16) RPARENCHAR)?; // TODO: add action to check level number is either 34 or 16
+common_bit_decfloat: DECFLOAT (LPARENCHAR (NUMBER_34
+             | LEVEL_NUMBER {if(! (Integer.parseInt($LEVEL_NUMBER.text) == 34 || Integer.parseInt($LEVEL_NUMBER.text) == 16)) {notifyErrorListeners($LEVEL_NUMBER.text+" not allowed. 34 or 16 are only allowed.");}}
+             | NUMBER_16) RPARENCHAR)?;
 common_bit_char: (CHARACTER | CHAR) (VARYING common_bit_varandchar | LARGE OBJECT common_bit_clobandobj | LPARENCHAR dbs_integer RPARENCHAR common_bit_charopts);
 common_bit_char2: ((CHARACTER | CHAR) (LPARENCHAR dbs_integer RPARENCHAR)? | (VARCHAR | (CHARACTER | CHAR) VARYING) (LPARENCHAR dbs_integer RPARENCHAR)) (common_bit_fordata | CCSID NUMBER_1208)?;
 common_bit_fordata: (FOR (SBCS | MIXED | BIT) DATA);
@@ -1066,12 +1075,13 @@ common_bit_charopts: (CCSID oneof_encoding)? common_bit_fordata?;
 common_bit_varchar: VARCHAR common_bit_varandchar;
 common_bit_varandchar: LPARENCHAR dbs_integer RPARENCHAR common_bit_charopts;
 common_bit_clob: CLOB common_bit_clobandobj;
-common_bit_clobandobj: (LPARENCHAR (dbs_integer k_m_g | IDENTIFIER)? RPARENCHAR)? (CCSID oneof_encoding)? (FOR (SBCS | MIXED ) DATA)?; // TODO here 100k is seen as an identifier. Check in java or through the action for the pattern
+common_bit_clobandobj: (LPARENCHAR (IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[MmGgKk]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in KB,MB or GB.");}})? RPARENCHAR)?
+                        (CCSID oneof_encoding)? (FOR (SBCS | MIXED ) DATA)?;
 common_bit_graphic_core: GRAPHIC (LPARENCHAR dbs_integer RPARENCHAR)? | VARGRAPHIC LPARENCHAR dbs_integer RPARENCHAR;
 common_bit_graphic: (common_bit_graphic_core | DBCLOB (LPARENCHAR dbs_integer k_m_g? RPARENCHAR)?) (CCSID oneof_encoding)?;
 common_bit_graphic2: common_bit_graphic_core CCSID NUMBER_1200;
 common_bit_binary_core: BINARY (LPARENCHAR dbs_integer RPARENCHAR)? | (BINARY VARYING | VARBINARY) LPARENCHAR dbs_integer RPARENCHAR;
-common_bit_binary: (common_bit_binary_core | (BINARY LARGE OBJECT | BLOB) (LPARENCHAR (dbs_integer k_m_g | IDENTIFIER)? RPARENCHAR)?); //TODO add action for dbs_interger K|M|G
+common_bit_binary: (common_bit_binary_core | (BINARY LARGE OBJECT | BLOB) (LPARENCHAR (IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[MmGgKk]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in KB,MB or GB.");}})? RPARENCHAR)?);
 common_bit_timestamp: TIMESTAMP (LPARENCHAR dbs_integer RPARENCHAR)? (without_or_with TIME ZONE)?;
 common_bit_date_time: (DATE |  TIME | common_bit_timestamp);
 
@@ -1118,7 +1128,7 @@ dbs_option_list_trigger: option_debug_mode? option_qualifier? option_asutime? op
                          option_sensitive_system? option_sensitive_archive? option_app_compat? option_concentrate_statements?;
 
 dbs_option_list_inl_def:  (option_specific | option_parameter | option_deterministic| option_action| option_sqldata_common| option_dispatch| option_called| option_secured | LANGUAGE SQL)+;
-option_acceleration: ACCELERATION WAITFORDATA NUMERICLITERAL; // TODO: java, here numreic literal must be of format %d%d%d%d.%d
+option_acceleration: ACCELERATION WAITFORDATA NUMERICLITERAL {if(!$NUMERICLITERAL.text.matches("\\d{1,4}.\\d\\b")) {notifyErrorListeners($NUMERICLITERAL.text+ " not valid. Must be of format %d%d%d%d.%d");}};
 option_accelerator: ACCELERATOR dbs_accelerator_name;
 option_action: NO?  EXTERNAL ACTION;
 option_after: (STOP AFTER (SYSTEM DEFAULT FAILURES | dbs_integer FAILURES) | CONTINUE AFTER FAILURE);
@@ -1402,7 +1412,14 @@ db2sql_intersected_words: ACCESS | ALL | ANY | APPLY | ARE | AS | ASCII | AT | A
                             SQL | START | THEN | TIME | TO TRAILING | TRUE | TYPE | UNTIL | USAGE | USE | USING | VALUE |
                             VALUES | VARYING | WHEN | WITH | WRITE | XML | YEAR;
 
-dbs_inbuild_functions : LENGTH | SUBSTR | COUNT | CAST | COALESCE | TIMESTAMP | ROW_NUMBER; // TODO REF https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/sqlref/src/tpc/db2z_sqlfunctionslist.html
+dbs_inbuild_functions : ASCII  | AVG | BLOB | BIGINT | BINARY | CARDINALITY | CHAR | CHARACTER_LENGTH | CHAR_LENGTH | CLOB | COALESCE
+                            | CONCAT | CONTAINS | CORR | CORRELATION | CAST | COUNT | COUNT_BIG | COVARIANCE | CUME_DIST | DATE | DAY
+                            | DAYOFMONTH | DAYOFWEEK | DAYOFYEAR | DAYS | DBCLOB |  DECIMAL | DEC | DECFLOAT | DOUBLE | EXTRACT | FLOAT
+                            | GRAPHIC | GROUPING | HASH | HEX | HOUR | INSERT | INTEGER | INT | LEFT | LENGTH | LOWER | MAX | MICROSECOND
+                            | MIN | MINUTE | MONTH | PERCENT_RANK | POSITION | RANDOM | REAL | REPEAT | REPLACE | RIGHT | ROWID | SECOND
+                            | SMALLINT | SPACE | STDDEV | SUBSTR | SUBSTRING | SUM | TIME | TIMESTAMP | ROW_NUMBER | TRANSLATE | TRIM
+                            | TRUNCATE | UNICODE | UNPACK | UPPER | VALUE | VARBINARY | VARCHAR | VARGRAPHIC | VARIANCE | XMLNAMESPACES
+                            | XMLTABLE | YEAR;
 db2sql_only_words: ABSOLUTE | ACCELERATION | ACCELERATOR | ACTIVATE | ACTIVE | ADA | AGE | ALIAS | ALLOW | ALTERIN | ALWAYS | APPEND |
                             APPLCOMPAT | APPLICATION | ARCHIVE | ASC | ASSERTION | ASSOCIATE | ASUTIME | ATOMIC | AUTHID |
                             AUTHORIZATION | AUTOMATIC | AVG | AUX | BEGIN | BETWEEN | BIGINT | BIND | BINDADD | BIT_LENGTH | BLOCKED |
@@ -1487,7 +1504,7 @@ dbs_applcompat_value: FUNCTION_LEVEL_10 | FUNCTION_LEVEL_11 | FUNCTION_LEVEL_12;
 dbs_array_index: dbs_integer;
 dbs_array_type_name: dbs_sql_identifier;
 dbs_array_variable: dbs_sql_identifier LSQUAREBRACKET (dbs_expressions) RSQUAREBRACKET;
-dbs_array_variable_name: all_words+; //TODO
+dbs_array_variable_name: all_words+;
 dbs_attr_host_variable: dbs_hostname_identifier | NUMERICLITERAL ; // VARCHAR(128)
 dbs_authorization_name: dbs_sql_identifier;
 dbs_authorization_specification: IDENTIFIER;
@@ -1515,7 +1532,7 @@ dbs_correlation_name: dbs_generic_name;
 dbs_cursor_name: dbs_sql_identifier;
 dbs_database_name: dbs_sql_identifier;
 dbs_dc_name: dbs_sql_identifier;// JAVA - lenght must be < 9
-dbs_descriptor_name: COLONCHAR? (SQLD | SQLDABC | SQLN | SQLVAR | SQLDA | IDENTIFIER); // TODO: check the docs , why only few discriptor names are allowed
+dbs_descriptor_name: COLONCHAR? (SQLD | SQLDABC | SQLN | SQLVAR | SQLDA | IDENTIFIER);
 dbs_diagnostic_string_expression: dbs_expressions;
 dbs_distinct_type: db2sql_data_types+;
 dbs_distinct_type_name: dbs_sql_identifier;
@@ -1528,7 +1545,7 @@ dbs_explainable_sql_statement: ( dbs_allocate | dbs_alter | dbs_associate | dbs_
 dbs_ext_program_name: dbs_sql_identifier;
 dbs_external_program_name: IDENTIFIER;
 dbs_hint_variable:  dbs_variable;
-dbs_hint_string_constant:  STRINGLITERAL; //TODO
+dbs_hint_string_constant:  STRINGLITERAL;
 dbs_fetch_clause: FETCH (FIRST | NEXT) (PLUSCHAR? INTEGERLITERAL)? (ROW | ROWS) ONLY;
 dbs_field_name: dbs_sql_identifier;
 dbs_function_name: dbs_sql_identifier | dbs_inbuild_functions; //must not be any of the  system-reserved keywords
@@ -1542,7 +1559,7 @@ dbs_host_variable_name: COLONCHAR? dbs_generic_name;
 dbs_id_host_variable: NUMERICLITERAL;
 dbs_identifier: dbs_sql_identifier;
 dbs_imptkmod_param: YES | NO;
-dbs_include_data_type: all_words+; // TODO is was dbs_insert_data_type
+dbs_include_data_type: all_words+;
 dbs_index_identifier: IDENTIFIER;
 dbs_index_name: dbs_sql_identifier;
 dbs_integer: db2sql_integerLiterals | INTEGERLITERAL | LEVEL_NUMBER | LEVEL_NUMBER_66 | LEVEL_NUMBER_77 | LEVEL_NUMBER_88;
@@ -1563,10 +1580,10 @@ dbs_nnnn_m: SINGLEDIGITLITERAL SINGLEDIGITLITERAL? SINGLEDIGITLITERAL? SINGLEDIG
 dbs_non_deterministic_expression: DATA CHANGE OPERATION | dbs_special_register | dbs_session_variable;
 dbs_session_variable : SYSIBM DOT PACKAGE_NAME | SYSIBM DOT PACKAGE_SCHEMA | SYSIBM DOT PACKAGE_VERSION;
 dbs_numeric_constant: dbs_integer;// numeric literal without non-zero digits to the right of the decimal point.
-dbs_obfuscated_statement_text: all_words+ ; // TODO CONFUSING encoded statement, can have all words but meaning would change.
+dbs_obfuscated_statement_text: all_words+ ;
 dbs_package_name: NONNUMERICLITERAL;
 dbs_password_variable: COLONCHAR? (all_words | dbs_generic_name)+;
-dbs_password_string_constant: STRINGLITERAL; // TODO
+dbs_password_string_constant: STRINGLITERAL;
 dbs_package_path: FILENAME+;
 dbs_pageset_pagenum_param: ABSOLUTE | CHAR_A | RELATIVE | CHAR_R ;
 dbs_parameter_marker: ( QUESTIONMARK | COLONCHAR dbs_variable);
@@ -1594,7 +1611,7 @@ dbs_seclabel_name: IDENTIFIER;
 dbs_sequence_name: dbs_sql_identifier;
 dbs_servauth_value: NONNUMERICLITERAL;
 dbs_simple_when_clause: (WHEN (dbs_basic_predicate | dbs_expressions) THEN (dbs_result_expression1 | NULL))+;
-dbs_smallint: {Integer.parseInt($value.text) > -2 && Integer.parseInt($value.text) < 100}? value=dbs_integer_constant;//MINUSCHAR? SINGLEDIGITLITERAL SINGLEDIGITLITERAL?;// java ref - -1 to 99
+dbs_smallint: T=dbs_integer_constant {if(!(Integer.parseInt($T.text) > -2 && Integer.parseInt($T.text) < 100)) { notifyErrorListeners($T.text+" not allowed. Values must range from -1 to 99");}};//MINUSCHAR? SINGLEDIGITLITERAL SINGLEDIGITLITERAL?;// java ref - -1 to 99
 dbs_specific_name: dbs_sql_identifier;
 dbs_sql_condition_name: dbs_generic_name; // No particular spec found in doc. Specifies the name of the condition.
 dbs_sql_control_statement: dbs_control_statement;
@@ -1668,7 +1685,7 @@ dbs_version_name: IDENTIFIER | FILENAME;
 dbs_view_name: dbs_hostname_identifier? dbs_sql_identifier;
 dbs_volume_id: IDENTIFIER;
 dbs_wlm_env_name: dbs_sql_identifier;
-dbs_pieceSize : {$value.text.matches("\\d+[MmGgKk]")}? value=IDENTIFIER;
+dbs_pieceSize : IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[MmGgKk]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in KB,MB or GB.");}};
 dbs_sql_identifier: NONNUMERICLITERAL | IDENTIFIER | FILENAME | FILENAME (DOT IDENTIFIER)* | DSNDB04 | TRANSACTION | RECORDS;
 db2sql_integerLiterals : NUMBER_1 | NUMBER_2 | NUMBER_4 | NUMBER_5 | NUMBER_6 | NUMBER_8 | NUMBER_10 | NUMBER_12| NUMBER_14 | NUMBER_15
                           | NUMBER_16 | NUMBER_20 | NUMBER_30 | NUMBER_31 | NUMBER_33 | NUMBER_34 | NUMBER_64 | NUMBER_100 | NUMBER_256
