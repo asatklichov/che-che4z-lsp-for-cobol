@@ -1686,7 +1686,6 @@ dbs_view_name: dbs_hostname_identifier? dbs_sql_identifier;
 dbs_volume_id: IDENTIFIER;
 dbs_wlm_env_name: dbs_sql_identifier;
 dbs_pieceSize : IDENTIFIER {if(!$IDENTIFIER.text.matches("\\d+[MmGgKk]")) { notifyErrorListeners( $IDENTIFIER.text+" not allowed. Piecesize should be in KB,MB or GB.");}};
-//dbs_pieceSize : {_input.LT(1).getText().matches("\\d+[MmGgKk]")}?<fail={ _input.LT(1).getText()+" not allowed. Piecesize should be in KB,MB or GB." }> IDENTIFIER ;
 dbs_sql_identifier: NONNUMERICLITERAL | IDENTIFIER | FILENAME | FILENAME (DOT IDENTIFIER)* | DSNDB04 | TRANSACTION | RECORDS;
 db2sql_integerLiterals : NUMBER_1 | NUMBER_2 | NUMBER_4 | NUMBER_5 | NUMBER_6 | NUMBER_8 | NUMBER_10 | NUMBER_12| NUMBER_14 | NUMBER_15
                           | NUMBER_16 | NUMBER_20 | NUMBER_30 | NUMBER_31 | NUMBER_33 | NUMBER_34 | NUMBER_64 | NUMBER_100 | NUMBER_256
