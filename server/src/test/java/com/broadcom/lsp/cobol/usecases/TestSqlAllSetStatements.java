@@ -295,9 +295,4 @@ class TestSqlAllSetStatements {
   void test(String text) {
     UseCaseEngine.runTest(text, List.of(), Map.of());
   }
-
-  public static void main(String[] args) {
-    String a = "123.3";
-    System.out.println(a.matches("\\d{4}.\\d\\b"));
-  }
 }
