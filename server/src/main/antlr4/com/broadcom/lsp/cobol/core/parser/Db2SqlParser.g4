@@ -1144,8 +1144,9 @@ option_commit_aut: (option_commit | AUTONOMOUS);
 option_concentrate_statements: CONCENTRATE STATEMENTS (OFF | WITH LITERALS);
 option_concurrency: CONCURRENT ACCESS RESOLUTION (USE CURRENTLY COMMITTED | WAIT FOR OUTCOME);
 option_current_data: CURRENT DATA no_or_yes;
-option_format_date: DATE FORMAT (ISO | EUR | USA | JIS | LOCAL);
-option_format_time: TIME FORMAT (ISO | EUR | USA | JIS | LOCAL);
+option_format_date: DATE option_format_opts;
+option_format_time: TIME option_format_opts;
+option_format_opts: FORMAT (ISO | EUR | USA | JIS | LOCAL);
 option_dbinfo: NO? DBINFO;
 option_debug_mode: (DISALLOW | ALLOW | DISABLE) DEBUG MODE;
 option_decimal: DECIMAL LPARENCHAR (NUMBER_15 (COMMACHAR dbs_s)? | NUMBER_31 (COMMACHAR dbs_s)?);
@@ -1412,8 +1413,8 @@ db2sql_intersected_words: ACCESS | ALL | ANY | APPLY | ARE | AS | ASCII | AT | A
                             SQL | START | THEN | TIME | TO TRAILING | TRUE | TYPE | UNTIL | USAGE | USE | USING | VALUE |
                             VALUES | VARYING | WHEN | WITH | WRITE | XML | YEAR;
 
-dbs_inbuild_functions : ASCII  | AVG | BLOB | BIGINT | BINARY | CARDINALITY | CHAR | CHARACTER_LENGTH | CHAR_LENGTH | CLOB | COALESCE
-                            | CONCAT | CONTAINS | CORR | CORRELATION | CAST | COUNT | COUNT_BIG | COVARIANCE | CUME_DIST | DATE | DAY
+dbs_inbuild_functions : ASCII  | AVG | BLOB | BIGINT | BINARY | CARDINALITY | CHAR | CHARACTER_LENGTH | CAST | CHAR_LENGTH | CLOB | COALESCE
+                            | CONCAT | CONTAINS | CORR | CORRELATION | COUNT | COUNT_BIG | COVARIANCE | CUME_DIST | DATE | DAY
                             | DAYOFMONTH | DAYOFWEEK | DAYOFYEAR | DAYS | DBCLOB |  DECIMAL | DEC | DECFLOAT | DOUBLE | EXTRACT | FLOAT
                             | GRAPHIC | GROUPING | HASH | HEX | HOUR | INSERT | INTEGER | INT | LEFT | LENGTH | LOWER | MAX | MICROSECOND
                             | MIN | MINUTE | MONTH | PERCENT_RANK | POSITION | RANDOM | REAL | REPEAT | REPLACE | RIGHT | ROWID | SECOND
