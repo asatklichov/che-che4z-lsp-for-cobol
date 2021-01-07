@@ -69,8 +69,14 @@ class TestSqlInsertStatement {
           + "         VALUES (:HV_ENUM,DEFAULT);\n"
           + "       END-EXEC.";
 
+  private static final String INSERT6 =
+      TEXT
+          + "       INSERT INTO ABC INCLUDE (A SMALLINT, \n"
+          + "       B SMALLINT) VALUEs TAD+1;\n"
+          + "       END-EXEC.";
+
   private static Stream<String> textsToTest() {
-    return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5);
+    return Stream.of(INSERT1, INSERT2, INSERT3, INSERT4, INSERT5, INSERT6);
   }
 
   @ParameterizedTest
