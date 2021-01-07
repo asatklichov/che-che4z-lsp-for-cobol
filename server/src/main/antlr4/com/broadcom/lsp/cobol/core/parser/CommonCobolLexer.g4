@@ -2,6 +2,11 @@ lexer grammar CommonCobolLexer;
 
 @lexer::members {
     boolean sqlFlag = false;
+    String lastTokenText = null;
+    public void emit(Token token) {
+        super.emit(token);
+        lastTokenText = token.getText();
+    }
 }
 
 ABCODE : A B C O D E;
@@ -306,7 +311,7 @@ HTTPVNUM : H T T P V N U M;
 IGNORE : I G N O R E;
 IMMEDIATE : I M M E D I A T E;
 INCREMENT : I N C R E M E N T;
-INCLUDE : I N C L U D E {sqlFlag = false;};
+INCLUDE : {if(lastTokenText.equals("EXEC SQL")) {sqlFlag = false;}} I N C L U D E;
 INITIMG : I N I T I M G;
 INITPARM : I N I T P A R M;
 INITPARMLEN : I N I T P A R M L E N;
@@ -894,18 +899,6 @@ SEPARATOR : ', ' {!sqlFlag}?  -> channel(HIDDEN);
 //SQL comments
 SQLLINECOMMENT
 	:	SQLLINECOMMENTCHAR ~[\r\n]* NEWLINE {sqlFlag}? -> channel(HIDDEN)
-	;
-
-SQLBLOCKCOMMENT
-	:	(	'/*'
-			(	'/'* SQLBLOCKCOMMENT
-			|	~[/*]
-			|	'/'+ ~[/*]
-			|	'*'+ ~[/*]
-			)*
-			'*'*
-			'*/'
-		) {sqlFlag}? -> channel(HIDDEN)
 	;
 
 // treat all the non-processed tokens as errors

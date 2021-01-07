@@ -1560,7 +1560,7 @@ dbs_host_variable_name: COLONCHAR? dbs_generic_name;
 dbs_id_host_variable: NUMERICLITERAL;
 dbs_identifier: dbs_sql_identifier;
 dbs_imptkmod_param: YES | NO;
-dbs_include_data_type: all_words+;
+dbs_include_data_type: dbs_alter_procedure_bit_int | dbs_alter_procedure_bit_decimal | dbs_alter_procedure_bit_float | dbs_alter_procedure_bit_decfloat | dbs_alter_procedure_bit_char | dbs_alter_procedure_bit_graphic | dbs_alter_procedure_bit_varchar | DATE | TIME | dbs_alter_procedure_bit_timestamp;
 dbs_index_identifier: IDENTIFIER;
 dbs_index_name: dbs_sql_identifier;
 dbs_integer: db2sql_integerLiterals | INTEGERLITERAL | LEVEL_NUMBER | LEVEL_NUMBER_66 | LEVEL_NUMBER_77 | LEVEL_NUMBER_88;
