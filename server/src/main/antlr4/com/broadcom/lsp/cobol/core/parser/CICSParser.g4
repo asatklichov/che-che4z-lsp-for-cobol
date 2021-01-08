@@ -12,7 +12,7 @@
  *   Broadcom, Inc. - initial API and implementation
  */
 parser grammar CICSParser;
-options {tokenVocab = CICSLexer;}
+options {tokenVocab = CobolLexer;}
 import Db2SqlParser;
 
 allRules: cics_send | cics_receive | cics_add | cics_address | cics_allocate | cics_asktime | cics_assign | cics_bif |
@@ -927,7 +927,7 @@ cics_value: LPARENCHAR ptr_value RPARENCHAR;
 empty_parens: LPARENCHAR RPARENCHAR;
 
 cobolWord
-   : IDENTIFIER | cics_only_words | db2sql_only_words
+   : IDENTIFIER | cics_only_words | db2sql_only_words1
    | ABORT | AS | ASCII | ASSOCIATED_DATA | ASSOCIATED_DATA_LENGTH
    | BINARY | BIT | BLOB | BOUNDS
    | CAPABLE | CCSVERSION | CHANGED | CHANNEL | CLOB | CLOSE_DISPOSITION | COBOL | COMMITMENT | CONTROL_POINT | CONVENTION | COUNT | CRUNCH | CURSOR
