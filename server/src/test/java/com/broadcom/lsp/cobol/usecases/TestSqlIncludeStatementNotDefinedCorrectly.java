@@ -15,12 +15,9 @@
 
 package com.broadcom.lsp.cobol.usecases;
 
-import com.broadcom.lsp.cobol.positive.CobolText;
 import com.broadcom.lsp.cobol.service.delegates.validations.SourceInfoLevels;
 import com.broadcom.lsp.cobol.usecases.engine.UseCaseEngine;
 import org.eclipse.lsp4j.Diagnostic;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.Range;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,7 +33,7 @@ class TestSqlIncludeStatementNotDefinedCorrectly {
           + "       DATA DIVISION.\n"
           + "       WORKING-STORAGE SECTION.\n"
           + "       01 {$*SQLCA}.\n"
-          + "       EXEC  {INCLUDE|1} STRUCT1 END-EXEC.";
+          + "       EXEC  INCLUDE STRUCT1 END-EXEC.{|1}";
 
   @Test
   void test() {
