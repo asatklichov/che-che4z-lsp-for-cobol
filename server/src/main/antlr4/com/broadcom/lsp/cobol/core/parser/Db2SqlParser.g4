@@ -1048,12 +1048,12 @@ dbs_whenever: WHENEVER (NOT FOUND | SQLERROR | SQLWARNING) (CONTINUE | (GOTO | G
 
 /*data types*/
 data_type: (common_built_in_type | data_type_arr_or_distinct);
-data_type_arr_or_distinct: dbs_array_type_name | dbs_distinct_type_name;
+data_type_arr_or_distinct: dbs_array_type_name | dbs_distinct_type_name | ROWID | XML;
 /*built in types*/
 common_built_in_type_core: (common_bit_int | common_bit_decimal | common_bit_float | common_bit_decfloat |
                         common_bit_char | common_bit_clob | common_bit_varchar | common_bit_graphic |
                         common_bit_binary | common_bit_date_time);
-common_built_in_type: common_built_in_type_core | ROWID | XML;
+common_built_in_type: common_built_in_type_core;
 common_built_in_type_source: common_built_in_type_core | ROWID;
 common_built_in_type2:  common_bit_integer | (VARCHAR | (CHARACTER | CHAR) VARYING) LPARENCHAR dbs_integer  RPARENCHAR (CCSID oneof_encoding)? common_bit_fordata?;
 common_built_in_type_core3: common_built_in_type_core | common_bit_date_time |  ROWID | XML (LPARENCHAR xml_type_modifier RPARENCHAR)?;
@@ -1292,6 +1292,7 @@ dbs_expression: (PLUSCHAR | MINUSCHAR)? (dbs_function_invocation |
  dbs_case_expression |
  dbs_cast_specification |
  dbs_XMLCAST_specification |
+ dbs_XMLQUERY_func|
  dbs_array_element_specification |
  dbs_array_constructor |
  dbs_OLAP_specification |
@@ -1330,6 +1331,8 @@ dbs_column_name | dbs_variable) dbs_time_unit;
 
 dbs_XMLCAST_specification: XMLCAST LPARENCHAR (dbs_expression | NULL | dbs_parameter_marker) AS dbs_comment_parameter_type RPARENCHAR;
 dbs_array_element_specification: dbs_array_variable;
+dbs_XMLQUERY_func: XMLQUERY LPARENCHAR  dbs_xquery_expression_constant (PASSING (BY REF)? dbs_row_xquery_argument  (COMMACHAR dbs_row_xquery_argument)*)? (RETURNING SEQUENCE (BY REF)?)? (EMPTY ON EMPTY)? RPARENCHAR;
+dbs_xquery_expression_constant: (dbs_expression|COLONCHAR|LSQUAREBRACKET|RSQUAREBRACKET|LPARENCHAR|RPARENCHAR|SLASHCHAR|EQUALCHAR|DOLLARCHAR)+; //TODO: https://www.ibm.com/support/knowledgecenter/SSEPEK_12.0.0/xml/src/tpc/db2z_xpxqprologexpression.html
 dbs_array_constructor: ARRAY LSQUAREBRACKET (QUESTIONMARK | dbs_fullselect | (dbs_array_element_specification | NULL)
 (COMMACHAR (dbs_array_element_specification | NULL))*) RSQUAREBRACKET;
 
@@ -1523,7 +1526,7 @@ dbs_clone_table_name: dbs_sql_identifier;
 dbs_collection_id: IDENTIFIER;
 dbs_collection_id_package_name: FILENAME;
 dbs_collection_name: dbs_sql_identifier; // SQLIDENTIFIER are case sensitive. allows only uppercase or quoted string as per doc.
-dbs_generic_name: ACTIVITY | ADDRESS |AVG | COLOR | COUNT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | SQLCODE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
+dbs_generic_name: ACTIVITY | ADDRESS |AVG | COLOR | COUNT | DOCUMENT | FILENAME | GROUP | HOUR | HOURS | ID | IN | IDENTIFIER | LOCATION | LOCATOR | MAX | MIN | MONTH | NAME | NONNUMERICLITERAL | YEAR | DATE | DAY | SERVER | STATE | SQLCODE | TRANSACTION | TYPE | V1 ; //TODO try to include all cics_cobol_intersected_words/ cics_only_words
 dbs_column_name: dbs_generic_name (DOT dbs_generic_name)?;
 dbs_constant : (dbs_string_constant | dbs_integer_constant | DATELITERAL);
 dbs_constraint_name: dbs_sql_identifier;
@@ -1547,7 +1550,7 @@ dbs_explainable_sql_statement: ( dbs_allocate | dbs_alter | dbs_associate | dbs_
 dbs_ext_program_name: dbs_sql_identifier;
 dbs_external_program_name: IDENTIFIER;
 dbs_hint_variable:  dbs_variable;
-dbs_hint_string_constant:  STRINGLITERAL;
+dbs_hint_string_constant:  IDENTIFIER;
 dbs_fetch_clause: FETCH (FIRST | NEXT) (PLUSCHAR? INTEGERLITERAL)? (ROW | ROWS) ONLY;
 dbs_field_name: dbs_sql_identifier;
 dbs_function_name: dbs_sql_identifier | dbs_inbuild_functions; //must not be any of the  system-reserved keywords
@@ -1585,7 +1588,7 @@ dbs_numeric_constant: dbs_integer;// numeric literal without non-zero digits to 
 dbs_obfuscated_statement_text: all_words+ ;
 dbs_package_name: NONNUMERICLITERAL;
 dbs_password_variable: COLONCHAR? (all_words | dbs_generic_name)+;
-dbs_password_string_constant: STRINGLITERAL;
+dbs_password_string_constant: IDENTIFIER;
 dbs_package_path: FILENAME+;
 dbs_pageset_pagenum_param: ABSOLUTE | CHAR_A | RELATIVE | CHAR_R ;
 dbs_parameter_marker: ( QUESTIONMARK | COLONCHAR dbs_variable);
@@ -1650,12 +1653,12 @@ dbs_xmltable_function : XMLTABLE LPARENCHAR (dbs_xml_namespace_declaration COMMA
 dbs_xml_namespace_args : dbs_namespace_uri AS dbs_namespace_prefix | DEFAULT  dbs_namespace_uri | NO DEFAULT;
 dbs_namespace_uri : NONNUMERICLITERAL;
 dbs_namespace_prefix : NONNUMERICLITERAL;
-dbs_xquery_context_item_expression : NONNUMERICLITERAL;
+dbs_xquery_context_item_expression : dbs_generic_name ;
 dbs_xquery_variable_expression : dbs_expression;
 dbs_xml_namespace_declaration : XMLNAMESPACES LPARENCHAR  dbs_xml_namespace_args (COMMACHAR dbs_xml_namespace_args)* RPARENCHAR;
 dbs_row_query_expression_constant: NONNUMERICLITERAL; //  must not contain an empty string or a string of all blanks.
 dbs_column_xquery_expression_constant: NONNUMERICLITERAL; // must not be an empty string or a string of all blanks
-dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS NONNUMERICLITERAL (BY REF)?;
+dbs_row_xquery_argument : dbs_xquery_context_item_expression | dbs_xquery_variable_expression AS (NONNUMERICLITERAL | IDENTIFIER) (BY REF)?;
 dbs_xml_table_regular_column_defn : dbs_column_name dbs_insert_data_type (column_def_clause | PATH dbs_column_xquery_expression_constant)?;
 dbs_xml_table_ordinality_column_defn: dbs_column_name FOR ORDINALITY;
 dbs_collection_derived_table :  UNNEST LPARENCHAR (dbs_ordinary_array_expression (COMMACHAR dbs_ordinary_array_expression)* | dbs_assosiative_array_expression) RPARENCHAR (WITH ORDINALITY)? dbs_correlation_clause?;
