@@ -1554,13 +1554,13 @@ dbs_hint_string_constant:  IDENTIFIER;
 dbs_fetch_clause: FETCH (FIRST | NEXT) (PLUSCHAR? INTEGERLITERAL)? (ROW | ROWS) ONLY;
 dbs_field_name: dbs_sql_identifier;
 dbs_function_name: dbs_sql_identifier | dbs_inbuild_functions; //must not be any of the  system-reserved keywords
-dbs_global_variable_name: COLONCHAR? dbs_generic_name;
+dbs_global_variable_name: dbs_generic_name;
 dbs_graphic_string_constant: GRAPHIC_CONSTANT;
 dbs_history_table_name: dbs_table_name;
 dbs_host_label: IDENTIFIER | HANDLER;
 dbs_host_variable: COLONCHAR? (FILENAME | IDENTIFIER) (INDICATOR? COLONCHAR (FILENAME | IDENTIFIER))? ;
 dbs_host_variable_array: IDENTIFIER; // variable array must be defined in the application program
-dbs_host_variable_name: COLONCHAR? dbs_generic_name;
+dbs_host_variable_name: COLONCHAR dbs_generic_name (INDICATOR? COLONCHAR dbs_generic_name)?;
 dbs_id_host_variable: NUMERICLITERAL;
 dbs_identifier: dbs_sql_identifier;
 dbs_imptkmod_param: YES | NO;
